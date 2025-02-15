@@ -51,3 +51,10 @@ def test_generate(capsys, example_nr):
     captured = capsys.readouterr()
     assert "error" not in captured.out.lower() and "error" not in captured.err.lower(), \
         f"Error in {str(topology_file)}"
+
+    # Capture and test output of format_precice_config
+    fileGenerator.format_precice_config()
+    captured = capsys.readouterr()
+    assert "error" not in captured.out.lower() and "error" not in captured.err.lower(), \
+        f"Error in {str(topology_file)}"
+
