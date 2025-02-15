@@ -217,7 +217,49 @@ class PrettyPrinter():
         assert isinstance(element, etree._Comment)
         self.print(self.indent * level + str(element))
 
-    def printElement(self, element, level):
+    def _sort_xml_elements(self, elements):
+        """
+        Sort XML elements with the same name by their first common attribute value alphabetically.
+        
+        Args:
+            elements (list): List of XML elements to sort
+        
+        Returns:
+            list: Sorted list of XML elements
+        """
+        # Group elements by their tag name
+        grouped_elements = {}
+        for elem in elements:
+            if elem.tag not in grouped_elements:
+                grouped_elements[elem.tag] = []
+            grouped_elements[elem.tag].append(elem)
+        
+        # Sort each group of elements with the same tag name
+        sorted_elements = []
+        for tag, group in grouped_elements.items():
+            # If there's only one element with this tag, add it directly
+            if len(group) <= 1:
+                sorted_elements.extend(group)
+                continue
+            
+            # Find the first common attribute across all elements in the group
+            common_attrs = set(attr for elem in group for attr in elem.attrib.keys())
+            
+            # If no common attributes, keep original order
+            if not common_attrs:
+                sorted_elements.extend(group)
+                continue
+            
+            # Choose the first common attribute for sorting
+            sort_attr = sorted(common_attrs)[0]
+            
+            # Sort the group based on the first common attribute's value
+            sorted_group = sorted(group, key=lambda x: x.get(sort_attr, ''))
+            sorted_elements.extend(sorted_group)
+        
+        return sorted_elements
+
+    def printElement(self, element, level=0):
         """
         Recursively print an XML element and its children in prettified format.
         """
@@ -241,6 +283,9 @@ class PrettyPrinter():
 
         # Sort children based on the predefined order
         sorted_children = sorted(element.getchildren(), key=lambda elem: self.custom_sort_key(elem, TOP_LEVEL_ORDER))
+        
+        # Additional sorting for elements with the same tag name
+        sorted_children = self._sort_xml_elements(sorted_children)
 
         last = len(sorted_children)
         for i, group in enumerate(sorted_children, start=1):
@@ -252,6 +297,9 @@ class PrettyPrinter():
                     group.getchildren(), 
                     key=lambda child: self.custom_sort_key(child, PARTICIPANT_ORDER)
                 )
+                
+                # Sort participant's children with the same tag name
+                sorted_participant_children = self._sort_xml_elements(sorted_participant_children)
                 
                 # Separate different types of elements
                 mesh_elements = []
@@ -372,14 +420,13 @@ class PrettyPrinter():
                 
                 # Print acceleration elements
                 if acceleration_elements:
-                    if exchange_elements or convergence_elements or max_iterations or initial_elements or other_elements:
+                    if exchange_elements or convergence_elements or other_elements or initial_elements:
                         self.print()
                     for child in acceleration_elements:
                         self.printElement(child, level + 1)
                 
                 # Close coupling-scheme tag
-                self.print("{}</{}>"
-                    .format(self.indent * level, group.tag))
+                self.print("{}</{}>".format(self.indent * level, group.tag))
                 
                 # Add newline after coupling-scheme if not the last element
                 if i < last:
