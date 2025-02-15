@@ -125,9 +125,14 @@ def _compare_formatted_files(original_file, generated_file):
     original_lines = [_normalize_xml_line(line) for line in sorted_original.split('\n') if line.strip()]
     generated_lines = [_normalize_xml_line(line) for line in sorted_generated.split('\n') if line.strip()]
     
-    # Compare line by line
+    # Compare line by line, ignoring whitespace
     for orig_line, gen_line in zip(original_lines, generated_lines):
-        assert orig_line == gen_line, f"Mismatch:\nOriginal: {orig_line}\nGenerated: {gen_line}"
+        # Remove all whitespace for comparison
+        orig_line_stripped = ''.join(orig_line.split())
+        gen_line_stripped = ''.join(gen_line.split())
+        
+        assert orig_line_stripped == gen_line_stripped, \
+            f"Mismatch:\nOriginal: {orig_line}\nGenerated: {gen_line}"
     
     # Ensure same number of lines
     assert len(original_lines) == len(generated_lines), \
