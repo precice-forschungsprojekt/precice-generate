@@ -14,6 +14,25 @@ def _get_examples():
     return sorted([example.name for example in examples_dir.iterdir() if example.is_dir()])
 
 
+def _normalize_xml_line(line):
+    """
+    Normalize an XML line by removing extra whitespaces while preserving structure.
+    
+    Args:
+        line (str): Input XML line
+    
+    Returns:
+        str: Normalized XML line
+    """
+    # Remove trailing whitespaces
+    line = line.rstrip()
+    
+    # Normalize self-closing tags
+    line = line.replace(' />', '/>')
+    
+    return line
+
+
 def _sort_xml_elements(file_path):
     """
     Sort XML elements with the same name by their first common attribute value alphabetically.
@@ -27,8 +46,8 @@ def _sort_xml_elements(file_path):
     with open(file_path, 'r') as f:
         content = f.read()
     
-    # Split the content into lines and remove trailing whitespaces
-    lines = [line.rstrip() for line in content.split('\n')]
+    # Split the content into lines and normalize
+    lines = [_normalize_xml_line(line) for line in content.split('\n')]
     
     # Separate XML declaration, comments, and root element
     xml_declaration = [line for line in lines if line.startswith('<?xml')]
@@ -39,30 +58,11 @@ def _sort_xml_elements(file_path):
                      and not line.startswith('<?xml') 
                      and not line.strip().startswith('<!--')]
     
-    # Normalize self-closing tags by removing extra whitespace before '/'
-    content_lines = [line.replace(' />', '/>') for line in content_lines]
-    
-    # Normalize whitespace between tag name and attributes
-    normalized_lines = []
-    for line in content_lines:
-        # Find the first space after the opening '<'
-        first_space_index = line.find(' ')
-        if first_space_index != -1:
-            # Split the line into tag and attributes
-            tag_part = line[:first_space_index+1]
-            attrs_part = line[first_space_index+1:]
-            
-            # Normalize the whitespace
-            normalized_line = f"{tag_part.rstrip()}{attrs_part}"
-            normalized_lines.append(normalized_line)
-        else:
-            normalized_lines.append(line)
-    
     # Group elements by their tag and depth
     element_groups = {}
     current_depth = 0
     
-    for line in normalized_lines:
+    for line in content_lines:
         # Calculate depth based on indentation
         depth = len(line) - len(line.lstrip())
         
@@ -128,9 +128,9 @@ def _compare_formatted_files(original_file, generated_file):
     sorted_original = _sort_xml_elements(original_file)
     sorted_generated = _sort_xml_elements(generated_file)
     
-    # Read sorted content and remove empty lines
-    original_lines = [line.strip() for line in sorted_original.split('\n') if line.strip()]
-    generated_lines = [line.strip() for line in sorted_generated.split('\n') if line.strip()]
+    # Read sorted content and normalize lines
+    original_lines = [_normalize_xml_line(line) for line in sorted_original.split('\n') if line.strip()]
+    generated_lines = [_normalize_xml_line(line) for line in sorted_generated.split('\n') if line.strip()]
     
     # Compare line by line
     for orig_line, gen_line in zip(original_lines, generated_lines):
