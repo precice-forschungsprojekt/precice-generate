@@ -239,31 +239,18 @@ class PrettyPrinter():
                 self.printElement(child, level=level)
             return
 
-        # Custom sorting for top-level elements
-        def custom_sort_key(elem):
-            tag = str(elem.tag)
-            # Predefined order for top-level elements with prefix matching
-            order = self.top_level_order
-            # Find the first matching key
-            for prefix, rank in order.items():
-                if tag.startswith(prefix):
-                    return rank
-            return 6  # Unknown elements appear last
-
         # Sort children based on the predefined order
-        sorted_children = sorted(element.getchildren(), key=custom_sort_key)
+        sorted_children = sorted(element.getchildren(), key=lambda elem: self.custom_sort_key(elem, TOP_LEVEL_ORDER))
 
         last = len(sorted_children)
         for i, group in enumerate(sorted_children, start=1):
             # Special handling for participants to reorder child elements
             if 'participant' in str(group.tag):
-                # Define order for participant child elements with more generalized matching
-                participant_order = PARTICIPANT_ORDER
                 
                 # Sort participant's children based on the defined order
                 sorted_participant_children = sorted(
                     group.getchildren(), 
-                    key=lambda child: custom_sort_key(child, participant_order)
+                    key=lambda child: self.custom_sort_key(child, PARTICIPANT_ORDER)
                 )
                 
                 # Separate different types of elements
@@ -406,6 +393,28 @@ class PrettyPrinter():
             # Add an extra newline between top-level groups
             if i < last:
                 self.print()
+
+    def custom_sort_key(self, elem, order):
+        """
+        Custom sorting key for XML elements like top-level-order.
+        
+        Args:
+            elem (etree._Element): XML element to sort
+            order (dict): Dictionary mapping prefix to rank
+        
+        Returns:
+            int: Sorting rank for the element
+        """
+        tag = str(elem.tag)
+        # Find the first matching key
+        for prefix, rank in order.items():
+            if tag.startswith(prefix):
+                return rank
+        # Dynamically assign the next number for unknown elements
+        if not hasattr(self, '_unknown_counter'):
+            self._unknown_counter = len(order) + 1
+        
+        return self._unknown_counter
 
     @staticmethod
     def parse_xml(content):
