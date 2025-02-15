@@ -89,48 +89,6 @@ def elementLen(element):
         total += 2  # space and slash
     return total
 
-def _sort_xml_elements(self, elements):
-    """
-    Sort XML elements with the same name by their first common attribute value alphabetically.
-    
-    Args:
-        elements (list): List of XML elements to sort
-    
-    Returns:
-        list: Sorted list of XML elements
-    """
-    # Group elements by their tag name
-    grouped_elements = {}
-    for elem in elements:
-        if elem.tag not in grouped_elements:
-            grouped_elements[elem.tag] = []
-        grouped_elements[elem.tag].append(elem)
-    
-    # Sort each group of elements with the same tag name
-    sorted_elements = []
-    for tag, group in grouped_elements.items():
-        # If there's only one element with this tag, add it directly
-        if len(group) <= 1:
-            sorted_elements.extend(group)
-            continue
-        
-        # Find the first common attribute across all elements in the group
-        common_attrs = set(attr for elem in group for attr in elem.attrib.keys())
-        
-        # If no common attributes, keep original order
-        if not common_attrs:
-            sorted_elements.extend(group)
-            continue
-        
-        # Choose the first common attribute for sorting
-        sort_attr = sorted(common_attrs)[0]
-        
-        # Sort the group based on the first common attribute's value
-        sorted_group = sorted(group, key=lambda x: x.get(sort_attr, ''))
-        sorted_elements.extend(sorted_group)
-    
-    return sorted_elements
-
 class PrettyPrinter():
     """
     Class to handle the prettification of XML content.
