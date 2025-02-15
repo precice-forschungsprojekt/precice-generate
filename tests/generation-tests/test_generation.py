@@ -27,8 +27,8 @@ def _sort_xml_elements(file_path):
     with open(file_path, 'r') as f:
         content = f.read()
     
-    # Split the content into lines
-    lines = content.split('\n')
+    # Split the content into lines and remove trailing whitespaces
+    lines = [line.rstrip() for line in content.split('\n')]
     
     # Separate XML declaration, comments, and root element
     xml_declaration = [line for line in lines if line.startswith('<?xml')]
@@ -39,9 +39,11 @@ def _sort_xml_elements(file_path):
                      and not line.startswith('<?xml') 
                      and not line.strip().startswith('<!--')]
     
+    # Normalize self-closing tags by removing extra whitespace before '/'
+    content_lines = [line.replace(' />', '/>') for line in content_lines]
+    
     # Group elements by their tag and depth
     element_groups = {}
-    depths = []
     current_depth = 0
     
     for line in content_lines:
@@ -54,7 +56,7 @@ def _sort_xml_elements(file_path):
         is_closing = stripped.startswith('</')
         is_self_closing = stripped.endswith('/>')
         
-        if is_opening:
+        if is_opening or is_self_closing:
             current_depth = depth
             
             # Extract tag name and attributes
