@@ -4,6 +4,8 @@ import pytest
 import yaml
 import json
 import jsonschema
+import os
+from format import format_file
 
 
 def _get_examples():
@@ -11,6 +13,34 @@ def _get_examples():
     root = Path(__file__).parent.parent.parent
     examples_dir = root / "controller_utils" / "examples"
     return sorted([example.name for example in examples_dir.iterdir() if example.is_dir()])
+
+
+def _compare_formatted_files(original_file, generated_file):
+    """
+    Compare two files after formatting, removing empty lines.
+    
+    Args:
+        original_file (Path): Path to the original file
+        generated_file (Path): Path to the generated file
+    
+    Raises:
+        AssertionError: If files do not match line by line after formatting
+    """
+    # Format both files
+    formatted_original = format_file(original_file)
+    formatted_generated = format_file(generated_file)
+    
+    # Remove empty lines from both
+    original_lines = [line.strip() for line in formatted_original.split('\n') if line.strip()]
+    generated_lines = [line.strip() for line in formatted_generated.split('\n') if line.strip()]
+    
+    # Compare line by line
+    for orig_line, gen_line in zip(original_lines, generated_lines):
+        assert orig_line == gen_line, f"Mismatch:\nOriginal: {orig_line}\nGenerated: {gen_line}"
+    
+    # Ensure same number of lines
+    assert len(original_lines) == len(generated_lines), \
+        f"Different number of lines. Original: {len(original_lines)}, Generated: {len(generated_lines)}"
 
 
 @pytest.mark.parametrize("example_nr", _get_examples())
@@ -58,3 +88,9 @@ def test_generate(capsys, example_nr):
     assert "error" not in captured.out.lower() and "error" not in captured.err.lower(), \
         f"Error in {str(topology_file)}"
 
+    # New: Compare generated files
+    generated_precice_config = root / "_generated" / "precice-config.xml"
+    original_precice_config = root / "controller_utils" / "examples" / f"{example_nr}" / "precice-config.xml"
+    
+    if original_precice_config.exists():
+        _compare_formatted_files(original_precice_config, generated_precice_config)
