@@ -219,16 +219,6 @@ class PrettyPrinter():
                 if data_elements and mapping_elements:
                     self.print()
                 
-                # Separate mapping elements with and without basis-function
-                mapping_with_basis = [
-                    elem for elem in mapping_elements 
-                    if any('basis-function:' in str(child.tag) for child in elem.getchildren())
-                ]
-                mapping_without_basis = [
-                    elem for elem in mapping_elements 
-                    if not any('basis-function:' in str(child.tag) for child in elem.getchildren())
-                ]
-                
                 # Print mapping elements with multi-line formatting
                 for mapping_elem in mapping_elements:
                     # Check if the mapping element has a basis-function child
