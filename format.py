@@ -100,13 +100,55 @@ class PrettyPrinter():
     def print(self, text=''):
         self.stream.write(text + '\n')
 
+    def sort_attributes(self, element):
+        """
+        Sort attributes with 'name' always first, then alphabetically.
+        
+        Args:
+            element (etree._Element): XML element whose attributes to sort
+        
+        Returns:
+            list of tuples: Sorted list of (key, value) attribute pairs
+        """
+        # Separate 'name' attribute if it exists
+        name_attr = [('name', element.get('name'))] if element.get('name') is not None else []
+        
+        # Get remaining attributes, sorted alphabetically
+        other_attrs = sorted(
+            [(k, v) for k, v in element.items() if k != 'name'], 
+            key=lambda x: x[0]
+        )
+        
+        # Combine name attribute (if exists) with sorted other attributes
+        return name_attr + other_attrs
+
     def fmtAttrH(self, element):
-        return " ".join(['{}="{}"'.format(k, v) for k, v in element.items()])
+        """
+        Format attributes horizontally with sorted order.
+        
+        Args:
+            element (etree._Element): XML element to format
+        
+        Returns:
+            str: Formatted attribute string
+        """
+        return " ".join(['{}="{}"'.format(k, v) for k, v in self.sort_attributes(element)])
 
     def fmtAttrV(self, element, level):
+        """
+        Format attributes vertically with sorted order.
+        
+        Args:
+            element (etree._Element): XML element to format
+            level (int): Indentation level
+        
+        Returns:
+            str: Formatted attribute string
+        """
         prefix = self.indent * (level + 1)
         return "\n".join(
-            ['{}{}="{}"'.format(prefix, k, v) for k, v in element.items()])
+            ['{}{}="{}"'.format(prefix, k, v) for k, v in self.sort_attributes(element)]
+        )
 
     def printXMLDeclaration(self, root):
         self.print('<?xml version="{}" encoding="{}" ?>'.format(
