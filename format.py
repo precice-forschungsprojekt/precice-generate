@@ -233,20 +233,30 @@ class PrettyPrinter():
                     if not any('basis-function:' in str(child.tag) for child in elem.getchildren())
                 ]
                 
-                # Determine the original number of mapping:rbf elements
-                original_rbf_count = len(mapping_elements)
-                
                 # Print mapping elements with multi-line formatting
-                for mapping_elem in mapping_without_basis:
-                    # Single-line formatting for simple mappings
-                    self.printElement(mapping_elem, level + 1)
-                
-                # Print the mapping:rbf with basis-function
-                for rbf_subtag in rbf_subtag_elements:
-                    # Repeat the mapping:rbf element to match original count
-                    for _ in range(original_rbf_count - len(mapping_without_basis)):
-                        self.printElement(mapping_with_basis[0], level + 1)
-                    self.printElement(rbf_subtag, level + 1)
+                for mapping_elem in mapping_elements:
+                    # Check if the mapping element has a basis-function child
+                    has_basis_function = any('basis-function:' in str(child.tag) for child in mapping_elem.getchildren())
+                    
+                    # Print the mapping element
+                    if len(mapping_elem.items()) > 2:
+                        self.print("{}<{}".format(self.indent * (level + 1), mapping_elem.tag))
+                        for k, v in mapping_elem.items():
+                            self.print("{}{}=\"{}\"".format(self.indent * (level + 2), k, v))
+                        
+                        # Add basis-function child if it exists in the original
+                        if has_basis_function:
+                            self.print("{}>".format(self.indent * (level + 1)))
+                            for child in mapping_elem.getchildren():
+                                if 'basis-function:' in str(child.tag):
+                                    self.printElement(child, level + 2)
+                            self.print("{}</{}>"
+                                       .format(self.indent * (level + 1), mapping_elem.tag))
+                        else:
+                            self.print("{} />".format(self.indent * (level + 1)))
+                    else:
+                        # Single-line formatting for simple mappings
+                        self.printElement(mapping_elem, level + 1)
                 
                 # Close participant tag
                 self.print("{}</participant>".format(self.indent * level))
