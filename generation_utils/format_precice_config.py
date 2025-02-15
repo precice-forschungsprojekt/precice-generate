@@ -99,12 +99,13 @@ def _sort_xml_elements(self, elements):
     Returns:
         list: Sorted list of XML elements
     """
-    # Group elements by their tag name
+    # Group elements by their tag name and depth
     grouped_elements = {}
     for elem in elements:
-        if elem.tag not in grouped_elements:
-            grouped_elements[elem.tag] = []
-        grouped_elements[elem.tag].append(elem)
+        key = (elem.tag, self._get_xpath(elem))
+        if key not in grouped_elements:
+            grouped_elements[key] = []
+        grouped_elements[key].append(elem)
     
     # Sort each group of elements with the same tag name
     sorted_elements = []
@@ -130,6 +131,14 @@ def _sort_xml_elements(self, elements):
         sorted_elements.extend(sorted_group)
     
     return sorted_elements
+
+    def _get_xpath(self, elem):
+        path = []
+        parent = elem
+        while parent is not None:
+            path.append(parent.tag)
+            parent = parent.getparent()
+        return '/'.join(reversed(path))
 
 class PrettyPrinter():
     """
@@ -521,4 +530,13 @@ class PrettyPrinter():
                 return False
         else:
             print(f"No changes required for file: \"{file_path}\"")
+
+            # Write the sorted XML to the file.
+            try:
+                with open(file_path, "w", encoding="utf-8") as xml_file:
+                    xml_file.write(etree.tostring(xml_tree, encoding="unicode"))
+            except Exception as e:
+                print(f"Failed to write sorted content to file: \"{file_path}\"")
+                print(e)
+                return False
         return True
