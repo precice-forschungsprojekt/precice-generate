@@ -5,6 +5,8 @@ import yaml
 import json
 import jsonschema
 import os
+import xml.etree.ElementTree as ET
+import xml.dom.minidom as minidom
 
 
 def _get_examples():
@@ -14,9 +16,90 @@ def _get_examples():
     return sorted([example.name for example in examples_dir.iterdir() if example.is_dir()])
 
 
+def _sort_xml_elements(file_path):
+    """
+    Sort XML elements with the same name by their first common attribute value alphabetically.
+    
+    Args:
+        file_path (Path): Path to the XML file to be sorted
+    
+    Returns:
+        str: Sorted and prettified XML content
+    """
+    with open(file_path, 'r') as f:
+        content = f.read()
+    
+    # Split the content into lines
+    lines = content.split('\n')
+    
+    # Separate XML declaration, comments, and root element
+    xml_declaration = [line for line in lines if line.startswith('<?xml')]
+    comments = [line for line in lines if line.strip().startswith('<!--')]
+    
+    # Remove XML declaration, comments, and empty lines
+    content_lines = [line for line in lines if line.strip() 
+                     and not line.startswith('<?xml') 
+                     and not line.strip().startswith('<!--')]
+    
+    # Group elements by their tag and depth
+    element_groups = {}
+    depths = []
+    current_depth = 0
+    
+    for line in content_lines:
+        # Calculate depth based on indentation
+        depth = len(line) - len(line.lstrip())
+        
+        # Track opening and closing tags
+        stripped = line.strip()
+        is_opening = stripped.startswith('<') and not stripped.startswith('</')
+        is_closing = stripped.startswith('</')
+        is_self_closing = stripped.endswith('/>')
+        
+        if is_opening:
+            current_depth = depth
+            
+            # Extract tag name and attributes
+            tag_end = stripped.find(' ') if ' ' in stripped else stripped.find('>')
+            tag = stripped[1:tag_end]
+            
+            # Extract first attribute if exists
+            first_attr_value = ''
+            if ' ' in stripped:
+                attrs = stripped[stripped.find(' ')+1:stripped.find('>')].split()
+                if attrs:
+                    first_attr = attrs[0]
+                    if '=' in first_attr:
+                        first_attr_value = first_attr.split('=')[1].strip('"\'')
+            
+            # Group elements
+            if tag not in element_groups:
+                element_groups[tag] = []
+            
+            element_groups[tag].append({
+                'full_line': line,
+                'depth': current_depth,
+                'first_attr_value': first_attr_value
+            })
+    
+    # Sort elements within each group
+    sorted_content = []
+    for tag, elements in element_groups.items():
+        # Sort elements by their first attribute value
+        sorted_elements = sorted(elements, key=lambda x: x['first_attr_value'])
+        
+        # Replace original group with sorted group
+        sorted_content.extend([elem['full_line'] for elem in sorted_elements])
+    
+    # Reconstruct the XML with sorted elements
+    final_content = '\n'.join(xml_declaration + comments + sorted_content)
+    
+    return final_content
+
+
 def _compare_formatted_files(original_file, generated_file):
     """
-    Compare two files line by line, removing empty lines.
+    Compare two files line by line, removing empty lines and sorting XML elements.
     
     Args:
         original_file (Path): Path to the original file
@@ -25,10 +108,13 @@ def _compare_formatted_files(original_file, generated_file):
     Raises:
         AssertionError: If files do not match line by line
     """
-    # Read files and remove empty lines
-    with open(original_file, 'r') as orig_f, open(generated_file, 'r') as gen_f:
-        original_lines = [line.strip() for line in orig_f if line.strip()]
-        generated_lines = [line.strip() for line in gen_f if line.strip()]
+    # Sort XML elements for both files
+    sorted_original = _sort_xml_elements(original_file)
+    sorted_generated = _sort_xml_elements(generated_file)
+    
+    # Read sorted content and remove empty lines
+    original_lines = [line.strip() for line in sorted_original.split('\n') if line.strip()]
+    generated_lines = [line.strip() for line in sorted_generated.split('\n') if line.strip()]
     
     # Compare line by line
     for orig_line, gen_line in zip(original_lines, generated_lines):
