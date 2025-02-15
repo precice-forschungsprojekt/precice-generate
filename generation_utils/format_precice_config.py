@@ -12,6 +12,45 @@ CONVERGENCE_MEASURE_TAGS = [
     'absolute-or-relative-convergence-measure'
 ]
 
+TOP_LEVEL_ORDER = {
+    'data:': 1,
+    'mesh': 2,
+    'participant': 3,
+    'm2n:': 4,
+    'coupling-scheme:': 5
+}
+
+PARTICIPANT_ORDER = {
+    'provide-mesh': 1,
+    'receive-mesh': 2,
+    'write-data': 3,
+    'read-data': 4,
+    'mapping:': 5
+}
+
+def custom_sort_key(elem, order):
+    """
+    Custom sorting key for XML elements like top-level-order.
+    
+    Args:
+        elem (etree._Element): XML element to sort
+        order (dict): Dictionary mapping prefix to rank
+    
+    Returns:
+        int: Sorting rank for the element
+    """
+    tag = str(elem.tag)
+    # Find the first matching key
+    for prefix, rank in order.items():
+        if tag.startswith(prefix):
+            return rank
+    # Dynamically assign the next number for unknown elements
+    if not hasattr(custom_sort_key, 'unknown_counter'):
+        custom_sort_key.unknown_counter = len(order) + 1
+    
+    return custom_sort_key.unknown_counter
+
+
 def isEmptyTag(element):
     """
     Check if an XML element is empty (has no children).
@@ -31,9 +70,9 @@ def attribLength(element):
     """
     total = 0
     for k, v in element.items():
-        # Format: key="value"
+        # KEY="VALUE"
         total += len(k) + 2 + len(v) + 1
-    # Add spaces between attributes (if more than one attribute exists)
+    # spaces in between
     total += len(element.attrib) - 1
     return total
 
@@ -42,12 +81,12 @@ def elementLen(element):
     Estimate the length of an element's start tag (including its attributes).
     This is used to decide whether to print attributes inline or vertically.
     """
-    total = 2  # For the angle brackets "<" and ">"
+    total = 2  # Open close
     total += len(element.tag)
     if element.attrib:
         total += 1 + attribLength(element)
     if isEmptyTag(element):
-        total += 2  # For the space and slash in an empty tag "<tag />"
+        total += 2  # space and slash
     return total
 
 class PrettyPrinter():
@@ -62,16 +101,9 @@ class PrettyPrinter():
         self.indent = indent      # String used for indentation (2 spaces)
         self.maxwidth = maxwidth  # Maximum width for a single line
         self.maxgrouplevel = maxgrouplevel  # Maximum depth to group elements on one line
-        self.global_newline_between_groups = True  # Add newline between top-level groups
         
         # Specific ordering for top-level elements
-        self.top_level_order = [
-            'data:vector',
-            'mesh',
-            'participant',
-            'm2n:sockets',
-            'coupling-scheme:'
-        ]
+        self.top_level_order = TOP_LEVEL_ORDER
 
     def print(self, text='', end='\n'):
         """
@@ -79,18 +111,53 @@ class PrettyPrinter():
         """
         self.stream.write(text + end)
 
+    def sort_attributes(self, element):
+        """
+        Sort attributes with 'name' always first, then alphabetically.
+        
+        Args:
+            element (etree._Element): XML element whose attributes to sort
+        
+        Returns:
+            list of tuples: Sorted list of (key, value) attribute pairs
+        """
+        # Get all attributes as a list of tuples
+        all_attrs = list(element.items())
+        
+        # Separate 'name' attribute if it exists
+        name_attrs = [attr for attr in all_attrs if attr[0] == 'name']
+        other_attrs = sorted([attr for attr in all_attrs if attr[0] != 'name'], key=lambda x: x[0])
+        
+        # Combine name attributes (if any) with sorted other attributes
+        return name_attrs + other_attrs
+
     def fmtAttrH(self, element):
         """
         Format element attributes for inline (horizontal) display.
+        
+        Args:
+            element (etree._Element): XML element to format
+        
+        Returns:
+            str: Formatted attribute string
         """
-        return " ".join(['{}="{}"'.format(k, v) for k, v in element.items()])
+        return " ".join(['{}="{}"'.format(k, v) for k, v in self.sort_attributes(element)])
 
     def fmtAttrV(self, element, level):
         """
         Format element attributes for vertical display, with indentation.
+        
+        Args:
+            element (etree._Element): XML element to format
+            level (int): Indentation level
+        
+        Returns:
+            str: Formatted attribute string
         """
         prefix = self.indent * (level + 1)
-        return "\n".join(['{}{}="{}"'.format(prefix, k, v) for k, v in element.items()])
+        return "\n".join(
+            ['{}{}="{}"'.format(prefix, k, v) for k, v in self.sort_attributes(element)]
+        )
 
     def printXMLDeclaration(self, root):
         """
@@ -114,7 +181,7 @@ class PrettyPrinter():
         assert isinstance(element, etree._Element)
         # Always use self-closing tags for empty elements
         if not element.getchildren() and element.attrib:
-            self.print("{}<{} {}/>".format(self.indent * level, element.tag, self.fmtAttrH(element)))
+            self.print("{}<{} {}>".format(self.indent * level, element.tag, self.fmtAttrH(element)))
         elif not element.getchildren():
             self.print("{}<{} />".format(self.indent * level, element.tag))
         else:
@@ -139,7 +206,7 @@ class PrettyPrinter():
         """
         assert isinstance(element, etree._Element)
         if element.attrib:
-            self.print("{}<{} {}/>".format(self.indent * level, element.tag, self.fmtAttrH(element)))
+            self.print("{}<{} {} />".format(self.indent * level, element.tag, self.fmtAttrH(element)))
         else:
             self.print("{}<{} />".format(self.indent * level, element.tag))
 
@@ -176,13 +243,7 @@ class PrettyPrinter():
         def custom_sort_key(elem):
             tag = str(elem.tag)
             # Predefined order for top-level elements with prefix matching
-            order = {
-                'data:': 1,  # Matches data:vector, data:scalar, etc.
-                'mesh': 2,
-                'participant': 3,
-                'm2n:': 4,
-                'coupling-scheme:': 5
-            }
+            order = self.top_level_order
             # Find the first matching key
             for prefix, rank in order.items():
                 if tag.startswith(prefix):
@@ -197,22 +258,12 @@ class PrettyPrinter():
             # Special handling for participants to reorder child elements
             if 'participant' in str(group.tag):
                 # Define order for participant child elements with more generalized matching
-                participant_order = {
-                    'provide-mesh': 1,
-                    'receive-mesh': 2,
-                    'write-data': 3,
-                    'read-data': 4,
-                    'mapping:': 5  # Matches mapping:nearest-neighbor, mapping:rbf, etc.
-                }
+                participant_order = PARTICIPANT_ORDER
                 
                 # Sort participant's children based on the defined order
                 sorted_participant_children = sorted(
                     group.getchildren(), 
-                    key=lambda child: next(
-                        (rank for prefix, rank in participant_order.items() 
-                         if str(child.tag).startswith(prefix)), 
-                        6  # Unknown elements appear last
-                    )
+                    key=lambda child: custom_sort_key(child, participant_order)
                 )
                 
                 # Separate different types of elements
@@ -230,7 +281,7 @@ class PrettyPrinter():
                 
                 # Construct participant tag with attributes
                 participant_tag = "<{}".format(group.tag)
-                for attr, value in group.items():
+                for attr, value in self.sort_attributes(group):
                     participant_tag += ' {}="{}"'.format(attr, value)
                 participant_tag += ">"
                 
@@ -258,7 +309,7 @@ class PrettyPrinter():
                     # Check if the mapping element has multiple attributes
                     if len(mapping_elem.items()) > 2:
                         self.print("{}<{}".format(self.indent * (level + 1), mapping_elem.tag))
-                        for k, v in mapping_elem.items():
+                        for k, v in self.sort_attributes(mapping_elem):
                             self.print("{}{}=\"{}\"".format(self.indent * (level + 2), k, v))
                         self.print("{} />".format(self.indent * (level + 1)))
                     else:
