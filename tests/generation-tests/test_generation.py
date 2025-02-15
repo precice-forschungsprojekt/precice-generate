@@ -24,17 +24,13 @@ def _normalize_xml_line(line):
     Returns:
         str: Normalized XML line
     """
-    # Preserve leading whitespaces (indentation)
-    leading_spaces = len(line) - len(line.lstrip())
-    
     # Remove trailing whitespaces from the content
     stripped_line = line.rstrip()
     
     # Normalize self-closing tags
     stripped_line = stripped_line.replace(' />', '/>')
     
-    # Restore original indentation
-    return ' ' * leading_spaces + stripped_line
+    return stripped_line
 
 
 def _sort_xml_elements(file_path):
@@ -64,21 +60,15 @@ def _sort_xml_elements(file_path):
     
     # Group elements by their tag and depth
     element_groups = {}
-    current_depth = 0
     
     for line in content_lines:
-        # Calculate depth based on indentation
-        depth = len(line) - len(line.lstrip())
-        
-        # Track opening and closing tags
+        # Calculate depth based on parent tag's depth
         stripped = line.strip()
         is_opening = stripped.startswith('<') and not stripped.startswith('</')
         is_closing = stripped.startswith('</')
         is_self_closing = stripped.endswith('/>')
         
         if is_opening or is_self_closing:
-            current_depth = depth
-            
             # Extract tag name and attributes
             tag_end = stripped.find(' ') if ' ' in stripped else stripped.find('>')
             tag = stripped[1:tag_end]
@@ -98,7 +88,6 @@ def _sort_xml_elements(file_path):
             
             element_groups[tag].append({
                 'full_line': line,
-                'depth': current_depth,
                 'first_attr_value': first_attr_value
             })
     
