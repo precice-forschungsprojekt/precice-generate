@@ -267,7 +267,7 @@ class PrettyPrinter():
                     # Print the mapping element
                     if len(mapping_elem.items()) > 2:
                         self.print("{}<{}".format(self.indent * (level + 1), mapping_elem.tag))
-                        for k, v in mapping_elem.items():
+                        for k, v in self.sort_attributes(mapping_elem):
                             self.print("{}{}=\"{}\"".format(self.indent * (level + 2), k, v))
                         
                         # Add basis-function child if it exists in the original
