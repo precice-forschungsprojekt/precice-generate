@@ -99,10 +99,10 @@ def _sort_xml_elements(self, elements):
     Returns:
         list: Sorted list of XML elements
     """
-    # Group elements by their tag name and parent tag name and parent attributes
+    # Group elements by their tag name and depth
     grouped_elements = {}
     for elem in elements:
-        key = (elem.tag, elem.getparent().tag, frozenset(elem.getparent().items()))
+        key = (elem.tag, self._get_xpath(elem))
         if key not in grouped_elements:
             grouped_elements[key] = []
         grouped_elements[key].append(elem)
