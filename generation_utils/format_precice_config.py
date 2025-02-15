@@ -12,6 +12,40 @@ CONVERGENCE_MEASURE_TAGS = [
     'absolute-or-relative-convergence-measure'
 ]
 
+# Global constant for element sorting order
+ELEMENT_ORDER = {
+    'data:vector': 1,
+    'mesh': 2,
+    'participant': 3,
+    'm2n:sockets': 4,
+    'coupling-scheme:': 5
+}
+
+def custom_sort_key(elem):
+    """
+    Custom sorting key for top-level XML elements.
+    
+    Args:
+        elem (etree._Element): XML element to sort
+    
+    Returns:
+        int: Sorting rank for the element
+    """
+    tag = str(elem.tag)
+    # Find the first matching key
+    for prefix, rank in ELEMENT_ORDER.items():
+        if tag == prefix:
+            return rank
+    
+    # Dynamically assign the next number for unknown elements
+    if not hasattr(custom_sort_key, 'unknown_counter'):
+        custom_sort_key.unknown_counter = len(ELEMENT_ORDER) + 1
+    
+    #Add this? Each time an unknown element is encountered, the counter is incremented, giving each unique unknown element a distinct sorting rank.
+    # custom_sort_key.unknown_counter += 1
+
+    return custom_sort_key.unknown_counter
+
 def isEmptyTag(element):
     """
     Check if an XML element is empty (has no children).
@@ -172,23 +206,6 @@ class PrettyPrinter():
                 self.printElement(child, level=level)
             return
 
-        # Custom sorting for top-level elements
-        def custom_sort_key(elem):
-            tag = str(elem.tag)
-            # Predefined order for top-level elements with prefix matching
-            order = {
-                'data:': 1,  # Matches data:vector, data:scalar, etc.
-                'mesh': 2,
-                'participant': 3,
-                'm2n:': 4,
-                'coupling-scheme:': 5
-            }
-            # Find the first matching key
-            for prefix, rank in order.items():
-                if tag.startswith(prefix):
-                    return rank
-            return 6  # Unknown elements appear last
-
         # Sort children based on the predefined order
         sorted_children = sorted(element.getchildren(), key=custom_sort_key)
 
@@ -334,14 +351,13 @@ class PrettyPrinter():
                 
                 # Print acceleration elements
                 if acceleration_elements:
-                    if exchange_elements or convergence_elements or max_iterations or initial_elements or other_elements:
+                    if exchange_elements or convergence_elements or other_elements or initial_elements:
                         self.print()
                     for child in acceleration_elements:
                         self.printElement(child, level + 1)
                 
                 # Close coupling-scheme tag
-                self.print("{}</{}>"
-                    .format(self.indent * level, group.tag))
+                self.print("{}</{}>".format(self.indent * level, group.tag))
                 
                 # Add newline after coupling-scheme if not the last element
                 if i < last:
