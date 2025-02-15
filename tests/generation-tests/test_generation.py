@@ -42,11 +42,27 @@ def _sort_xml_elements(file_path):
     # Normalize self-closing tags by removing extra whitespace before '/'
     content_lines = [line.replace(' />', '/>') for line in content_lines]
     
+    # Normalize whitespace between tag name and attributes
+    normalized_lines = []
+    for line in content_lines:
+        # Find the first space after the opening '<'
+        first_space_index = line.find(' ')
+        if first_space_index != -1:
+            # Split the line into tag and attributes
+            tag_part = line[:first_space_index+1]
+            attrs_part = line[first_space_index+1:]
+            
+            # Normalize the whitespace
+            normalized_line = f"{tag_part.rstrip()}{attrs_part}"
+            normalized_lines.append(normalized_line)
+        else:
+            normalized_lines.append(line)
+    
     # Group elements by their tag and depth
     element_groups = {}
     current_depth = 0
     
-    for line in content_lines:
+    for line in normalized_lines:
         # Calculate depth based on indentation
         depth = len(line) - len(line.lstrip())
         
