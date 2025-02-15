@@ -5,8 +5,6 @@ import yaml
 import json
 import jsonschema
 import os
-import xml.etree.ElementTree as ET
-import xml.dom.minidom as minidom
 
 
 def _get_examples():
