@@ -130,6 +130,10 @@ def _compare_formatted_files(original_file, generated_file):
         # Remove all whitespace for comparison
         orig_line_stripped = ''.join(orig_line.split())
         gen_line_stripped = ''.join(gen_line.split())
+
+        print(orig_line_stripped)
+        print(gen_line_stripped)
+        print()
         
         assert orig_line_stripped == gen_line_stripped, \
             f"Mismatch:\nOriginal: {orig_line}\nGenerated: {gen_line}"
