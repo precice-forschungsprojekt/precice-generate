@@ -5,7 +5,6 @@ import yaml
 import json
 import jsonschema
 import os
-from format import format_file
 
 
 def _get_examples():
@@ -17,22 +16,19 @@ def _get_examples():
 
 def _compare_formatted_files(original_file, generated_file):
     """
-    Compare two files after formatting, removing empty lines.
+    Compare two files line by line, removing empty lines.
     
     Args:
         original_file (Path): Path to the original file
         generated_file (Path): Path to the generated file
     
     Raises:
-        AssertionError: If files do not match line by line after formatting
+        AssertionError: If files do not match line by line
     """
-    # Format both files
-    formatted_original = format_file(original_file)
-    formatted_generated = format_file(generated_file)
-    
-    # Remove empty lines from both
-    original_lines = [line.strip() for line in formatted_original.split('\n') if line.strip()]
-    generated_lines = [line.strip() for line in formatted_generated.split('\n') if line.strip()]
+    # Read files and remove empty lines
+    with open(original_file, 'r') as orig_f, open(generated_file, 'r') as gen_f:
+        original_lines = [line.strip() for line in orig_f if line.strip()]
+        generated_lines = [line.strip() for line in gen_f if line.strip()]
     
     # Compare line by line
     for orig_line, gen_line in zip(original_lines, generated_lines):
