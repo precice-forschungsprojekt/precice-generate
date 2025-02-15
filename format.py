@@ -110,17 +110,15 @@ class PrettyPrinter():
         Returns:
             list of tuples: Sorted list of (key, value) attribute pairs
         """
+        # Get all attributes as a list of tuples
+        all_attrs = list(element.items())
+        
         # Separate 'name' attribute if it exists
-        name_attr = [('name', element.get('name'))] if element.get('name') is not None else []
+        name_attrs = [attr for attr in all_attrs if attr[0] == 'name']
+        other_attrs = sorted([attr for attr in all_attrs if attr[0] != 'name'], key=lambda x: x[0])
         
-        # Get remaining attributes, sorted alphabetically
-        other_attrs = sorted(
-            [(k, v) for k, v in element.items() if k != 'name'], 
-            key=lambda x: x[0]
-        )
-        
-        # Combine name attribute (if exists) with sorted other attributes
-        return name_attr + other_attrs
+        # Combine name attributes (if any) with sorted other attributes
+        return name_attrs + other_attrs
 
     def fmtAttrH(self, element):
         """
