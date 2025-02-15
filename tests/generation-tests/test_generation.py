@@ -24,13 +24,17 @@ def _normalize_xml_line(line):
     Returns:
         str: Normalized XML line
     """
-    # Remove trailing whitespaces
-    line = line.rstrip()
+    # Preserve leading whitespaces (indentation)
+    leading_spaces = len(line) - len(line.lstrip())
+    
+    # Remove trailing whitespaces from the content
+    stripped_line = line.rstrip()
     
     # Normalize self-closing tags
-    line = line.replace(' />', '/>')
+    stripped_line = stripped_line.replace(' />', '/>')
     
-    return line
+    # Restore original indentation
+    return ' ' * leading_spaces + stripped_line
 
 
 def _sort_xml_elements(file_path):
@@ -50,12 +54,12 @@ def _sort_xml_elements(file_path):
     lines = [_normalize_xml_line(line) for line in content.split('\n')]
     
     # Separate XML declaration, comments, and root element
-    xml_declaration = [line for line in lines if line.startswith('<?xml')]
+    xml_declaration = [line for line in lines if line.strip().startswith('<?xml')]
     comments = [line for line in lines if line.strip().startswith('<!--')]
     
     # Remove XML declaration, comments, and empty lines
     content_lines = [line for line in lines if line.strip() 
-                     and not line.startswith('<?xml') 
+                     and not line.strip().startswith('<?xml') 
                      and not line.strip().startswith('<!--')]
     
     # Group elements by their tag and depth
