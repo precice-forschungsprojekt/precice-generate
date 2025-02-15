@@ -5,9 +5,7 @@ import yaml
 import json
 import jsonschema
 import os
-import io
-from lxml import etree
-from generation_utils.format_precice_config import PrettyPrinter
+from format import format_file
 
 
 def _get_examples():
@@ -28,22 +26,9 @@ def _compare_formatted_files(original_file, generated_file):
     Raises:
         AssertionError: If files do not match line by line after formatting
     """
-    # Create a PrettyPrinter with a StringIO stream for capturing output
-    pretty_printer = PrettyPrinter(stream=io.StringIO(), indent='  ', maxwidth=100)
-    
-    # Parse and format original file
-    original_tree = etree.parse(str(original_file))
-    pretty_printer.stream.seek(0)
-    pretty_printer.stream.truncate()
-    pretty_printer.printRoot(original_tree)
-    formatted_original = pretty_printer.stream.getvalue()
-    
-    # Parse and format generated file
-    generated_tree = etree.parse(str(generated_file))
-    pretty_printer.stream.seek(0)
-    pretty_printer.stream.truncate()
-    pretty_printer.printRoot(generated_tree)
-    formatted_generated = pretty_printer.stream.getvalue()
+    # Format both files
+    formatted_original = format_file(original_file)
+    formatted_generated = format_file(generated_file)
     
     # Remove empty lines from both
     original_lines = [line.strip() for line in formatted_original.split('\n') if line.strip()]
