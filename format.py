@@ -207,6 +207,7 @@ class PrettyPrinter():
                 mesh_elements = []
                 data_elements = []
                 mapping_elements = []
+                rbf_subtag_elements = []
                 
                 for child in sorted_participant_children:
                     if str(child.tag) in ['provide-mesh', 'receive-mesh']:
@@ -215,6 +216,9 @@ class PrettyPrinter():
                         data_elements.append(child)
                     elif str(child.tag).startswith('mapping:'):
                         mapping_elements.append(child)
+                        if str(child.tag).startswith('mapping:rbf'):
+                            if len(child) > 0 and str(child[0].tag).startswith('basis-function:'):
+                                rbf_subtag_elements.append(child)
                 
                 # Construct participant tag with attributes
                 participant_tag = "<{}".format(group.tag)
@@ -252,6 +256,10 @@ class PrettyPrinter():
                     else:
                         # Single-line formatting for simple mappings
                         self.printElement(mapping_elem, level + 1)
+                
+                # Print rbf subtags
+                for rbf_subtag in rbf_subtag_elements:
+                    self.printElement(rbf_subtag, level + 1)
                 
                 # Close participant tag
                 self.print("{}</participant>".format(self.indent * level))
