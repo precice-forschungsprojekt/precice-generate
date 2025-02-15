@@ -25,6 +25,13 @@ PARTICIPANT_ORDER = {
     'mapping:': 5
 }
 
+        # sorted_children = sorted(element.getchildren(), key=lambda elem: custom_sort_key(elem, TOP_LEVEL_ORDER))
+        # # Sort participant's children based on the defined order
+        # sorted_participant_children = sorted(
+        #     group.getchildren(), 
+        #     key=lambda child: custom_sort_key(child, PARTICIPANT_ORDER)
+        # )
+
 def custom_sort_key(elem, order):
     """
     Custom sorting key for XML elements like top-level-order.
@@ -52,7 +59,29 @@ def custom_sort_key(elem, order):
 
 
 def isEmptyTag(element):
-    return not element.getchildren()
+    """
+    Determine if an XML element is considered empty.
+    
+    Special handling for mapping:rbf elements to ensure they are not 
+    treated as empty when they have a basis-function child.
+    
+    Args:
+        element (etree._Element): XML element to check
+    
+    Returns:
+        bool: True if the element is considered empty, False otherwise
+    """
+    # Special handling for mapping:rbf elements
+    if 'mapping:rbf' in str(element.tag):
+        # Check if there's a basis-function child
+        basis_function_children = [
+            child for child in element.getchildren() 
+            if 'basis-function:' in str(child.tag)
+        ]
+        return len(basis_function_children) == 0
+    
+    # Default behavior: element is empty if it has no children
+    return len(element.getchildren()) == 0
 
 
 def isComment(element):
