@@ -132,13 +132,13 @@ def _sort_xml_elements(self, elements):
     
     return sorted_elements
 
-def _get_xpath(self, elem):
-    path = []
-    parent = elem
-    while parent is not None:
-        path.append(parent.tag)
-        parent = parent.getparent()
-    return '/'.join(reversed(path))
+    def _get_xpath(self, elem):
+        path = []
+        parent = elem
+        while parent is not None:
+            path.append(parent.tag)
+            parent = parent.getparent()
+        return '/'.join(reversed(path))
 
 class PrettyPrinter():
     """
