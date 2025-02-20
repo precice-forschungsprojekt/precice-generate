@@ -394,28 +394,6 @@ class PrettyPrinter():
             if i < last:
                 self.print()
 
-    def custom_sort_key(self, elem, order):
-        """
-        Custom sorting key for XML elements like top-level-order.
-        
-        Args:
-            elem (etree._Element): XML element to sort
-            order (dict): Dictionary mapping prefix to rank
-        
-        Returns:
-            int: Sorting rank for the element
-        """
-        tag = str(elem.tag)
-        # Find the first matching key
-        for prefix, rank in order.items():
-            if tag.startswith(prefix):
-                return rank
-        # Dynamically assign the next number for unknown elements
-        if not hasattr(self, '_unknown_counter'):
-            self._unknown_counter = len(order) + 1
-        
-        return self._unknown_counter
-
     @staticmethod
     def parse_xml(content):
         """
