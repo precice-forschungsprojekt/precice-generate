@@ -272,6 +272,12 @@ def main():
         help="Output path for the generated folder.",
         default=Path(__file__).parent
     )
+    parser.add_argument(
+        "-q", "--quiet",
+        action="store_true",
+        required=False,
+        help="Suppress all logging output.",
+    )
 
     args = parser.parse_args()
 
