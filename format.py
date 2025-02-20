@@ -25,13 +25,6 @@ PARTICIPANT_ORDER = {
     'mapping:': 5
 }
 
-        # sorted_children = sorted(element.getchildren(), key=lambda elem: custom_sort_key(elem, TOP_LEVEL_ORDER))
-        # # Sort participant's children based on the defined order
-        # sorted_participant_children = sorted(
-        #     group.getchildren(), 
-        #     key=lambda child: custom_sort_key(child, PARTICIPANT_ORDER)
-        # )
-
 def custom_sort_key(elem, order):
     """
     Custom sorting key for XML elements like top-level-order.
