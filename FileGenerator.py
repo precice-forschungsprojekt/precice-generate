@@ -282,11 +282,25 @@ def main():
     args = parser.parse_args()
 
     fileGenerator = FileGenerator(args.input_file, args.output_path)
+
+    # Clear any previous log state
+    fileGenerator.logger.clear_log_state()
+
     fileGenerator.generate_level_0()
     fileGenerator.generate_level_1()
+
+    # Handle output based on quiet mode and log state
+    if not args.quiet:
+        if not fileGenerator.logger.has_errors():
+            # No errors, show success message
+            fileGenerator.logger.success("Everything worked ")
+        
+        # Always show warnings if any exist
+        if fileGenerator.logger.has_warnings():
+            for warning in fileGenerator.logger.get_warnings():
+                fileGenerator.logger.warning(warning)
     
     # Format the generated preCICE configuration
-
     fileGenerator.format_precice_config()
 
 if __name__ == "__main__":
