@@ -291,6 +291,7 @@ def main():
 
     # Handle output based on quiet mode and log state
     if not args.quiet:
+        print("\033c", end="") # clear the terminal output
         if not fileGenerator.logger.has_errors():
             # No errors, show success message
             fileGenerator.logger.success("Everything worked ")
