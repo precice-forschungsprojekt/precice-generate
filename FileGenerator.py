@@ -290,7 +290,7 @@ def main():
     fileGenerator.generate_level_1()
 
     # Handle output based on verbose mode and log state
-    if args.verbose:
+    if not args.verbose:
         print("\033c", end="") # clear the terminal output
         if not fileGenerator.logger.has_errors():
             # No errors, show success message
