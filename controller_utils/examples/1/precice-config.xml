@@ -1,59 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" ?>
 <precice-configuration>
+    <data:vector name="Displacement" />
 
-  <data:vector name="Force"/>
-  <data:vector name="Displacement"/>
-  
-  <mesh name="Fluid-Mesh" dimensions="3">
-    <use-data name="Force"/>
-    <use-data name="Displacement"/>
-  </mesh>
+    <data:vector name="Force" />
 
-  <mesh name="Solid-Mesh" dimensions="3">
-    <use-data name="Displacement"/>
-    <use-data name="Force"/>
-  </mesh>
+    <mesh name="Fluid-Mesh" dimensions="3">
+        <use-data name="Displacement" />
+        <use-data name="Force" />
+    </mesh>
 
-  <participant name="Fluid">
-    <provide-mesh name="Fluid-Mesh"/>
-    <receive-mesh name="Solid-Mesh" from="Solid"/>
-    
-    <write-data name="Force" mesh="Fluid-Mesh"/>
-    <read-data  name="Displacement" mesh="Fluid-Mesh"/>
-    
-    <mapping:nearest-neighbor
-        direction="write"
-        from="Fluid-Mesh" to="Solid-Mesh"
-        constraint="conservative" />
-    <mapping:nearest-neighbor
-        direction="read"
-        from="Solid-Mesh" to="Fluid-Mesh"
-        constraint="consistent" />
-  </participant>
+    <mesh name="Solid-Mesh" dimensions="3">
+        <use-data name="Force" />
+        <use-data name="Displacement" />
+    </mesh>
 
-  <participant name="Solid">
-    <provide-mesh name="Solid-Mesh"/>
-    <write-data name="Displacement" mesh="Solid-Mesh"/>
-    <read-data  name="Force" mesh="Solid-Mesh"/>
-  </participant>
+    <participant name="Fluid">
+        <provide-mesh name="Fluid-Mesh" />
+        <receive-mesh name="Solid-Mesh" from="Solid" />
 
-  <m2n:sockets acceptor="Fluid" connector="Solid" exchange-directory=".."/>
-  
-  <coupling-scheme:parallel-implicit>
-    <participants first="Fluid" second="Solid"/>
-    <max-time value="1e-1"/>
-    <time-window-size value="1e-3"/>
-    <exchange data="Force"        mesh="Solid-Mesh" from="Fluid" to="Solid"/>
-    <exchange data="Displacement" mesh="Solid-Mesh" from="Solid" to="Fluid"/>
-    <max-iterations value="50"/>
-    <relative-convergence-measure limit="1e-4" data="Displacement" mesh="Solid-Mesh"/>
-    <relative-convergence-measure limit="1e-4" data="Force"        mesh="Solid-Mesh"/>
+        <write-data name="Force" mesh="Fluid-Mesh" />
+        <read-data name="Displacement" mesh="Fluid-Mesh" />
 
-    <acceleration:IQN-ILS>
-      <data name="Displacement" mesh="Solid-Mesh"/>
-      <data name="Force"        mesh="Solid-Mesh"/>
-    </acceleration:IQN-ILS>
-  </coupling-scheme:parallel-implicit>
+        <mapping:nearest-neighbor
+            constraint="consistent"
+            direction="read"
+            from="Solid-Mesh"
+            to="Fluid-Mesh"
+         />
+        <mapping:nearest-neighbor
+            constraint="conservative"
+            direction="write"
+            from="Fluid-Mesh"
+            to="Solid-Mesh"
+         />
+    </participant>
 
+    <participant name="Solid">
+        <provide-mesh name="Solid-Mesh" />
+
+        <write-data name="Displacement" mesh="Solid-Mesh" />
+        <read-data name="Force" mesh="Solid-Mesh" />
+    </participant>
+
+    <m2n:sockets acceptor="Fluid" connector="Solid" exchange-directory="../" />
+
+    <coupling-scheme:parallel-implicit>
+        <participants first="Fluid" second="Solid" />
+        <max-time value="1e-1" />
+        <time-window-size value="1e-3" />
+
+        <max-iterations value="50" />
+
+        <relative-convergence-measure data="Displacement" limit="0.0001" mesh="Solid-Mesh" />
+        <relative-convergence-measure data="Force" limit="0.0001" mesh="Solid-Mesh" />
+
+        <exchange data="Displacement" from="Solid" mesh="Solid-Mesh" to="Fluid" />
+        <exchange data="Force" from="Fluid" mesh="Solid-Mesh" to="Solid" />
+
+        <acceleration:IQN-ILS>
+            <data name="Displacement" mesh="Solid-Mesh" />
+            <data name="Force" mesh="Solid-Mesh" />
+        </acceleration:IQN-ILS>
+    </coupling-scheme:parallel-implicit>
 </precice-configuration>
