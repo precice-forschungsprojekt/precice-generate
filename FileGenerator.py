@@ -273,10 +273,10 @@ def main():
         default=Path(__file__).parent
     )
     parser.add_argument(
-        "-q", "--quiet",
+        "-v", "--verbose",
         action="store_true",
         required=False,
-        help="Suppress all logging output.",
+        help="Enable verbose logging output.",
     )
 
     args = parser.parse_args()
@@ -290,7 +290,7 @@ def main():
     fileGenerator.generate_level_1()
 
     # Handle output based on quiet mode and log state
-    if not args.quiet:
+    if args.verbose:
         print("\033c", end="") # clear the terminal output
         if not fileGenerator.logger.has_errors():
             # No errors, show success message
