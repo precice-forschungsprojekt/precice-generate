@@ -289,6 +289,9 @@ def main():
     fileGenerator.generate_level_0()
     fileGenerator.generate_level_1()
 
+    # Format the generated preCICE configuration
+    fileGenerator.format_precice_config()
+    
     # Handle output based on verbose mode and log state
     if not args.verbose:
         print("\033c", end="") # clear the terminal output
@@ -301,8 +304,7 @@ def main():
             for warning in fileGenerator.logger.get_warnings():
                 fileGenerator.logger.warning(warning)
     
-    # Format the generated preCICE configuration
-    fileGenerator.format_precice_config()
+
 
 if __name__ == "__main__":
     main()
