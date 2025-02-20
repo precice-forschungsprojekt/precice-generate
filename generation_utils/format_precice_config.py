@@ -6,11 +6,7 @@ import io
 import shutil
 
 # Global list of valid convergence measure tags
-CONVERGENCE_MEASURE_TAGS = [
-    'relative-convergence-measure', 
-    'absolute-convergence-measure', 
-    'absolute-or-relative-convergence-measure'
-]
+CONVERGENCE_MEASURE_TAGS = ['relative-convergence-measure', 'absolute-convergence-measure', 'absolute-or-relative-convergence-measure']
 
 TOP_LEVEL_ORDER = {
     'data:': 1,
@@ -48,26 +44,21 @@ def custom_sort_key(elem, order):
     if not hasattr(custom_sort_key, 'unknown_counter'):
         custom_sort_key.unknown_counter = len(order) + 1
     
+    #Add this? Each time an unknown element is encountered, the counter is incremented, giving each unique unknown element a distinct sorting rank.
+    # custom_sort_key.unknown_counter += 1
+
     return custom_sort_key.unknown_counter
 
 
 def isEmptyTag(element):
-    """
-    Check if an XML element is empty (has no children).
-    """
     return not element.getchildren()
 
+
 def isComment(element):
-    """
-    Check if the given element is an XML comment.
-    """
     return isinstance(element, etree._Comment)
 
+
 def attribLength(element):
-    """
-    Calculate the total length of the attributes in an element.
-    For each attribute, count the key, quotes, equals sign, and value.
-    """
     total = 0
     for k, v in element.items():
         # KEY="VALUE"
@@ -76,11 +67,8 @@ def attribLength(element):
     total += len(element.attrib) - 1
     return total
 
+
 def elementLen(element):
-    """
-    Estimate the length of an element's start tag (including its attributes).
-    This is used to decide whether to print attributes inline or vertically.
-    """
     total = 2  # Open close
     total += len(element.tag)
     if element.attrib:
@@ -89,27 +77,20 @@ def elementLen(element):
         total += 2  # space and slash
     return total
 
-class PrettyPrinter():
-    """
-    Class to handle the prettification of XML content.
-    This class not only provides methods for printing XML elements
-    in a prettified format, but also methods to parse and reformat
-    an XML file directly.
-    """
-    def __init__(self, stream=sys.stdout, indent='  ', maxwidth=100, maxgrouplevel=1):
-        self.stream = stream      # Output stream (can be a file, StringIO, etc.)
-        self.indent = indent      # String used for indentation (2 spaces)
-        self.maxwidth = maxwidth  # Maximum width for a single line
-        self.maxgrouplevel = maxgrouplevel  # Maximum depth to group elements on one line
-        
-        # Specific ordering for top-level elements
-        self.top_level_order = TOP_LEVEL_ORDER
 
-    def print(self, text='', end='\n'):
-        """
-        Write text to the output stream with optional end character.
-        """
-        self.stream.write(text + end)
+class PrettyPrinter():
+    def __init__(self,
+                 stream=sys.stdout,
+                 indent='  ',
+                 maxwidth=100,
+                 maxgrouplevel=1):
+        self.stream = stream
+        self.indent = indent
+        self.maxwidth = maxwidth
+        self.maxgrouplevel = maxgrouplevel
+
+    def print(self, text=''):
+        self.stream.write(text + '\n')
 
     def sort_attributes(self, element):
         """
@@ -133,7 +114,7 @@ class PrettyPrinter():
 
     def fmtAttrH(self, element):
         """
-        Format element attributes for inline (horizontal) display.
+        Format attributes horizontally with sorted order.
         
         Args:
             element (etree._Element): XML element to format
@@ -145,7 +126,7 @@ class PrettyPrinter():
 
     def fmtAttrV(self, element, level):
         """
-        Format element attributes for vertical display, with indentation.
+        Format attributes vertically with sorted order.
         
         Args:
             element (etree._Element): XML element to format
@@ -160,68 +141,47 @@ class PrettyPrinter():
         )
 
     def printXMLDeclaration(self, root):
-        """
-        Print the XML declaration at the beginning of the file.
-        """
-        self.print('<?xml version="{}" encoding="{}"?>'.format(
+        self.print('<?xml version="{}" encoding="{}" ?>'.format(
             root.docinfo.xml_version, root.docinfo.encoding))
 
     def printRoot(self, root):
-        """
-        Print the entire XML document starting from the root element.
-        """
         self.printXMLDeclaration(root)
-        self.print()  # Add an extra newline after XML declaration
         self.printElement(root.getroot(), level=0)
 
     def printTagStart(self, element, level):
-        """
-        Print the start tag of an element with precise formatting.
-        """
-        assert isinstance(element, etree._Element)
-        # Always use self-closing tags for empty elements
-        if not element.getchildren() and element.attrib:
-            self.print("{}<{} {}>".format(self.indent * level, element.tag, self.fmtAttrH(element)))
-        elif not element.getchildren():
-            self.print("{}<{} />".format(self.indent * level, element.tag))
-        else:
-            # For non-empty elements, use traditional open/close tags
-            if element.attrib:
-                self.print("{}<{} {}>".format(self.indent * level, element.tag, self.fmtAttrH(element)))
+        assert (isinstance(element, etree._Element))
+        if element.attrib:
+            if elementLen(element) + len(self.indent) * level <= self.maxwidth:
+                self.print("{}<{} {}>".format(self.indent * level, element.tag,
+                                              self.fmtAttrH(element)))
             else:
-                self.print("{}<{}>".format(self.indent * level, element.tag))
+                self.print("{}<{}".format(self.indent * level, element.tag))
+                self.print("{}>".format(self.fmtAttrV(element, level)))
+        else:
+            self.print("{}<{}>".format(self.indent * level, element.tag))
 
     def printTagEnd(self, element, level):
-        """
-        Print the end tag of an element.
-        """
-        assert isinstance(element, etree._Element)
-        # Only print end tag for non-empty elements
-        if element.getchildren():
-            self.print("{}</{}>".format(self.indent * level, element.tag))
+        assert (isinstance(element, etree._Element))
+        self.print("{}</{}>".format(self.indent * level, element.tag))
 
     def printTagEmpty(self, element, level):
-        """
-        Print an empty element with precise self-closing tag formatting.
-        """
-        assert isinstance(element, etree._Element)
+        assert (isinstance(element, etree._Element))
         if element.attrib:
-            self.print("{}<{} {} />".format(self.indent * level, element.tag, self.fmtAttrH(element)))
+            if elementLen(element) + len(self.indent) * level <= self.maxwidth:
+                self.print("{}<{} {} />".format(self.indent * level,
+                                                element.tag,
+                                                self.fmtAttrH(element)))
+            else:
+                self.print("{}<{}".format(self.indent * level, element.tag))
+                self.print("{} />".format(self.fmtAttrV(element, level)))
         else:
             self.print("{}<{} />".format(self.indent * level, element.tag))
 
     def printComment(self, element, level):
-        """
-        Print an XML comment.
-        """
-        assert isinstance(element, etree._Comment)
+        assert (isinstance(element, etree._Comment))
         self.print(self.indent * level + str(element))
 
     def printElement(self, element, level):
-        """
-        Recursively print an XML element and its children in prettified format.
-        """
-        # If the element is a comment, print it and return.
         if isinstance(element, etree._Comment):
             self.printComment(element, level=level)
             return
@@ -240,7 +200,7 @@ class PrettyPrinter():
             return
 
         # Sort children based on the predefined order
-        sorted_children = sorted(element.getchildren(), key=lambda elem: self.custom_sort_key(elem, TOP_LEVEL_ORDER))
+        sorted_children = sorted(element.getchildren(), key=lambda elem: custom_sort_key(elem, TOP_LEVEL_ORDER))
 
         last = len(sorted_children)
         for i, group in enumerate(sorted_children, start=1):
@@ -250,7 +210,7 @@ class PrettyPrinter():
                 # Sort participant's children based on the defined order
                 sorted_participant_children = sorted(
                     group.getchildren(), 
-                    key=lambda child: self.custom_sort_key(child, PARTICIPANT_ORDER)
+                    key=lambda child: custom_sort_key(child, PARTICIPANT_ORDER)
                 )
                 
                 # Separate different types of elements
@@ -268,7 +228,7 @@ class PrettyPrinter():
                 
                 # Construct participant tag with attributes
                 participant_tag = "<{}".format(group.tag)
-                for attr, value in self.sort_attributes(group):
+                for attr, value in group.items():
                     participant_tag += ' {}="{}"'.format(attr, value)
                 participant_tag += ">"
                 
@@ -293,12 +253,25 @@ class PrettyPrinter():
                 
                 # Print mapping elements with multi-line formatting
                 for mapping_elem in mapping_elements:
-                    # Check if the mapping element has multiple attributes
+                    # Check if the mapping element has a basis-function child
+                    has_basis_function = any('basis-function:' in str(child.tag) for child in mapping_elem.getchildren())
+                    
+                    # Print the mapping element
                     if len(mapping_elem.items()) > 2:
                         self.print("{}<{}".format(self.indent * (level + 1), mapping_elem.tag))
                         for k, v in self.sort_attributes(mapping_elem):
                             self.print("{}{}=\"{}\"".format(self.indent * (level + 2), k, v))
-                        self.print("{} />".format(self.indent * (level + 1)))
+                        
+                        # Add basis-function child if it exists in the original
+                        if has_basis_function:
+                            self.print("{}>".format(self.indent * (level + 1)))
+                            for child in mapping_elem.getchildren():
+                                if 'basis-function:' in str(child.tag):
+                                    self.printElement(child, level + 2)
+                            self.print("{}</{}>"
+                                       .format(self.indent * (level + 1), mapping_elem.tag))
+                        else:
+                            self.print("{} />".format(self.indent * (level + 1)))
                     else:
                         # Single-line formatting for simple mappings
                         self.printElement(mapping_elem, level + 1)
@@ -333,7 +306,7 @@ class PrettyPrinter():
                         exchange_elements.append(child)
                     elif tag in CONVERGENCE_MEASURE_TAGS:
                         convergence_elements.append(child)
-                    elif tag.startswith('acceleration'):
+                    elif tag.startswith('acceleration:'):
                         acceleration_elements.append(child)
                     else:
                         other_elements.append(child)
@@ -346,18 +319,22 @@ class PrettyPrinter():
                     elem for elem in other_elements 
                     if str(elem.tag) in ['participants', 'max-time', 'time-window-size']
                 ]
+                # Print initial elements first
                 for child in initial_elements:
                     self.printElement(child, level + 1)
+                    # Remove the printed elements from the list
                     other_elements.remove(child)
-
-                if initial_elements:
-                    self.print()
+                
+                if other_elements:
+                    if initial_elements:
+                        self.print()
                     # Print all other elements
                     for child in other_elements:
                         self.printElement(child, level + 1)
                 
                 # Print convergence measures
                 if convergence_elements:
+                    # Add newline before convergence measures if there are initial elements
                     if initial_elements or other_elements:
                         self.print()
                     for conv in convergence_elements:
@@ -372,7 +349,7 @@ class PrettyPrinter():
                 
                 # Print acceleration elements
                 if acceleration_elements:
-                    if exchange_elements or convergence_elements or max_iterations or initial_elements or other_elements:
+                    if exchange_elements or convergence_elements or initial_elements or other_elements:
                         self.print()
                     for child in acceleration_elements:
                         self.printElement(child, level + 1)
@@ -393,6 +370,7 @@ class PrettyPrinter():
             # Add an extra newline between top-level groups
             if i < last:
                 self.print()
+
 
     @staticmethod
     def parse_xml(content):
