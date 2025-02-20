@@ -6,6 +6,8 @@ class Logger:
     def __init__(self) -> None:
         """ Custom logger"""
         self.root_generated = Path(__file__).parent
+        self._errors = []
+        self._warnings = []
 
     def _log(self, msg: str, level: str, color: str, symbol: str) -> None:
         """
@@ -30,7 +32,26 @@ class Logger:
     def warning(self, msg: str) -> None:
         """Logs a warning message."""
         self._log(msg, "WARNING", "yellow", "⚠️")
+        self._warnings.append(msg)
 
     def error(self, msg: str) -> None:
         """Logs an error message."""
         self._log(msg, "ERROR", "red", "❌")
+        self._errors.append(msg)
+
+    def has_errors(self) -> bool:
+        """Check if any errors have been logged."""
+        return len(self._errors) > 0
+
+    def has_warnings(self) -> bool:
+        """Check if any warnings have been logged."""
+        return len(self._warnings) > 0
+
+    def get_warnings(self) -> list:
+        """Retrieve logged warnings."""
+        return self._warnings
+
+    def clear_log_state(self) -> None:
+        """Clear all logged errors and warnings."""
+        self._errors.clear()
+        self._warnings.clear()
