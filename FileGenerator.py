@@ -294,15 +294,15 @@ def main():
     
     # Handle output based on verbose mode and log state
     if not args.verbose:
-        print("\033c", end="") # clear the terminal output
         if not fileGenerator.logger.has_errors():
+            print("\033c", end="") # clear the terminal output
             # No errors, show success message
             fileGenerator.logger.success("Everything worked. You can find the generated files at: " + str(fileGenerator.structure.generated_root))
+            # Always show warnings if any exist
+            if fileGenerator.logger.has_warnings():
+                for warning in fileGenerator.logger.get_warnings():
+                    fileGenerator.logger.warning(warning)
         
-        # Always show warnings if any exist
-        if fileGenerator.logger.has_warnings():
-            for warning in fileGenerator.logger.get_warnings():
-                fileGenerator.logger.warning(warning)
     
 
 
