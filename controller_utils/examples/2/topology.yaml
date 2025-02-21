@@ -12,15 +12,15 @@ participants:
         dimensionality: 2
 
 exchanges:
-    - from: Fluid
+    - from: Solid
       from-patch: interface
-      to: Solid
+      to: Fluid
       to-patch: surface
       data: HeatTransfer # Fluid reads heat flux
       type: strong
-    - from: Solid
+    - from: Fluid
       from-patch: surface
-      to: Fluid
+      to: Solid
       to-patch: interface
       data: Temperature  # Solid reads temperature
       type: strong
