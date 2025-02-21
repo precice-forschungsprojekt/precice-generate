@@ -19,6 +19,7 @@ class UI_UserInput(object):
         self.sim_info = UI_SimulationInfo()
         self.participants = {} # empty participants stored as a dictionary
         self.couplings = []    # empty coupling list
+        self.exchanges = []    # empty exchanges list
         pass
 
     def init_from_yaml(self, etree, mylog: UT_PCErrorLogging):
@@ -68,6 +69,9 @@ class UI_UserInput(object):
 
             # --- Parse couplings from exchanges ---
             exchanges_list = etree["exchanges"]
+            # Save full exchange details
+            self.exchanges = exchanges_list.copy()
+
             # Group exchanges by unique participant pairs
             groups = {}
             for exchange in exchanges_list:
