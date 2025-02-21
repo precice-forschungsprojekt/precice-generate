@@ -66,7 +66,7 @@ class PS_CouplingScheme(object):
             pass
         return coupling_scheme
 
-    def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str, ui_config:UI_UserInput):
+    def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
         """ Writes to the XML the exchange list """
         # select the solver with minimal complexity
         simple_solver = None
@@ -138,15 +138,9 @@ class PS_CouplingScheme(object):
                         coupled_mesh_name = mesh
                         break
 
-            
-            # If from_s or to_s are not set, search exchanges in ui_config
-            if not from_s or not to_s:
-                for exchange in ui_config.exchanges:
-                    if exchange.get('data') == q_name:
-                        from_s = exchange.get('from', from_s)
-                        to_s = exchange.get('to', to_s)
-                        break
-            
+            # the from and to attributes
+            from_s = q.exchange.get('from')
+            to_s = q.exchange.get('to')
             exchange_mesh_name = q.source_mesh_name
             
             if coupled_mesh_name:
@@ -186,7 +180,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
         self.Dt = simulation_conf.Dt
         pass
 
-    def write_precice_xml_config(self, tag:etree, config, ui_config:UI_UserInput): # config: PS_PreCICEConfig
+    def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-explicit" )
 
@@ -195,7 +189,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
         i = etree.SubElement(coupling_scheme, "time-window-size", attr)
 
         # write out the exchange but not the convergence (if empty it will not be written)
-        self.write_exchange_and_convergance(config, coupling_scheme, "", ui_config)
+        self.write_exchange_and_convergance(config, coupling_scheme, "")
 
 
 class PS_ImplicitCoupling(PS_CouplingScheme):
@@ -227,7 +221,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
 
         pass
 
-    def write_precice_xml_config(self, tag:etree, config, ui_config:UI_UserInput): # config: PS_PreCICEConfig
+    def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
 
@@ -238,7 +232,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         #i = etree.SubElement(coupling_scheme, "extrapolation-order", value=str(self.extrapolation_order))
 
         # write out the exchange and the convergance rate
-        self.write_exchange_and_convergance(config, coupling_scheme, str(self.relativeConverganceEps), ui_config)
+        self.write_exchange_and_convergance(config, coupling_scheme, str(self.relativeConverganceEps))
 
         # finally we write out the post processing...
         self.postProcessing.write_precice_xml_config(coupling_scheme, config, self)
