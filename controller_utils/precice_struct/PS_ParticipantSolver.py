@@ -137,7 +137,7 @@ class PS_ParticipantSolver(object):
         """ makes a change heat fluid solver from the participant """
         #print("CHT FLUID")
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
-                                    ["HeatTransfer", "Temperature"], ["HeatTransfer", "Temperature"])
+                                    ["HeatTransfer"], ["Temperature"])
         # set the type of the participant
         self.solver_domain = SolverDomain.Fluid
         self.nature = SolverNature.TRANSIENT
@@ -147,7 +147,7 @@ class PS_ParticipantSolver(object):
         """ makes a change heat structure solver from the participant """
         #print("CHT STRUCTURE")
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
-                                    ["HeatTransfer", "Temperature"], ["HeatTransfer", "Temperature"])
+                                    ["Temperature"], ["HeatTransfer"])
         # set the type of the participant
         self.solver_domain = SolverDomain.Solid
         self.nature = SolverNature.TRANSIENT

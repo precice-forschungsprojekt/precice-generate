@@ -263,7 +263,7 @@ def main():
         type=Path, 
         required=False, 
         help="Input topology.yaml file",
-        default=Path("controller_utils/examples/1/topology.yaml")
+        default=Path("controller_utils/examples/2/topology.yaml")
     )
     parser.add_argument(
         "-o", "--output-path",
