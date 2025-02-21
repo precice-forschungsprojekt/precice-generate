@@ -150,10 +150,16 @@ class PS_CouplingScheme(object):
                     to_s = exchange.get('to')
             
             if coupled_mesh_name:
-                if solver.name != simple_solver.name:
-                    exchange_mesh_name = coupled_mesh_name
+                if len(coupled_meshes) < 2:
+                    if solver.name != simple_solver.name:
+                        exchange_mesh_name = coupled_mesh_name
+                    else:
+                        exchange_mesh_name = coupled_mesh_name or q.source_mesh_name
                 else:
-                    exchange_mesh_name = coupled_mesh_name or q.source_mesh_name
+                    # multiple meshes use simplest solver approach
+                    exchange_mesh_name = q.source_mesh_name
+                    if solver.name != simple_solver.name:
+                        exchange_mesh_name = other_mesh_name
             else:
                 if solver.name != simple_solver.name:
                     exchange_mesh_name = other_mesh_name
