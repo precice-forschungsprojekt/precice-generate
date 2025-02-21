@@ -16,7 +16,7 @@ exchanges:
       from-patch: interface
       to: Solid
       to-patch: surface
-      data: Heat-Flux  # Fluid reads heat flux
+      data: HeatTransfer # Fluid reads heat flux
       type: strong
     - from: Solid
       from-patch: surface
