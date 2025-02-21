@@ -297,7 +297,7 @@ def main():
         print("\033c", end="") # clear the terminal output
         if not fileGenerator.logger.has_errors():
             # No errors, show success message
-            fileGenerator.logger.success("Everything worked. You can find the generated files at: " + str(fileGenerator.structure.root))
+            fileGenerator.logger.success("Everything worked. You can find the generated files at: " + str(fileGenerator.structure.generated_root))
         
         # Always show warnings if any exist
         if fileGenerator.logger.has_warnings():
