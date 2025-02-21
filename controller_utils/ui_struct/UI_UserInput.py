@@ -19,6 +19,7 @@ class UI_UserInput(object):
         self.sim_info = UI_SimulationInfo()
         self.participants = {} # empty participants stored as a dictionary
         self.couplings = []    # empty coupling list
+        self.exchanges = []    # list to store exchange details
         pass
 
     def init_from_yaml(self, etree, mylog: UT_PCErrorLogging):
@@ -54,6 +55,10 @@ class UI_UserInput(object):
                         # Mixed types, default to weak
                         #mylog.rep_error("Mixed exchange types detected. Defaulting to 'weak'.")
                         self.coupling_type = 'weak'
+            
+            # Store exchanges 
+            if 'exchanges' in etree:
+                self.exchanges = etree['exchanges']
             
             # --- Parse participants ---
             self.participants = {}
