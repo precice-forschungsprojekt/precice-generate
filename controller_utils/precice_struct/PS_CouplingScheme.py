@@ -138,23 +138,12 @@ class PS_CouplingScheme(object):
                         coupled_mesh_name = mesh
                         break
 
-            # if coupled_mesh_name is None:
-            #     print("No coupled mesh found for quantity " + q_name + " between solvers " + solver.name + " and " + other_solver_for_coupling.name)
-
-            # # Use the provide and receive meshes from the config
-            # print(solver.name + " provides: " + str(config.solver_provide_meshes[solver.name]))
-            # print(solver.name + " receives: " + str(config.solver_receive_meshes[solver.name]))
-            
-            # print(other_solver_for_coupling.name + " provides: " + str(config.solver_provide_meshes[other_solver_for_coupling.name]))
-            # print(other_solver_for_coupling.name + " receives: " + str(config.solver_receive_meshes[other_solver_for_coupling.name]))
-
             # the from and to attributes
             from_s = "___"
             to_s = "__"
             exchange_mesh_name = q.source_mesh_name
             
             if coupled_mesh_name:
-                # print("########################################")
                 if solver.name != simple_solver.name:
                     from_s = solver.name
                     to_s = simple_solver.name
