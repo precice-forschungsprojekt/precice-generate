@@ -149,19 +149,28 @@ class PS_CouplingScheme(object):
             # print(other_solver_for_coupling.name + " receives: " + str(config.solver_receive_meshes[other_solver_for_coupling.name]))
 
             # the from and to attributes
-            from_s = solver.name
-            to_s = other_solver_for_coupling.name
+            from_s = "___"
+            to_s = "__"
             exchange_mesh_name = q.source_mesh_name
             
             if coupled_mesh_name:
+                # print("########################################")
                 if solver.name != simple_solver.name:
+                    from_s = solver.name
+                    to_s = simple_solver.name
                     exchange_mesh_name = coupled_mesh_name
                 else:
+                    from_s = solver.name
+                    to_s = other_solver_for_coupling.name
                     exchange_mesh_name = coupled_mesh_name or q.source_mesh_name
             else:
                 if solver.name != simple_solver.name:
+                    from_s = solver.name
+                    to_s = simple_solver.name
                     exchange_mesh_name = other_mesh_name
                 else:
+                    from_s = solver.name
+                    to_s = other_solver_for_coupling.name
                     exchange_mesh_name = q.source_mesh_name
 
             e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
