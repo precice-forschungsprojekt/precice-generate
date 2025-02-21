@@ -106,19 +106,19 @@ class PS_CouplingScheme(object):
             # Get all source meshes from quantities
             solver_source_meshes = set()
             for q_name in solver.quantities_read:
-                q = solver.quantities_read[q_name]
-                solver_source_meshes.add(q.source_mesh_name)
+                d = solver.quantities_read[q_name]
+                solver_source_meshes.add(d.source_mesh_name)
             for q_name in solver.quantities_write:
-                q = solver.quantities_write[q_name]
-                solver_source_meshes.add(q.source_mesh_name)
+                d = solver.quantities_write[q_name]
+                solver_source_meshes.add(d.source_mesh_name)
 
             other_solver_source_meshes = set()
             for q_name in other_solver_for_coupling.quantities_read:
-                q = other_solver_for_coupling.quantities_read[q_name]
-                other_solver_source_meshes.add(q.source_mesh_name)
+                d = other_solver_for_coupling.quantities_read[q_name]
+                other_solver_source_meshes.add(d.source_mesh_name)
             for q_name in other_solver_for_coupling.quantities_write:
-                q = other_solver_for_coupling.quantities_write[q_name]
-                other_solver_source_meshes.add(q.source_mesh_name)
+                d = other_solver_for_coupling.quantities_write[q_name]
+                other_solver_source_meshes.add(d.source_mesh_name)
 
             # print("Current solver " + solver.name + " source meshes: " + str(solver_source_meshes))
             # print("Other solver " + other_solver_for_coupling.name + " source meshes: " + str(other_solver_source_meshes))
@@ -161,6 +161,14 @@ class PS_CouplingScheme(object):
                     from_s = solver.name
                     to_s = other_solver_for_coupling.name
                     exchange_mesh_name = q.source_mesh_name
+
+            if solver.name != simple_solver.name:
+                from_s = solver.name
+                to_s = simple_solver.name
+                exchange_mesh_name = other_mesh_name
+            else:
+                from_s = solver.name
+                to_s = other_solver_for_coupling.name
 
             e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
                                  ,from___ = from_s, to=to_s)
