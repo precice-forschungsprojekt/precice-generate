@@ -143,8 +143,6 @@ class PS_CouplingScheme(object):
             to_s = "__"
             exchange_mesh_name = q.source_mesh_name
 
-            #IDEA USE MAPPING READ AND FROM AS EXCHANGE MESH => no
-
 
             for exchange in config.exchanges:
                 if exchange.get('data') == q_name:
@@ -164,9 +162,12 @@ class PS_CouplingScheme(object):
 
 
            #old code
-            exchange_mesh_name = q.source_mesh_name
-            if solver.name != simple_solver.name:
-                exchange_mesh_name = other_mesh_name
+            # exchange_mesh_name = q.source_mesh_name
+            # print(q.source_mesh_name)
+            # print(solver.name)
+            # print(simple_solver.name)
+            # if solver.name != simple_solver.name:
+            #     exchange_mesh_name = other_mesh_name
 
             e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
                                  ,from___ = from_s, to=to_s)
