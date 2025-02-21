@@ -143,10 +143,6 @@ class PS_CouplingScheme(object):
             to_s = "__"
             exchange_mesh_name = q.source_mesh_name
 
-            #old controller code
-            if solver.name != simple_solver.name:
-                exchange_mesh_name = other_mesh_name
-
 
             for exchange in config.exchanges:
                 if exchange.get('data') == q_name:
@@ -163,6 +159,11 @@ class PS_CouplingScheme(object):
                     exchange_mesh_name = other_mesh_name
                 else:
                     exchange_mesh_name = q.source_mesh_name
+
+
+            #old controller code
+            if solver.name != simple_solver.name:
+                exchange_mesh_name = other_mesh_name
 
             e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
                                  ,from___ = from_s, to=to_s)
