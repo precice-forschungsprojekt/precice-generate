@@ -1,0 +1,26 @@
+coupling-scheme:
+    max-time: 1.0
+    time-window-size: 1e-3  
+    relative-accuracy: 1e-4  
+
+participants:
+    Fluid: 
+        solver: OpenFOAM
+        dimensionality: 2
+    Solid: 
+        solver: FEniCS
+        dimensionality: 2
+
+exchanges:
+    - from: Fluid
+      from-patch: interface
+      to: Solid
+      to-patch: surface
+      data: Heat-Flux  # Fluid reads heat flux
+      type: strong
+    - from: Solid
+      from-patch: surface
+      to: Fluid
+      to-patch: interface
+      data: Temperature  # Solid reads temperature
+      type: strong
