@@ -123,6 +123,7 @@ class PS_CouplingScheme(object):
             # print("Current solver " + solver.name + " source meshes: " + str(solver_source_meshes))
             # print("Other solver " + other_solver_for_coupling.name + " source meshes: " + str(other_solver_source_meshes))
 
+            coupled_meshes = []
             for mesh in solver_mesh_names:
                 # Check if this mesh is shared by both solvers
                 if mesh in other_solver_source_meshes:
@@ -134,9 +135,8 @@ class PS_CouplingScheme(object):
 
                     # Check if meshes are provided/received in complementary ways
                     if (is_solver_providing_mesh and is_other_solver_receiving_mesh) or \
-                       (is_solver_receiving_mesh and is_other_solver_providing_mesh):
-                        coupled_mesh_name = mesh
-                        break
+                    (is_solver_receiving_mesh and is_other_solver_providing_mesh):
+                        coupled_meshes.append(mesh)
 
             # the from and to attributes
             from_s = "___"
