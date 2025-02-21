@@ -36,8 +36,10 @@ class PS_ParticipantSolver(object):
     def __init__(self, participant: UI_Participant, coupling: UI_Coupling, conf ): # conf:PS_PreCICEConfig
         """ Ctor """
         self.solver_domain = SolverDomain.NotDefined
-        self.dim = SolverDimension.p3D
-        self.dimensionality = 3
+        
+        # Use set_dimensionality method to set solver dimension
+        self.set_dimensionality(participant.dimensionality)
+        
         self.nature = SolverNature.STATIONARY
         self.quantities_read = {}  # list of quantities that are read by this solver
         self.quantities_write = {} # list of quantities that are writen by this solver
