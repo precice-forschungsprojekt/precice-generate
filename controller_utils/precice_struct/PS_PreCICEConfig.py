@@ -19,6 +19,7 @@ class PS_PreCICEConfig(object):
         self.solvers = {} # empty dictionary with the solvers
         self.meshes = {} # dictionary with the meshes of the coupling scenario
         self.coupling_quantities = {} # ditionary with the coupling quantities
+        self.exchanges = []    # list to store full exchange details
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -96,6 +97,8 @@ class PS_PreCICEConfig(object):
 
     def create_config(self, user_input: UI_UserInput):
         """Creates the main preCICE config from the UI structure."""
+
+        self.exchanges = user_input.exchanges.copy()
 
         # participants
         for participant_name in user_input.participants:
