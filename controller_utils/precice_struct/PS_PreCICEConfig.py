@@ -311,8 +311,8 @@ class PS_PreCICEConfig(object):
                 for other_solver_name in list_of_solvers_with_higher_complexity:
                     other_solver = list_of_solvers_with_higher_complexity[other_solver_name]
                     # we also add the M2N construct that is mandatory for the configuration
-                    m2n_tag = etree.SubElement( precice_configuration_tag, "m2n:sockets", acceptor = other_solver_name,
-                                                connector = solver_name, exchange___directory = "..")
+                    m2n_tag = etree.SubElement( precice_configuration_tag, "m2n:sockets", acceptor = solver_name,
+                                                connector = other_solver_name, exchange___directory = "..")
                 pass
 
         # 4 coupling scheme
