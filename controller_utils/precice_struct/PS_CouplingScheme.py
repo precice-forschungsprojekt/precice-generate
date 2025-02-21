@@ -142,6 +142,11 @@ class PS_CouplingScheme(object):
             from_s = "___"
             to_s = "__"
             exchange_mesh_name = q.source_mesh_name
+
+            for exchange in config.exchanges:
+                if exchange.get('data') == q_name:
+                    from_s = exchange.get('from___')
+                    to_s = exchange.get('to')
             
             if coupled_mesh_name:
                 if solver.name != simple_solver.name:
