@@ -205,17 +205,28 @@ class PS_PreCICEConfig(object):
                 quant = mesh.quantities[quantities_name]
                 quant_tag = etree.SubElement(mesh_tag, "use-data", name=quant.instance_name)
 
+        # Initialize dictionaries to store provide and receive meshes
+        self.solver_provide_meshes = {}
+        self.solver_receive_meshes = {}
+
         # 3 participants
         for solver_name in self.solvers:
             solver = self.solvers[solver_name]
             solver_tag = etree.SubElement(precice_configuration_tag,
                                           "participant", name=solver.name)
 
+            # Initialize lists for this solver's provide and receive meshes
+            self.solver_provide_meshes[solver_name] = []
+            self.solver_receive_meshes[solver_name] = []
+
             # there are more then one meshes per participant
             for solvers_mesh_name in solver.meshes:
                 # print("Mesh=", solvers_mesh_name)
                 solver_mesh_tag = etree.SubElement(solver_tag,
                                               "provide-mesh", name=solvers_mesh_name)
+                # Save provided meshes
+                self.solver_provide_meshes[solver_name].append(solvers_mesh_name)
+
                 list_of_solvers_with_higher_complexity = {}
                 type_of_the_mapping = {} # for each solver for the mapping
                                         # we also save the type of mapping (conservative / consistent)
@@ -248,6 +259,11 @@ class PS_PreCICEConfig(object):
                                 solver_mesh_tag = etree.SubElement(solver_tag,
                                                                    "receive-mesh", name=q.source_mesh_name,
                                                                    from___=q.source_solver.name)
+                                # Save received meshes
+                                if solver_name not in self.solver_receive_meshes:
+                                    self.solver_receive_meshes[solver_name] = []
+                                if q.source_mesh_name not in self.solver_receive_meshes[solver_name]:
+                                    self.solver_receive_meshes[solver_name].append(q.source_mesh_name)
                                 used_meshes[q.source_mesh_name] = 1
                                 pass
                     pass
@@ -292,8 +308,8 @@ class PS_PreCICEConfig(object):
                 for other_solver_name in list_of_solvers_with_higher_complexity:
                     other_solver = list_of_solvers_with_higher_complexity[other_solver_name]
                     # we also add the M2N construct that is mandatory for the configuration
-                    m2n_tag = etree.SubElement( precice_configuration_tag, "m2n:sockets", connector = other_solver_name,
-                                                acceptor = solver_name, exchange___directory = "../")
+                    m2n_tag = etree.SubElement( precice_configuration_tag, "m2n:sockets", acceptor = other_solver_name,
+                                                connector = solver_name, exchange___directory = "..")
                 pass
 
         # 4 coupling scheme

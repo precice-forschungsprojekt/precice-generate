@@ -93,17 +93,95 @@ class PS_CouplingScheme(object):
                         if allm != q.source_mesh_name:
                             other_mesh_name = allm
 
+            # Determine the coupled mesh that both participants share
+            coupled_mesh_name = None
+
+            # Get mesh names for both solvers
+            solver_mesh_names = list(solver.meshes.keys())
+            other_solver_mesh_names = list(other_solver_for_coupling.meshes.keys())
+
+            #print("Current solver " + solver.name + " meshes: " + str(solver_mesh_names))
+            #print("Other solver " + other_solver_for_coupling.name + " meshes: " + str(other_solver_mesh_names))
+
+            # Get all source meshes from quantities
+            solver_source_meshes = set()
+            for q_name in solver.quantities_read:
+                q = solver.quantities_read[q_name]
+                solver_source_meshes.add(q.source_mesh_name)
+            for q_name in solver.quantities_write:
+                q = solver.quantities_write[q_name]
+                solver_source_meshes.add(q.source_mesh_name)
+
+            other_solver_source_meshes = set()
+            for q_name in other_solver_for_coupling.quantities_read:
+                q = other_solver_for_coupling.quantities_read[q_name]
+                other_solver_source_meshes.add(q.source_mesh_name)
+            for q_name in other_solver_for_coupling.quantities_write:
+                q = other_solver_for_coupling.quantities_write[q_name]
+                other_solver_source_meshes.add(q.source_mesh_name)
+
+            # print("Current solver " + solver.name + " source meshes: " + str(solver_source_meshes))
+            # print("Other solver " + other_solver_for_coupling.name + " source meshes: " + str(other_solver_source_meshes))
+
+            for mesh in solver_mesh_names:
+                # Check if this mesh is shared by both solvers
+                if mesh in other_solver_source_meshes:
+                    # Use the provide and receive meshes from the config
+                    is_solver_providing_mesh = mesh in config.solver_provide_meshes[solver.name]
+                    is_other_solver_receiving_mesh = mesh in config.solver_receive_meshes[other_solver_for_coupling.name]
+                    is_solver_receiving_mesh = mesh in config.solver_receive_meshes[solver.name]
+                    is_other_solver_providing_mesh = mesh in config.solver_provide_meshes[other_solver_for_coupling.name]
+
+                    # Check if meshes are provided/received in complementary ways
+                    if (is_solver_providing_mesh and is_other_solver_receiving_mesh) or \
+                       (is_solver_receiving_mesh and is_other_solver_providing_mesh):
+                        coupled_mesh_name = mesh
+                        break
+
+            # if coupled_mesh_name is None:
+            #     print("No coupled mesh found for quantity " + q_name + " between solvers " + solver.name + " and " + other_solver_for_coupling.name)
+
+            # # Use the provide and receive meshes from the config
+            # print(solver.name + " provides: " + str(config.solver_provide_meshes[solver.name]))
+            # print(solver.name + " receives: " + str(config.solver_receive_meshes[solver.name]))
+            
+            # print(other_solver_for_coupling.name + " provides: " + str(config.solver_provide_meshes[other_solver_for_coupling.name]))
+            # print(other_solver_for_coupling.name + " receives: " + str(config.solver_receive_meshes[other_solver_for_coupling.name]))
+
             # the from and to attributes
-            from_s = solver.name
-            to_s = other_solver_for_coupling.name
-            exchange_mesh_name = other_mesh_name if solver.name == simple_solver.name else q.source_mesh_name
+            from_s = "___"
+            to_s = "__"
+            exchange_mesh_name = q.source_mesh_name
+            
+            if coupled_mesh_name:
+                # print("########################################")
+                if solver.name != simple_solver.name:
+                    from_s = solver.name
+                    to_s = simple_solver.name
+                    exchange_mesh_name = coupled_mesh_name
+                else:
+                    from_s = solver.name
+                    to_s = other_solver_for_coupling.name
+                    exchange_mesh_name = coupled_mesh_name or q.source_mesh_name
+            else:
+                if solver.name != simple_solver.name:
+                    from_s = solver.name
+                    to_s = simple_solver.name
+                    exchange_mesh_name = other_mesh_name
+                else:
+                    from_s = solver.name
+                    to_s = other_solver_for_coupling.name
+                    exchange_mesh_name = q.source_mesh_name
 
-            e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name,
-                                from___=from_s, to=to_s)
-
+            e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
+                                 ,from___ = from_s, to=to_s)
+            
+            # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
                 c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
-                                    limit=relative_conv_str, mesh=exchange_mesh_name, data=q_name)
+                                 limit=relative_conv_str, mesh=exchange_mesh_name
+                                 ,data=q_name)
+            pass
 
 
 class PS_ExplicitCoupling(PS_CouplingScheme):
