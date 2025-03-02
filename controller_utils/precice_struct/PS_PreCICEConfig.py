@@ -213,6 +213,7 @@ class PS_PreCICEConfig(object):
         self.solver_receive_meshes = {}
 
         # 3 participants
+        m2n_pairs_added = set()
         for solver_name in self.solvers:
             solver = self.solvers[solver_name]
             solver_tag = etree.SubElement(precice_configuration_tag,
@@ -308,9 +309,9 @@ class PS_PreCICEConfig(object):
                                               constraint = mapping_string)
                     pass
                 # treat M2N communications with other solver
-                m2n_pairs_added = set()
                 for other_solver_name in list_of_solvers_with_higher_complexity:
-                    other_solver = list_of_solvers_with_higher_complexity[other_solver_name]
+                    if solver_name == other_solver_name:
+                        continue
                     # we also add the M2N construct that is mandatory for the configuration
                     # Check if this pair or its reverse has already been added
                     m2n_pair = tuple(sorted([solver_name, other_solver_name]))
