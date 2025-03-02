@@ -57,6 +57,9 @@ class StructureHandler:
 
             # Get the solver name from the participants
             solver_name = user_ui.participants[participant].solverName.lower()
+            #folder name starts with lowercase
+            participant = participant.lower()
+            
 
             # Create the participant folder with name-solver format
             participant_folder = self.generated_root / f"{participant}-{solver_name}"
