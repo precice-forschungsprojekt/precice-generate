@@ -299,7 +299,7 @@ class PS_PreCICEConfig(object):
                     mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction = "read",
                                                   from___ = other_solver_mesh_name, to= solvers_mesh_name,
                                                   constraint = mapping_string)
-                    mappings_read.append({
+                    self.mappings_read.append({
                         'other_solver_name': other_solver_name,
                         'from': other_solver_mesh_name,
                         'to': solvers_mesh_name,
@@ -314,7 +314,7 @@ class PS_PreCICEConfig(object):
                     mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction="write",
                                               from___ = solvers_mesh_name, to = other_solver_mesh_name,
                                               constraint = mapping_string)
-                    mappings_write.append({
+                    self.mappings_write.append({
                         'other_solver_name': other_solver_name,
                         'from': solvers_mesh_name,
                         'to': other_solver_mesh_name,
