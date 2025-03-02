@@ -150,7 +150,6 @@ class PS_CouplingScheme(object):
                     to_s = exchange.get('to')
             
 
-            #print out the mapping constraints matching up with the from to from here
             read_mappings = [m.copy() for m in config.mappings_read]
             for mapping in read_mappings:
                 mapping['from'] = mapping['from'].replace('-Mesh', '')
@@ -161,22 +160,7 @@ class PS_CouplingScheme(object):
                 mapping['from'] = mapping['from'].replace('-Mesh', '')
                 mapping['to'] = mapping['to'].replace('-Mesh', '')
 
-            # print(f"\nMapping Constraints for Exchange (From: {from_s}, To: {to_s}):")
-            # read_mappings = [m for m in solver.precice_config.mappings_read if 
-            #                  (m['from'] == from_s and m['to'] == to_s) or 
-            #                  (m['from'] == to_s and m['to'] == from_s)]
-            # for mapping in read_mappings:
-            #     print(f"Read Mapping - From: {mapping['from']}, To: {mapping['to']}, Constraint: {mapping['constraint']}")
-            
-            # write_mappings = [m for m in solver.precice_config.mappings_write if 
-            #                   (m['from'] == from_s and m['to'] == to_s) or 
-            #                   (m['from'] == to_s and m['to'] == from_s)]
-            # for mapping in write_mappings:
-            #     print(f"Write Mapping - From: {mapping['from']}, To: {mapping['to']}, Constraint: {mapping['constraint']}")
-            
-            # # If no mappings found, indicate that
-            # if not read_mappings and not write_mappings:
-            #     print("No matching mappings found for this exchange.")
+            #TODO print out the mapping constraints matching up with the from to from here
 
             ###
             if coupled_mesh_name:
