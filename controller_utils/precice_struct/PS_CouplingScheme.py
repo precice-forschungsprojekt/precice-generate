@@ -160,7 +160,7 @@ class PS_CouplingScheme(object):
                 mapping['from'] = mapping['from'].replace('-Mesh', '')
                 mapping['to'] = mapping['to'].replace('-Mesh', '')
 
-            #TODO print out the mapping constraints matching up with the from to from here
+            #TODO NOW we have the constraint and from to match up available
 
             ###
             if coupled_mesh_name:
