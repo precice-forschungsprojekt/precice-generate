@@ -151,7 +151,16 @@ class PS_CouplingScheme(object):
             
 
             #print out the mapping constraints matching up with the from to from here
-            # print(config.mappings_read)
+            read_mappings = [m.copy() for m in config.mappings_read]
+            for mapping in read_mappings:
+                mapping['from'] = mapping['from'].replace('-Mesh', '')
+                mapping['to'] = mapping['to'].replace('-Mesh', '')
+
+            write_mappings = [m.copy() for m in config.mappings_write]
+            for mapping in write_mappings:
+                mapping['from'] = mapping['from'].replace('-Mesh', '')
+                mapping['to'] = mapping['to'].replace('-Mesh', '')
+
             # print(f"\nMapping Constraints for Exchange (From: {from_s}, To: {to_s}):")
             # read_mappings = [m for m in solver.precice_config.mappings_read if 
             #                  (m['from'] == from_s and m['to'] == to_s) or 
