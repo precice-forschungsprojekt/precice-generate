@@ -20,6 +20,8 @@ class PS_PreCICEConfig(object):
         self.meshes = {} # dictionary with the meshes of the coupling scenario
         self.coupling_quantities = {} # ditionary with the coupling quantities
         self.exchanges = []    # list to store full exchange details
+        self.mappings_read = []
+        self.mappings_write = []
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -297,7 +299,13 @@ class PS_PreCICEConfig(object):
                     mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction = "read",
                                                   from___ = other_solver_mesh_name, to= solvers_mesh_name,
                                                   constraint = mapping_string)
-                    pass
+                    mappings_read.append({
+                        'other_solver_name': other_solver_name,
+                        'from': other_solver_mesh_name,
+                        'to': solvers_mesh_name,
+                        'constraint': mapping_string
+                    })
+                
                 # WRITES
                 for other_solver_name in list_of_solvers_with_higher_complexity_write:
                     other_solver = list_of_solvers_with_higher_complexity_write[other_solver_name]
@@ -306,7 +314,12 @@ class PS_PreCICEConfig(object):
                     mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction="write",
                                               from___ = solvers_mesh_name, to = other_solver_mesh_name,
                                               constraint = mapping_string)
-                    pass
+                    mappings_write.append({
+                        'other_solver_name': other_solver_name,
+                        'from': solvers_mesh_name,
+                        'to': other_solver_mesh_name,
+                        'constraint': mapping_string
+                    })
                 # treat M2N communications with other solver
                 for other_solver_name in list_of_solvers_with_higher_complexity:
                     other_solver = list_of_solvers_with_higher_complexity[other_solver_name]
