@@ -148,19 +148,9 @@ class PS_CouplingScheme(object):
                 if exchange.get('data') == q_name:
                     from_s = exchange.get('from')
                     to_s = exchange.get('to')
-            
 
             read_mappings = [m.copy() for m in config.mappings_read]
-            # for mapping in read_mappings:
-            #     mapping['from'] = mapping['from'].replace('-Mesh', '')
-            #     mapping['to'] = mapping['to'].replace('-Mesh', '')
-
             write_mappings = [m.copy() for m in config.mappings_write]
-
-            # for mapping in write_mappings:
-            #     mapping['from'] = mapping['from'].replace('-Mesh', '')
-            #     mapping['to'] = mapping['to'].replace('-Mesh', '')
-
 
             read_mapping = next((m for m in read_mappings if 
                                 (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh') ), None)
@@ -180,32 +170,9 @@ class PS_CouplingScheme(object):
             elif write_mapping and write_mapping['constraint'] == 'consistent':
                 exchange_mesh_name = write_mapping['from']
             else:
-                exchange_mesh_name = other_mesh_name
-
-            #     if len(coupled_meshes) < 2:
-            #         if solver.name != simple_solver.name:
-            #             exchange_mesh_name = coupled_mesh_name
-            #         else:
-            #             exchange_mesh_name = coupled_mesh_name or q.source_mesh_name
-            #     else:
-            #         # multiple meshes use simplest solver approach
-            #         exchange_mesh_name = q.source_mesh_name
-            #         if solver.name != simple_solver.name:
-            #             exchange_mesh_name = other_mesh_name
-            # else:
-            #     if solver.name != simple_solver.name:
-            #         exchange_mesh_name = other_mesh_name
-            #     else:
-            #         exchange_mesh_name = q.source_mesh_name
-
-
-           #old code
-            # exchange_mesh_name = q.source_mesh_name
-            # print(q.source_mesh_name)
-            # print(solver.name)
-            # print(simple_solver.name)
-            # if solver.name != simple_solver.name:
-            #     exchange_mesh_name = other_mesh_name
+                exchange_mesh_name = q.source_mesh_name
+                if solver.name != simple_solver.name:
+                    exchange_mesh_name = other_mesh_name
 
             e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
                                  ,from___ = from_s, to=to_s)
