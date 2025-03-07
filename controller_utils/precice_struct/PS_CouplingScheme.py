@@ -157,9 +157,6 @@ class PS_CouplingScheme(object):
             write_mapping = next((m for m in write_mappings if 
                                 (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
 
-            print(read_mapping)
-            print(write_mapping)
-
             # # Choose mesh based on mapping constraint
             if read_mapping and read_mapping['constraint'] == 'conservative':
                 exchange_mesh_name = read_mapping['to']
