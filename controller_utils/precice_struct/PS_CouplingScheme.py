@@ -151,39 +151,26 @@ class PS_CouplingScheme(object):
             
 
             read_mappings = [m.copy() for m in config.mappings_read]
-            read_mappings_no_mesh = [m.copy() for m in config.mappings_read]
-            for mapping in read_mappings_no_mesh:
-                mapping['from'] = mapping['from'].replace('-Mesh', '')
-                mapping['to'] = mapping['to'].replace('-Mesh', '')
+            # for mapping in read_mappings:
+            #     mapping['from'] = mapping['from'].replace('-Mesh', '')
+            #     mapping['to'] = mapping['to'].replace('-Mesh', '')
 
             write_mappings = [m.copy() for m in config.mappings_write]
-            write_mappings_no_mesh = [m.copy() for m in config.mappings_write]
-            for mapping in write_mappings_no_mesh:
-                mapping['from'] = mapping['from'].replace('-Mesh', '')
-                mapping['to'] = mapping['to'].replace('-Mesh', '')
 
-            #TODO NOW we have the constraint and from to match up available
+            # for mapping in write_mappings:
+            #     mapping['from'] = mapping['from'].replace('-Mesh', '')
+            #     mapping['to'] = mapping['to'].replace('-Mesh', '')
 
-            print(coupled_meshes)
-            print("BEFORE ##########")
-            print(read_mappings)
-            print(write_mappings)
-            print("After ##########")
 
-            ###
-            # if coupled_mesh_name:
-            # Find the mapping constraint for this exchange
             read_mapping = next((m for m in read_mappings if 
-                                (m['from'] == from_s and m['to'] == to_s) or 
-                                (m['from'] == to_s and m['to'] == from_s)), None)
+                                (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh') ), None)
             write_mapping = next((m for m in write_mappings if 
-                                (m['from'] == from_s and m['to'] == to_s) or 
-                                (m['from'] == to_s and m['to'] == from_s)), None)
+                                (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
 
             print(read_mapping)
             print(write_mapping)
-            
-            # Choose mesh based on mapping constraint
+
+            # # Choose mesh based on mapping constraint
             if read_mapping and read_mapping['constraint'] == 'conservative':
                 exchange_mesh_name = read_mapping['to']
             elif read_mapping and read_mapping['constraint'] == 'consistent':
@@ -193,7 +180,7 @@ class PS_CouplingScheme(object):
             elif write_mapping and write_mapping['constraint'] == 'consistent':
                 exchange_mesh_name = write_mapping['from']
             else:
-                exchange_mesh_name = coupled_mesh_name
+                exchange_mesh_name = other_mesh_name
 
             #     if len(coupled_meshes) < 2:
             #         if solver.name != simple_solver.name:
