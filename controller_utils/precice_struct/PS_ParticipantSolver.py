@@ -79,22 +79,23 @@ class PS_ParticipantSolver(object):
         source_mesh_name = conf.get_mesh_name_by_participants(self.name, other_solver_name)
         other_mesh_name = conf.get_mesh_name_by_participants(other_solver_name, self.name)
         self.create_mesh_for_coupling(conf, other_solver_name )
-        # add reading quantities
-        for i in r_list:
-            r = conf.get_coupling_quantitiy(i, other_mesh_name, boundary_code1, self, False)
-            conf.add_quantity_to_mesh(other_mesh_name, r)
-            conf.add_quantity_to_mesh(source_mesh_name, r)
-            #print(" add r=", r.instance_name, " M=", other_mesh_name)
-            self.quantities_read[r.name] = r
-            pass
-        # add writing quantities
-        for i in w_list:
-            w = conf.get_coupling_quantitiy(i, source_mesh_name, boundary_code2, self, True)
-            conf.add_quantity_to_mesh(other_mesh_name, w)
-            conf.add_quantity_to_mesh(source_mesh_name, w)
-            #print(" add w=", w.instance_name, " M=", source_mesh_name)
-            self.quantities_write[w.name] = w
-            pass
+        
+        # Determine reading and writing quantities based on exchanges
+        for exchange in conf.exchanges:
+            if exchange['from'] == self.name:
+                # This participant is writing data
+                if exchange['data'] in w_list:
+                    w = conf.get_coupling_quantitiy(exchange['data'], source_mesh_name, boundary_code2, self, True)
+                    conf.add_quantity_to_mesh(other_mesh_name, w)
+                    conf.add_quantity_to_mesh(source_mesh_name, w)
+                    self.quantities_write[w.name] = w
+            elif exchange['to'] == self.name:
+                # This participant is reading data
+                if exchange['data'] in r_list:
+                    r = conf.get_coupling_quantitiy(exchange['data'], other_mesh_name, boundary_code1, self, False)
+                    conf.add_quantity_to_mesh(other_mesh_name, r)
+                    conf.add_quantity_to_mesh(source_mesh_name, r)
+                    self.quantities_read[r.name] = r
         pass
 
     def make_participant_fsi_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
@@ -136,6 +137,9 @@ class PS_ParticipantSolver(object):
     def make_participant_cht_fluid(self, conf, boundary_code1: str, boundary_code2: str, other_solver_name: str):
         """ makes a change heat fluid solver from the participant """
         #print("CHT FLUID")
+        print("Exchanges in config:")
+        for e in conf.exchanges:
+            print(e)
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["HeatTransfer", "Temperature"], ["HeatTransfer", "Temperature"])
         # set the type of the participant
