@@ -2,7 +2,14 @@ coupling-scheme:
     max-time: 1.0
     time-window-size: 0.1  
     relative-accuracy: 1e-4
-    max-iterations: 100  
+    max-iterations: 100
+    acceleration:
+      initial-relaxation: 0.1
+      max-useful-iteration: 10
+      time-window-reused: 5
+      filter:
+        type: QR2
+        limit: 1e-3
 
 participants:
     Dirichlet: 
