@@ -201,6 +201,12 @@
                     "data": {
                         "type": "string",
                         "description": "Type of data being exchanged",
+                        "minLength": 1,
+                        "maxLength": 50
+                    },
+                    "data-category": {
+                        "type": "string",
+                        "description": "Category of the data being exchanged",
                         "enum": [
                             "Force", "Displacement", 
                             "Temperature", "HeatTransfer", 
@@ -221,6 +227,11 @@
                             "type": "object",
                             "properties": {
                                 "name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 50
+                                },
+                                "category": {
                                     "type": "string",
                                     "enum": [
                                         "Force", "Displacement", 
@@ -249,6 +260,11 @@
                             "properties": {
                                 "name": {
                                     "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 50
+                                },
+                                "category": {
+                                    "type": "string",
                                     "enum": [
                                         "Force", "Displacement", 
                                         "Temperature", "HeatTransfer", 
@@ -269,7 +285,7 @@
                         }
                     }
                 },
-                "required": ["from", "from-patch", "to", "to-patch", "data", "type"]
+                "required": ["from", "from-patch", "to", "to-patch", "data", "data-category", "type"]
             }
         }
     },

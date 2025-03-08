@@ -15,34 +15,38 @@ class QuantityCouple(object):
         self.mapping_string = "ERROR" # conservative or consistent
         self.dim = 3 # the dimension of the quantity
         self.is_consistent = True # True if this quantity is consistent Falso if it is conservative
+        self.category = "None" # The category of the quantity (Force, Displacement, etc.)
         pass
 
 
-def get_quantity_object(name:str, bc:str, instance_name:str):
+def get_quantity_object(name:str, bc:str, instance_name:str, category:str):
     """ Function to create coupling quantity """
     ret = None
-    if name.startswith("Force"):
+    if category == "Force":
         ret = Force()
-    if name.startswith("Displacement"):
+    elif category == "Displacement":
         ret = Displacement()
-    if name.startswith("Velocity"):
+    elif category == "Velocity":
         ret = Velocity()
-    if name.startswith("Pressure"):
+    elif category == "Pressure":
         ret = Pressure()
-    if name.startswith("Temperature"):
+    elif category == "Temperature":
         ret = Temperature()
-    if name.startswith("HeatTransfer"):
+    elif category == "HeatTransfer":
         ret = HeatTransfer()
-    if ret == None:
+    
+    if ret is None:
         # TODO: report error
         return QuantityCouple()
     else:
         # set the boundary code at the source solver
         ret.BC = bc
-        # the instance name is like "InnerSolver-Pressure" (a combination of solver name and quaantity name)
-        # print(" Instance Name = ",instance_name)
+        # the instance name is like "InnerSolver-Pressure" (a combination of solver name and quantity name)
         ret.instance_name = instance_name
+        ret.name = name
+        ret.category = category
         return ret
+
 
 class Force(QuantityCouple):
     """ Forces """
