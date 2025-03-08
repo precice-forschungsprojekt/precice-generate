@@ -41,7 +41,7 @@ class UI_UserInput(object):
             if acceleration:
                 self.acceleration = {
                     "initial-relaxation": acceleration.get("initial-relaxation"),
-                    "max-useful-iteration": acceleration.get("max-useful-iteration"),
+                    "max-used-iteration": acceleration.get("max-used-iteration"),
                     "time-window-reused": acceleration.get("time-window-reused"),
                     "filter": {
                         "type": acceleration.get("filter", {}).get("type"),

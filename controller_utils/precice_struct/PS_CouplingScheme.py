@@ -277,19 +277,17 @@ class PS_ImplicitPostProcessing(object):
         if acceleration:
             if "initial-relaxation" in acceleration:
                 etree.SubElement(post_processing, "initial-relaxation", value = str(acceleration["initial-relaxation"]) )
-            if "max-useful-iteration" in acceleration:
-                etree.SubElement(post_processing, "max-useful-iteration", value = str(acceleration["max-useful-iteration"]) )
+            if "max-used-iteration" in acceleration:
+                etree.SubElement(post_processing, "max-used-iteration", value = str(acceleration["max-used-iteration"]) )
             if "time-window-reused" in acceleration:
                 etree.SubElement(post_processing, "time-window-reused", value = str(acceleration["time-window-reused"]) )
             
             # Add filter configuration if present
             filter_config = acceleration.get("filter", {})
             if filter_config:
-                filter_elem = etree.SubElement(post_processing, "filter")
-                if "type" in filter_config:
-                    etree.SubElement(filter_elem, "type", value = filter_config["type"])
-                if "limit" in filter_config:
-                    etree.SubElement(filter_elem, "limit", value = str(filter_config["limit"]))
+                if "type" in filter_config and "limit" in filter_config:
+                    filter_elem = etree.SubElement(post_processing, "filter", type = filter_config["type"], limit = str(filter_config["limit"]))
+
 
         # Identify unique solvers and their meshes
         solver_meshes = {}
