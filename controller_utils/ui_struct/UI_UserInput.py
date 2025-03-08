@@ -35,6 +35,19 @@ class UI_UserInput(object):
             self.sim_info.max_iterations = simulation_info.get("max-iterations", 50)
             self.sim_info.accuracy = "medium"
 
+            # Initialize optional acceleration settings
+            acceleration = simulation_info.get("acceleration", {})
+            if acceleration:
+                self.sim_info.acceleration = {
+                    "initial-relaxation": acceleration.get("initial-relaxation"),
+                    "max-useful-iteration": acceleration.get("max-useful-iteration"),
+                    "time-window-reused": acceleration.get("time-window-reused"),
+                    "filter": {
+                        "type": acceleration.get("filter", {}).get("type"),
+                        "limit": acceleration.get("filter", {}).get("limit")
+                    }
+                }
+
             # Initialize coupling type to None
             self.coupling_type = None
             
