@@ -19,11 +19,8 @@ class QuantityCouple(object):
         pass
 
 
-def get_quantity_object(name:str, bc:str, instance_name:str):
+def get_quantity_object(name:str, bc:str, instance_name:str, category:str):
     """ Function to create coupling quantity """
-    # Determine category from the name
-    category = get_category_from_name(name)
-    
     ret = None
     if category == "Force":
         ret = Force()
@@ -49,33 +46,6 @@ def get_quantity_object(name:str, bc:str, instance_name:str):
         ret.name = name
         ret.category = category
         return ret
-
-
-def get_category_from_name(name: str) -> str:
-    """ Determine the category from the data name """
-    # Check if the name starts with any of our categories
-    categories = ["Force", "Displacement", "Velocity", "Pressure", "Temperature", "HeatTransfer"]
-    
-    for category in categories:
-        if name.lower().startswith(category.lower()):
-            return category
-    
-    # If no match, check for common suffixes
-    if name.lower().endswith("force"):
-        return "Force"
-    elif name.lower().endswith("displacement"):
-        return "Displacement"
-    elif name.lower().endswith("velocity"):
-        return "Velocity"
-    elif name.lower().endswith("pressure"):
-        return "Pressure"
-    elif name.lower().endswith("temperature"):
-        return "Temperature"
-    elif name.lower().endswith("heattransfer") or name.lower().endswith("heat_transfer"):
-        return "HeatTransfer"
-    
-    # If still no match, return the base name
-    return name.split("-")[0].split("_")[0].capitalize()
 
 
 class Force(QuantityCouple):

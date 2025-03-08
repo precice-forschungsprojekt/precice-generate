@@ -24,7 +24,7 @@ class PS_PreCICEConfig(object):
         self.mappings_write = []
         pass
 
-    def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
+    def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool, category:str):
         """ returns the coupling quantity specified by name,
         the name is a combination of mesh_name + quantity name """
         # there could be more than one pressure or temperature therefore we
@@ -44,7 +44,7 @@ class PS_PreCICEConfig(object):
                 ret.source_solver = solver
                 ret.source_mesh_name = source_mesh_name
             return  ret
-        ret = get_quantity_object(quantity_name, bc, concat_quantity_name)
+        ret = get_quantity_object(quantity_name, bc, concat_quantity_name, category)
         self.coupling_quantities[concat_quantity_name] = ret
         ret.list_of_solvers[solver.name] = solver
         # print(" 2 source mesh = ", source_mesh_name, " read= " , read)

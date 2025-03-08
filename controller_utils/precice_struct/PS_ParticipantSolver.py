@@ -85,14 +85,14 @@ class PS_ParticipantSolver(object):
             if exchange['from'] == self.name:
                 # This participant is writing data
                 if exchange['data'] in w_list:
-                    w = conf.get_coupling_quantitiy(exchange['data'], source_mesh_name, boundary_code2, self, True)
+                    w = conf.get_coupling_quantitiy(exchange['data'], source_mesh_name, boundary_code2, self, True, exchange['data-category'])
                     conf.add_quantity_to_mesh(other_mesh_name, w)
                     conf.add_quantity_to_mesh(source_mesh_name, w)
                     self.quantities_write[w.name] = w
             elif exchange['to'] == self.name:
                 # This participant is reading data
                 if exchange['data'] in r_list:
-                    r = conf.get_coupling_quantitiy(exchange['data'], other_mesh_name, boundary_code1, self, False)
+                    r = conf.get_coupling_quantitiy(exchange['data'], other_mesh_name, boundary_code1, self, False, exchange['data-category'])
                     conf.add_quantity_to_mesh(other_mesh_name, r)
                     conf.add_quantity_to_mesh(source_mesh_name, r)
                     self.quantities_read[r.name] = r
