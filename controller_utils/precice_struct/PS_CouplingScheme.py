@@ -277,8 +277,8 @@ class PS_ImplicitPostProcessing(object):
         if acceleration:
             if "initial-relaxation" in acceleration:
                 etree.SubElement(post_processing, "initial-relaxation", value = str(acceleration["initial-relaxation"]) )
-            if "max-used-iteration" in acceleration:
-                etree.SubElement(post_processing, "max-used-iteration", value = str(acceleration["max-used-iteration"]) )
+            if "max-used-iterations" in acceleration:
+                etree.SubElement(post_processing, "max-used-iterations", value = str(acceleration["max-used-iterations"]) )
             if "time-window-reused" in acceleration:
                 etree.SubElement(post_processing, "time-window-reused", value = str(acceleration["time-window-reused"]) )
             
