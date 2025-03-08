@@ -118,7 +118,7 @@ class UI_UserInput(object):
                     coupling.coupling_type = UI_CouplingType.fsi
                 elif "Force" in data_names:
                     coupling.coupling_type = UI_CouplingType.f2s
-                elif "Temperature" in data_names:
+                elif any("Temperature" in name for name in data_names):
                     coupling.coupling_type = UI_CouplingType.cht
                 else:
                     coupling.coupling_type = UI_CouplingType.error_coupling

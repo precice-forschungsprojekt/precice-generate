@@ -1,0 +1,43 @@
+coupling-scheme:
+    max-time: 1.0
+    time-window-size: 1e-3  
+    relative-accuracy: 1e-4
+    max-iterations: 30  
+
+participants:
+    Fluid-Top: 
+        solver: OpenFOAM
+        dimensionality: 2
+    Fluid-Bottom: 
+        solver: OpenFOAM
+        dimensionality: 2
+    Solid: 
+        solver: CalculiX
+        dimensionality: 2
+
+exchanges:
+    - from: Fluid-Top
+      from-patch: surface
+      to: Solid
+      to-patch: interface
+      data: Temperature-Top  # Solid reads temperature
+      type: strong
+    - from: Solid
+      from-patch: surface
+      to: Fluid-Top
+      to-patch: interface
+      data: HeatTransfer-Top  # Solid reads temperature
+      type: strong
+    - from: Fluid-Bottom
+      from-patch: surface
+      to: Solid
+      to-patch: interface
+      data: Temperature-Bottom  # Solid reads temperature
+      type: strong
+    - from: Solid
+      from-patch: interface
+      to: Fluid-Bottom
+      to-patch: surface
+      data: HeatTransfer-Bottom # Fluid reads heat flux
+      type: strong
+    
