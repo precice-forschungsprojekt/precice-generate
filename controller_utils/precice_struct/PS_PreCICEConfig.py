@@ -134,6 +134,7 @@ class PS_PreCICEConfig(object):
             # ========== FSI =========
             if coupling.coupling_type == UI_CouplingType.fsi:
                 # VERY IMPORTANT: we rely here on the fact that the participants are sorted alphabetically
+                print("HIT 1")
                 participant1_solver.make_participant_fsi_fluid(
                     self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name )
                 participant2_solver.make_participant_fsi_structure(
@@ -141,6 +142,7 @@ class PS_PreCICEConfig(object):
                 pass
             # ========== F2S =========
             if coupling.coupling_type == UI_CouplingType.f2s:
+                print("HIT 2")
                 # VERY IMPORTANT: we rely here on the fact that the participants are sorted alphabetically
                 participant1_solver.make_participant_f2s_fluid(
                     self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name )

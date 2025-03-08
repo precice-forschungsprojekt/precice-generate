@@ -114,7 +114,7 @@ class UI_UserInput(object):
 
                 # Determine coupling type based on exchanged data
                 data_names = {ex["data"] for ex in ex_list}
-                if any("force" in name.lower() and "displacement" in name.lower() for name in data_names):
+                if any("force" in name.lower() for name in data_names) and any("displacement" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.fsi
                 elif any("force" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.f2s
