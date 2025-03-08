@@ -134,21 +134,29 @@ class PS_ParticipantSolver(object):
         self.nature = SolverNature.TRANSIENT
         pass
 
-    def make_participant_cht_fluid(self, conf, boundary_code1: str, boundary_code2: str, other_solver_name: str):
+    def make_participant_cht_fluid(self, conf, boundary_code1: str, boundary_code2: str, other_solver_name: str,
+                                   data_forward: str, data_backward: str):
         """ makes a change heat fluid solver from the participant """
         #print("CHT FLUID")
+        heat_str = data_forward if "HeatTransfer" in data_forward else data_backward
+        temperature_str = data_forward if "Temperature" in data_forward else data_backward
+
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
-                                    ["HeatTransfer", "Temperature"], ["HeatTransfer", "Temperature"])
+                                    [heat_str, temperature_str], [heat_str, temperature_str])
         # set the type of the participant
         self.solver_domain = SolverDomain.Fluid
         self.nature = SolverNature.TRANSIENT
         pass
 
-    def make_participant_cht_structure(self, conf, boundary_code1: str, boundary_code2: str, other_solver_name: str):
+    def make_participant_cht_structure(self, conf, boundary_code1: str, boundary_code2: str, other_solver_name: str,
+                                       data_forward: str, data_backward: str):
         """ makes a change heat structure solver from the participant """
         #print("CHT STRUCTURE")
+        heat_str = data_forward if "HeatTransfer" in data_forward else data_backward
+        temperature_str = data_forward if "Temperature" in data_forward else data_backward
+
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
-                                    ["HeatTransfer", "Temperature"], ["HeatTransfer", "Temperature"])
+                                    [heat_str, temperature_str], [heat_str, temperature_str])
         # set the type of the participant
         self.solver_domain = SolverDomain.Solid
         self.nature = SolverNature.TRANSIENT
