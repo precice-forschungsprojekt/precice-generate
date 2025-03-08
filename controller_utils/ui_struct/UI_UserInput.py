@@ -32,6 +32,7 @@ class UI_UserInput(object):
             self.sim_info.steady = False
             self.sim_info.NrTimeStep = simulation_info.get("max-time", 1e-3)
             self.sim_info.Dt = simulation_info.get("time-window-size", 1e-3)
+            self.sim_info.max_iterations = simulation_info.get("max-iterations", 50)
             self.sim_info.accuracy = "medium"
 
             # Initialize coupling type to None

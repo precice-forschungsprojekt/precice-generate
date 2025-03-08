@@ -235,6 +235,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
 
         self.NrTimeStep = simulation_conf.NrTimeStep
         self.Dt = simulation_conf.Dt
+        self.maxIteration = simulation_conf.max_iterations
 
         pass
 

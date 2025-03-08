@@ -10,6 +10,7 @@ class UI_SimulationInfo(object):
         self.steady = False
         self.NrTimeStep = -1
         self.Dt = 1E-3
+        self.max_iterations = 50
         self.accuracy = "medium"
         self.mode = "on"
         self.sync_mode = "fundamental"
@@ -22,6 +23,7 @@ class UI_SimulationInfo(object):
             self.steady = etree["steady-state"]
             self.NrTimeStep = etree["timesteps"]
             self.Dt = etree["time-window-size"]
+            self.max_iterations = etree.get("max-iterations", 50)
             self.accuracy = etree["accuracy"]
             self.sync_mode = etree.get("synchronize", "on")
             self.mode = etree.get("mode", "fundamental")
