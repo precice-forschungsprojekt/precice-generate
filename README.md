@@ -1,8 +1,8 @@
-# PreCICE-Genesis
+# precice-generate
 
 ## Project Overview
 
-The PreCICE-Genesis is a Python-based utility designed to automate the generation of preCICE configuration files from YAML topology descriptions. This tool simplifies the process of setting up multi-physics simulations by transforming user-defined YAML configurations into preCICE-compatible XML configuration files.
+The precice-generate is a Python-based utility designed to automate the generation of preCICE configuration files from YAML topology descriptions. This tool simplifies the process of setting up multi-physics simulations by transforming user-defined YAML configurations into preCICE-compatible XML configuration files.
 
 ## Key Features
 
@@ -29,8 +29,8 @@ The PreCICE-Genesis is a Python-based utility designed to automate the generatio
 
 1. Clone the repository
 ```bash
-git clone https://github.com/precice-forschungsprojekt/PreCICE-Genesis.git
-cd precice-structure-generator
+git clone https://github.com/precice-forschungsprojekt/precice-generate.git
+cd precice-generate
 ```
 
 2. Create a virtual environment
@@ -70,7 +70,7 @@ pip install -e .
 
 - Test the CLI tool
 ```bash
-precice-genesis --help
+precice-gen --help
 ```
 
 ## Usage
@@ -115,7 +115,7 @@ python FileGenerator.py -f path/to/your/topology.yaml
 ## Project Structure
 
 ```
-precice-structure-generator/
+precice-generate/
 │
 ├── .github/                   # GitHub-specific configurations
 ├── .git/                      # Git version control directory
@@ -183,4 +183,4 @@ The tool provides detailed logging to help you understand the configuration gene
 ## Acknowledgements
 
 This project was started with code from the [preCICE controller](https://github.com/precice/controller) repository.
-The file `format_precice_config.py` was taken from [preCice pre-commit hook file](https://github.com/precice/precice-pre-commit-hooks/blob/main/format_precice_config/format_precice_config.py)
+The file `format_precice_config.py` was taken from [preCICE pre-commit hook file](https://github.com/precice/precice-pre-commit-hooks/blob/main/format_precice_config/format_precice_config.py)
