@@ -23,6 +23,7 @@ def get_quantity_object(name:str, bc:str, instance_name:str):
     """ Function to create coupling quantity """
     # Determine category from the name
     category = get_category_from_name(name)
+    print(f"Creating quantity object for name: {name}, category: {category}")
     
     ret = None
     if category == "Force":
@@ -39,6 +40,7 @@ def get_quantity_object(name:str, bc:str, instance_name:str):
         ret = HeatTransfer()
     
     if ret is None:
+        print(f"Error: Unknown category {category} for name {name}")
         # TODO: report error
         return QuantityCouple()
     else:
@@ -48,34 +50,54 @@ def get_quantity_object(name:str, bc:str, instance_name:str):
         ret.instance_name = instance_name
         ret.name = name
         ret.category = category
+        print(f"Created quantity object: name={name}, category={category}, instance_name={instance_name}")
         return ret
 
 
 def get_category_from_name(name: str) -> str:
     """ Determine the category from the data name """
+    print(f"Determining category for data name: {name}")
+    
+    # Handle specific data names from topology.yaml
+    if "Temperature" in name:
+        print(f"Found match: {name} contains Temperature")
+        return "Temperature"
+    elif "HeatTransfer" in name:
+        print(f"Found match: {name} contains HeatTransfer")
+        return "HeatTransfer"
+    
     # Check if the name starts with any of our categories
     categories = ["Force", "Displacement", "Velocity", "Pressure", "Temperature", "HeatTransfer"]
     
     for category in categories:
         if name.lower().startswith(category.lower()):
+            print(f"Found match: {name} starts with {category}")
             return category
     
     # If no match, check for common suffixes
     if name.lower().endswith("force"):
+        print(f"Found match: {name} ends with force")
         return "Force"
     elif name.lower().endswith("displacement"):
+        print(f"Found match: {name} ends with displacement")
         return "Displacement"
     elif name.lower().endswith("velocity"):
+        print(f"Found match: {name} ends with velocity")
         return "Velocity"
     elif name.lower().endswith("pressure"):
+        print(f"Found match: {name} ends with pressure")
         return "Pressure"
     elif name.lower().endswith("temperature"):
+        print(f"Found match: {name} ends with temperature")
         return "Temperature"
     elif name.lower().endswith("heattransfer") or name.lower().endswith("heat_transfer"):
+        print(f"Found match: {name} ends with heattransfer/heat_transfer")
         return "HeatTransfer"
     
     # If still no match, return the base name
-    return name.split("-")[0].split("_")[0].capitalize()
+    base_name = name.split("-")[0].split("_")[0].capitalize()
+    print(f"No match found, using base name as category: {base_name}")
+    return base_name
 
 
 class Force(QuantityCouple):
