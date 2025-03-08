@@ -137,9 +137,6 @@ class PS_ParticipantSolver(object):
     def make_participant_cht_fluid(self, conf, boundary_code1: str, boundary_code2: str, other_solver_name: str):
         """ makes a change heat fluid solver from the participant """
         #print("CHT FLUID")
-        print("Exchanges in config:")
-        for e in conf.exchanges:
-            print(e)
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["HeatTransfer", "Temperature"], ["HeatTransfer", "Temperature"])
         # set the type of the participant
