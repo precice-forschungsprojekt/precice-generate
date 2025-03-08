@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "PreCICE-Genesis"
+name = "precice-generate"
 description = "Generates File and Folder Structure, including all of the necessary files to quickly kickstart a simulation"
 version = "0.1.0"
 
@@ -47,12 +47,12 @@ dev = [
 ]
 
 [project.scripts]
-precice-genesis = "FileGenerator:main"
+precice-gen = "FileGenerator:main"
 
 [project.urls]
-Repository = "https://github.com/precice-forschungsprojekt/PreCICE-Genesis"
-Issues = "https://github.com/precice-forschungsprojekt/PreCICE-Genesis/issues"
-Documentation = "https://github.com/precice-forschungsprojekt/PreCICE-Genesis/blob/main/README.md"
+Repository = "https://github.com/precice-forschungsprojekt/precice-generate"
+Issues = "https://github.com/precice-forschungsprojekt/precice-generate/issues"
+Documentation = "https://github.com/precice-forschungsprojekt/precice-generate/blob/main/README.md"
 
 [tool.setuptools]
 py-modules = [
