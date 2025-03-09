@@ -272,6 +272,23 @@ class PS_ImplicitPostProcessing(object):
 
         post_processing = etree.SubElement(tag, "acceleration:" + self.name)
 
+        # # Add acceleration parameters from UI input if they exist
+        acceleration = config.acceleration
+        if acceleration:
+            if "initial-relaxation" in acceleration:
+                etree.SubElement(post_processing, "initial-relaxation", value = str(acceleration["initial-relaxation"]) )
+            if "max-used-iterations" in acceleration:
+                etree.SubElement(post_processing, "max-used-iterations", value = str(acceleration["max-used-iterations"]) )
+            if "time-window-reused" in acceleration:
+                etree.SubElement(post_processing, "time-window-reused", value = str(acceleration["time-window-reused"]) )
+            
+            # Add filter configuration if present
+            filter_config = acceleration.get("filter", {})
+            if filter_config:
+                if "type" in filter_config and "limit" in filter_config:
+                    filter_elem = etree.SubElement(post_processing, "filter", type = filter_config["type"], limit = str(filter_config["limit"]))
+
+
         # Identify unique solvers and their meshes
         solver_meshes = {}
         for q_name, q in config.coupling_quantities.items():

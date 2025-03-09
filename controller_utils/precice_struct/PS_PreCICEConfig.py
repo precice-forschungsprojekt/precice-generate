@@ -22,6 +22,7 @@ class PS_PreCICEConfig(object):
         self.exchanges = []    # list to store full exchange details
         self.mappings_read = []
         self.mappings_write = []
+        self.acceleration = None
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -101,6 +102,7 @@ class PS_PreCICEConfig(object):
         """Creates the main preCICE config from the UI structure."""
 
         self.exchanges = user_input.exchanges.copy()
+        self.acceleration = user_input.acceleration
 
         # participants
         for participant_name in user_input.participants:

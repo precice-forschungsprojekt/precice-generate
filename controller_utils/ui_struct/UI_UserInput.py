@@ -20,6 +20,7 @@ class UI_UserInput(object):
         self.participants = {} # empty participants stored as a dictionary
         self.couplings = []    # empty coupling list
         self.exchanges = []    # empty exchanges list
+        self.acceleration = None
         pass
 
     def init_from_yaml(self, etree, mylog: UT_PCErrorLogging):
@@ -34,6 +35,19 @@ class UI_UserInput(object):
             self.sim_info.Dt = simulation_info.get("time-window-size", 1e-3)
             self.sim_info.max_iterations = simulation_info.get("max-iterations", 50)
             self.sim_info.accuracy = "medium"
+
+            # Initialize optional acceleration settings
+            acceleration = simulation_info.get("acceleration", {})
+            if acceleration:
+                self.acceleration = {
+                    "initial-relaxation": acceleration.get("initial-relaxation"),
+                    "max-used-iterations": acceleration.get("max-used-iterations"),
+                    "time-window-reused": acceleration.get("time-window-reused"),
+                    "filter": {
+                        "type": acceleration.get("filter", {}).get("type"),
+                        "limit": acceleration.get("filter", {}).get("limit")
+                    }
+                }
 
             # Initialize coupling type to None
             self.coupling_type = None

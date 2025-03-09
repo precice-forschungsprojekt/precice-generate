@@ -12,6 +12,7 @@ class UI_SimulationInfo(object):
         self.Dt = 1E-3
         self.max_iterations = 50
         self.accuracy = "medium"
+        self.acceleration = None
         self.mode = "on"
         self.sync_mode = "fundamental"
         pass
