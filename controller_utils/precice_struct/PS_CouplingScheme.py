@@ -148,7 +148,7 @@ class PS_CouplingScheme(object):
             # Create the exchange element
             e = etree.SubElement(coupling_scheme, "exchange", 
                                data=data, mesh=exchange_mesh_name,
-                               from___=from_s, to___=to_s)
+                               from___=from_s, to=to_s)
 
             # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
