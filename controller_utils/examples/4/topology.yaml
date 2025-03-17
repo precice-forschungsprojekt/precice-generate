@@ -8,7 +8,9 @@ acceleration:
     name: IQN-ILS
     initial-relaxation: 0.5
     preconditioner: residual-sum
-    filter: QR1
+    filter: 
+      limit: 1e-6
+      type: QR1
     max-used-iterations: 50
     time-windows-reused: 10
 
