@@ -280,3 +280,35 @@ class PS_ImplicitPostProcessing(object):
                 i = etree.SubElement(post_processing, "data", 
                                      name=q.instance_name, 
                                      mesh=mesh_name)
+        
+                #Copy over logic from _determine_exchange_mesh to determine right mesh
+                from_s = "___"
+                to_s = "__"
+                exchange_mesh_name = ""
+                read_mappings = [m.copy() for m in config.mappings_read]
+                write_mappings = [m.copy() for m in config.mappings_write]
+
+                for exchange in config.exchanges:
+                    # print("Exchange data: " + exchange.get('data'))
+                    # print("Quantity name: " + q.instance_name)
+                    if exchange.get('data').lower() == q.instance_name.lower():
+                        from_s = exchange.get('from')
+                        to_s = exchange.get('to')        
+
+                        # Process mappings
+                        read_mapping = next((m for m in read_mappings if 
+                                            (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh') ), None)
+                        write_mapping = next((m for m in write_mappings if 
+                                            (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
+
+                        # Choose mesh based on mapping constraint
+                        if read_mapping and read_mapping['constraint'] == 'conservative':
+                            exchange_mesh_name = read_mapping['to']
+                        elif read_mapping and read_mapping['constraint'] == 'consistent':
+                            exchange_mesh_name = read_mapping['from']
+                        elif write_mapping and write_mapping['constraint'] == 'conservative':
+                            exchange_mesh_name = write_mapping['to']
+                        elif write_mapping and write_mapping['constraint'] == 'consistent':
+                            exchange_mesh_name = write_mapping['from']
+
+                        print(exchange_mesh_name)
