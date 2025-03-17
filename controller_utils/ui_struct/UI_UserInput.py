@@ -128,7 +128,6 @@ class UI_UserInput(object):
                 first_ex = ex_list[0]
                 coupling.boundaryC1 = first_ex.get("from-patch", "")
                 coupling.boundaryC2 = first_ex.get("to-patch", "")
-                coupling.mesh = first_ex.get("mesh", "")
 
                 self.couplings.append(coupling)
                 coupling.partitcipant1.list_of_couplings.append(coupling)
