@@ -1,1 +1,0 @@
-This is Heat Exchanger Simplified with the right mesh names in topology
