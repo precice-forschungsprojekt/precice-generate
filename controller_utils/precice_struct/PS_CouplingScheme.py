@@ -310,6 +310,8 @@ class PS_ImplicitPostProcessing(object):
                             exchange_mesh_name = write_mapping['to']
                         elif write_mapping and write_mapping['constraint'] == 'consistent':
                             exchange_mesh_name = write_mapping['from']
+                        else:
+                            exchange_mesh_name = q.source_mesh_name
 
                 # print(exchange_mesh_name)
                 if exchange_mesh_name != "":
