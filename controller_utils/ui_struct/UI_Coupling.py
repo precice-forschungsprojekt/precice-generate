@@ -20,6 +20,7 @@ class UI_Coupling(object):
         self.partitcipant1 = None
         self.partitcipant2 = None
         self.coupling_type = UI_CouplingType.error_coupling
+        self.mesh = ""  # Add optional mesh attribute
         pass
 
     def init_from_yaml(self, name_coupling: str, etree, participants: dict,

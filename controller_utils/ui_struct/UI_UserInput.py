@@ -128,7 +128,17 @@ class UI_UserInput(object):
                 first_ex = ex_list[0]
                 coupling.boundaryC1 = first_ex.get("from-patch", "")
                 coupling.boundaryC2 = first_ex.get("to-patch", "")
-                coupling.mesh = first_ex.get("mesh", "")
+
+                # Find the mesh from any exchange in the group that has it
+                for ex in ex_list:
+                    if "mesh" in ex:
+                        coupling.mesh = ex["mesh"]
+                        break
+                else:
+                    coupling.mesh = ""  # Default to empty string if no mesh is found
+
+                print("exchange group:", ex_list)
+                print("coupling mesh:", coupling.mesh)
 
                 self.couplings.append(coupling)
                 coupling.partitcipant1.list_of_couplings.append(coupling)
