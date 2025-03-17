@@ -63,9 +63,12 @@ class UI_UserInput(object):
                 self.acceleration = {
                     'name': acceleration.get('name', 'IQN-ILS'),
                     'initial-relaxation': acceleration.get('initial-relaxation', None),
-                    'preconditioner': acceleration.get('preconditioner', 'residual-sum'),
+                    'preconditioner': {
+                        'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
+                        'type': acceleration.get('preconditioner', {}).get('type', None)
+                    },
                     'filter': {
-                        'limit': acceleration.get('filter', {}).get('limit', 1e-6),
+                        'limit': acceleration.get('filter', {}).get('limit', 1e-16),
                         'type': acceleration.get('filter', {}).get('type', None)
                     },
                     'max-used-iterations': acceleration.get('max-used-iterations', None),
