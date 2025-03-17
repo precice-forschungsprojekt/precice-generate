@@ -34,7 +34,6 @@ class UI_UserInput(object):
             self.sim_info.Dt = simulation_info.get("time-window-size", 1e-3)
             self.sim_info.max_iterations = simulation_info.get("max-iterations", 50)
             self.sim_info.accuracy = "medium"
-            self.sim_info.init_from_yaml(simulation_info, mylog)
 
             # Initialize coupling type to None
             self.coupling_type = None
