@@ -141,55 +141,8 @@ class PS_ParticipantSolver(object):
         heat_str = data_forward if "HeatTransfer" in data_forward else data_backward
         temperature_str = data_forward if "Temperature" in data_forward else data_backward
 
-        # Check if this is an OpenFOAM solid participant
-        is_openfoam_solid = self.solver_name == "OpenFOAM" and "Solid" in self.name
-
-        print(self.name)
-
-        print("Is OpenFOAM solid: ", is_openfoam_solid)
-        
-        if is_openfoam_solid:
-            # Create separate meshes for nodes and faces
-            node_mesh_name = f"{self.name}-Mesh-Nodes"
-            face_mesh_name = f"{self.name}-Mesh-Faces"
-            
-            # Create both meshes
-            node_mesh = conf.get_mesh_by_name(node_mesh_name)
-            face_mesh = conf.get_mesh_by_name(face_mesh_name)
-            
-            # Store both meshes
-            self.meshes[node_mesh_name] = node_mesh
-            self.meshes[face_mesh_name] = face_mesh
-            self.coupling_participants[other_solver_name] = 1
-            
-            # Add quantities to appropriate meshes
-            for exchange in conf.exchanges:
-                if exchange['from'] == self.name:
-                    if exchange['data'].startswith("Temperature"):
-                        w = conf.get_coupling_quantitiy(exchange['data'], node_mesh_name, boundary_code2, self, True)
-                        conf.add_quantity_to_mesh(face_mesh_name, w)
-                        conf.add_quantity_to_mesh(node_mesh_name, w)
-                        self.quantities_write[w.name] = w
-                    elif exchange['data'].startswith("HeatTransfer"):
-                        w = conf.get_coupling_quantitiy(exchange['data'], face_mesh_name, boundary_code2, self, True)
-                        conf.add_quantity_to_mesh(face_mesh_name, w)
-                        conf.add_quantity_to_mesh(node_mesh_name, w)
-                        self.quantities_write[w.name] = w
-                elif exchange['to'] == self.name:
-                    if exchange['data'].startswith("Temperature"):
-                        r = conf.get_coupling_quantitiy(exchange['data'], face_mesh_name, boundary_code1, self, False)
-                        conf.add_quantity_to_mesh(face_mesh_name, r)
-                        conf.add_quantity_to_mesh(node_mesh_name, r)
-                        self.quantities_read[r.name] = r
-                    elif exchange['data'].startswith("HeatTransfer"):
-                        r = conf.get_coupling_quantitiy(exchange['data'], node_mesh_name, boundary_code1, self, False)
-                        conf.add_quantity_to_mesh(face_mesh_name, r)
-                        conf.add_quantity_to_mesh(node_mesh_name, r)
-                        self.quantities_read[r.name] = r
-        else:
-            # For non-OpenFOAM solids or fluids, use the existing implementation
-            self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
-                                            [heat_str, temperature_str], [heat_str, temperature_str])
+        self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
+                                    [heat_str, temperature_str], [heat_str, temperature_str])
         # set the type of the participant
         self.solver_domain = SolverDomain.Fluid
         self.nature = SolverNature.TRANSIENT
