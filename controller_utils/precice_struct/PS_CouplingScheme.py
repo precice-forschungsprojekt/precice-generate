@@ -145,7 +145,7 @@ class PS_CouplingScheme(object):
 
 
             for exchange in config.exchanges:
-                if q_name in exchange.get('data'):
+                if q_name.lower() in exchange.get('data').lower():
                     from_s = exchange.get('from')
                     to_s = exchange.get('to')
 
