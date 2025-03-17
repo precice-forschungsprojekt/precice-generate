@@ -131,6 +131,9 @@ class PS_PreCICEConfig(object):
                     temp_d = d
                     data_backward = d["data"]
 
+            # Use the mesh from the coupling object
+            mesh_name = coupling.mesh if coupling.mesh else self.get_mesh_name_by_participants(participant1_name, participant2_name)
+
             # ========== FSI =========
             if coupling.coupling_type == UI_CouplingType.fsi:
                 # VERY IMPORTANT: we rely here on the fact that the participants are sorted alphabetically
@@ -151,15 +154,19 @@ class PS_PreCICEConfig(object):
                 pass
             # ========== CHT =========
             if coupling.coupling_type == UI_CouplingType.cht:
-                # VERY IMPORTANT: we rely here on the fact that the participants are sorted alphabetically
-                print("PART 1: ", participant1_name)
-                print("PART 2: ", participant2_name)
+                print("HIT 3")
                 participant1_solver.make_participant_cht_fluid(
-                    self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name, data_forward, data_backward)
+                    self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name,
+                    data_forward, data_backward)
                 participant2_solver.make_participant_cht_structure(
-                    self, coupling.boundaryC1, coupling.boundaryC2, participant1_solver.name, data_forward, data_backward)
+                    self, coupling.boundaryC1, coupling.boundaryC2, participant1_solver.name,
+                    data_forward, data_backward)
                 pass
-            pass
+
+            # Create the mesh using the mesh name from the coupling
+            coupling_mesh = self.get_mesh_by_name(mesh_name)
+            participant1_solver.meshes[mesh_name] = coupling_mesh
+            participant2_solver.meshes[mesh_name] = coupling_mesh
 
         # Determine coupling scheme based on new coupling type logic or existing max_coupling_value
         if hasattr(user_input, 'coupling_type') and user_input.coupling_type is not None:

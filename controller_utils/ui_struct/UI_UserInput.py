@@ -137,7 +137,7 @@ class UI_UserInput(object):
                 else:
                     coupling.mesh = ""  # Default to empty string if no mesh is found
 
-                print("exchange group:", ex_list)
+                # print("exchange group:", ex_list)
                 print("coupling mesh:", coupling.mesh)
 
                 self.couplings.append(coupling)
