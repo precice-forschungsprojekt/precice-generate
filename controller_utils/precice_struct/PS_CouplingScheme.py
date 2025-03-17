@@ -277,6 +277,9 @@ class PS_ImplicitPostProcessing(object):
         exchange_mesh_name = ""
         read_mappings = [m.copy() for m in config.mappings_read]
         write_mappings = [m.copy() for m in config.mappings_write]
+
+        if config.acceleration:
+            print("Acceleration: ", config.acceleration)
         
         if simple_solver:
             for q_name, q in config.coupling_quantities.items():

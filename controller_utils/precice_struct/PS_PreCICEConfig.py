@@ -101,6 +101,7 @@ class PS_PreCICEConfig(object):
         """Creates the main preCICE config from the UI structure."""
 
         self.exchanges = user_input.exchanges.copy()
+        self.acceleration = user_input.acceleration.copy()
 
         # participants
         for participant_name in user_input.participants:

@@ -57,6 +57,18 @@ class UI_UserInput(object):
                         #mylog.rep_error("Mixed exchange types detected. Defaulting to 'weak'.")
                         self.coupling_type = 'weak'
             
+            # --- Parse Acceleration ---
+            if 'acceleration' in etree:
+                acceleration = etree['acceleration']
+                self.acceleration = {
+                    'name': acceleration.get('name', 'IQN-ILS'),
+                    'initial-relaxation': acceleration.get('initial-relaxation', None),
+                    'preconditioner': acceleration.get('preconditioner', 'residual-sum'),
+                    'filter': acceleration.get('filter', 'QR1'),
+                    'max-used-iterations': acceleration.get('max-used-iterations', None),
+                    'time-windows-reused': acceleration.get('time-windows-reused', None)
+                }
+            
             # --- Parse participants ---
             self.participants = {}
             participants_data = etree["participants"]
