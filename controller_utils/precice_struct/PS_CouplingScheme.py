@@ -143,12 +143,11 @@ class PS_CouplingScheme(object):
             to_s = "__"
             exchange_mesh_name = q.source_mesh_name
 
-            # Find the correct from and to participants for this exchange
+
             for exchange in config.exchanges:
                 if exchange.get('data') == q_name:
                     from_s = exchange.get('from')
                     to_s = exchange.get('to')
-                    break
 
             read_mappings = [m.copy() for m in config.mappings_read]
             write_mappings = [m.copy() for m in config.mappings_write]
@@ -172,12 +171,8 @@ class PS_CouplingScheme(object):
                 if solver.name != simple_solver.name:
                     exchange_mesh_name = other_mesh_name
 
-            # Ensure from and to attributes are properly set
-            if from_s == "___" or to_s == "__":
-                raise ValueError(f"Exchange for data '{q_name}' is missing from/to attributes")
-
-            e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name,
-                                 from___ = from_s, to=to_s)
+            e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
+                                 ,from___ = from_s, to=to_s)
             
             # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
