@@ -213,6 +213,8 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         self.Dt = simulation_conf.Dt
         self.maxIteration = simulation_conf.max_iterations
 
+        self.postProcessing.init_from_ui(ui_config)
+
         pass
 
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
@@ -241,12 +243,34 @@ class PS_ImplicitPostProcessing(object):
         self.name = "IQN-ILS"
         self.precondition_type = "residual-sum"
         self.post_process_quantities = {} # The quantities that are in the acceleration
+        self.initial_relaxation = 0.5
+        self.filter = "QR1"
+        self.max_used_iterations = 50
+        self.time_windows_reused = 10
+
+    def init_from_ui(self, ui_config: UI_UserInput):
+        """ Initialize from UI configuration """
+        if hasattr(ui_config.sim_info, 'acceleration'):
+            acceleration = ui_config.sim_info.acceleration
+            self.name = acceleration.get('name', 'IQN-ILS')
+            self.initial_relaxation = acceleration.get('initial-relaxation', 0.5)
+            self.precondition_type = acceleration.get('preconditioner', 'residual-sum')
+            self.filter = acceleration.get('filter', 'QR1')
+            self.max_used_iterations = acceleration.get('max-used-iterations', 50)
+            self.time_windows_reused = acceleration.get('time-windows-reused', 10)
 
     def write_precice_xml_config(self, tag: etree.Element, config, parent):
         """ Write out the config XML file of the acceleration in case of implicit coupling
             Only for explicit coupling (one directional) this should not write out anything """
 
         post_processing = etree.SubElement(tag, "acceleration:" + self.name)
+        
+        # Add acceleration parameters
+        etree.SubElement(post_processing, "initial-relaxation", value=str(self.initial_relaxation))
+        etree.SubElement(post_processing, "preconditioner", type=self.precondition_type)
+        etree.SubElement(post_processing, "filter", type=self.filter)
+        etree.SubElement(post_processing, "max-used-iterations", value=str(self.max_used_iterations))
+        etree.SubElement(post_processing, "time-windows-reused", value=str(ui_config.sim_info.acceleration.get('time-windows-reused', self.time_windows_reused)))
 
         # Identify unique solvers and their meshes
         solver_meshes = {}

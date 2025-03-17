@@ -3,14 +3,14 @@ coupling-scheme:
     time-window-size: 1e-3  
     relative-accuracy: 1e-4
     max-iterations: 30 
- 
+
 acceleration:
     name: IQN-ILS
     initial-relaxation: 0.5
     preconditioner: residual-sum
     filter: QR1
     max-used-iterations: 50
-    time-windows-reused: 10
+    time-windows-reused: 101
 
 participants:
     Fluid-Top: 
