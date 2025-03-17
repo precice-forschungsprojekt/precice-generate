@@ -279,7 +279,6 @@ class PS_ImplicitPostProcessing(object):
         write_mappings = [m.copy() for m in config.mappings_write]
 
         acceleration = config.acceleration
-        print(acceleration)
         for a, b in acceleration.items():
             if b is not None:
                 i = etree.SubElement(post_processing, a, value=str(b))
