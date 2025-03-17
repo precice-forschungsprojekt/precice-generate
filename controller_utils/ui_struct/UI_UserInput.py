@@ -35,8 +35,9 @@ class UI_UserInput(object):
             self.sim_info.max_iterations = simulation_info.get("max-iterations", 50)
             self.sim_info.accuracy = "medium"
 
-            # Initialize coupling type to None
+            # Initialize coupling type+ acceleration to None
             self.coupling_type = None
+            self.acceleration = None
             
             # Extract coupling type from exchanges
             if 'exchanges' in etree:

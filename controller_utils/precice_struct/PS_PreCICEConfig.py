@@ -101,8 +101,7 @@ class PS_PreCICEConfig(object):
         """Creates the main preCICE config from the UI structure."""
 
         self.exchanges = user_input.exchanges.copy()
-        self.acceleration = user_input.acceleration if user_input.acceleration is not None else None
-
+        self.acceleration = user_input.acceleration
         # participants
         for participant_name in user_input.participants:
             participant_obj = user_input.participants[participant_name]
