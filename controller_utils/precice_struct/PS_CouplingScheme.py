@@ -66,9 +66,8 @@ class PS_CouplingScheme(object):
             pass
         return coupling_scheme
 
-    def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
-        """ Writes to the XML the exchange list """
-        # select the solver with minimal complexity
+    def _find_simplest_solver(self, config):
+        """Find the solver with minimal complexity"""
         simple_solver = None
         solver_simplicity = -2
         for q_name in config.coupling_quantities:
@@ -76,107 +75,81 @@ class PS_CouplingScheme(object):
             solver = q.source_solver
             if solver_simplicity < solver.solver_domain.value:
                 simple_solver = solver
+        return simple_solver
 
-        # For each quantity, specify the exchange and the convergence
+    def _find_other_solver_for_coupling(self, quantity, solver):
+        """Find the other solver involved in the coupling"""
+        other_solver_for_coupling = None
+        other_mesh_name = None
+        for oq in quantity.list_of_solvers:
+            other_solver = quantity.list_of_solvers[oq]
+            if other_solver.name != solver.name:
+                other_solver_for_coupling = other_solver
+                for allm in other_solver.meshes:
+                    if allm != quantity.source_mesh_name:
+                        other_mesh_name = allm
+        return other_solver_for_coupling, other_mesh_name
+
+    def _determine_exchange_mesh(self, config, quantity, solver, other_solver, simple_solver):
+        """Determine the mesh to use for exchange based on mappings and constraints"""
+        from_s = "___"
+        to_s = "__"
+        exchange_mesh_name = quantity.source_mesh_name
+
+        # Find exchange configuration
+        for exchange in config.exchanges:
+            if quantity.name.lower() in exchange.get('data').lower():
+                from_s = exchange.get('from')
+                to_s = exchange.get('to')
+                data = exchange.get('data')
+
+        # Process mappings
+        read_mappings = [m.copy() for m in config.mappings_read]
+        write_mappings = [m.copy() for m in config.mappings_write]
+
+        read_mapping = next((m for m in read_mappings if 
+                            (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh') ), None)
+        write_mapping = next((m for m in write_mappings if 
+                            (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
+
+        # Choose mesh based on mapping constraint
+        if read_mapping and read_mapping['constraint'] == 'conservative':
+            exchange_mesh_name = read_mapping['to']
+        elif read_mapping and read_mapping['constraint'] == 'consistent':
+            exchange_mesh_name = read_mapping['from']
+        elif write_mapping and write_mapping['constraint'] == 'conservative':
+            exchange_mesh_name = write_mapping['to']
+        elif write_mapping and write_mapping['constraint'] == 'consistent':
+            exchange_mesh_name = write_mapping['from']
+        else:
+            exchange_mesh_name = quantity.source_mesh_name
+            if solver.name != simple_solver.name:
+                exchange_mesh_name = other_mesh_name
+
+        return exchange_mesh_name, data, from_s, to_s
+
+    def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
+        """Writes to the XML the exchange list"""
+        # Find the simplest solver
+        simple_solver = self._find_simplest_solver(config)
+
+        # Configure exchanges for each quantity
         for q_name in config.coupling_quantities:
-            q = config.coupling_quantities[q_name]
-            solver = q.source_solver
+            quantity = config.coupling_quantities[q_name]
+            solver = quantity.source_solver
 
-            # look for the second solver in the list of solvers within the quantity
-            other_solver_for_coupling = None
-            other_mesh_name = None  # Initialize other mesh name
-            for oq in q.list_of_solvers:
-                other_solver = q.list_of_solvers[oq]
-                if other_solver.name != solver.name:
-                    other_solver_for_coupling = other_solver
-                    for allm in other_solver.meshes:
-                        if allm != q.source_mesh_name:
-                            other_mesh_name = allm
+            # Find the other solver for coupling
+            other_solver, other_mesh_name = self._find_other_solver_for_coupling(quantity, solver)
 
-            # Determine the coupled mesh that both participants share
-            coupled_mesh_name = None
+            # Determine the exchange mesh and configuration
+            exchange_mesh_name, data, from_s, to_s = self._determine_exchange_mesh(
+                config, quantity, solver, other_solver, simple_solver)
 
-            # Get mesh names for both solvers
-            solver_mesh_names = list(solver.meshes.keys())
-            other_solver_mesh_names = list(other_solver_for_coupling.meshes.keys())
+            # Create the exchange element
+            e = etree.SubElement(coupling_scheme, "exchange", 
+                               data=data, mesh=exchange_mesh_name,
+                               from___=from_s, to___=to_s)
 
-            #print("Current solver " + solver.name + " meshes: " + str(solver_mesh_names))
-            #print("Other solver " + other_solver_for_coupling.name + " meshes: " + str(other_solver_mesh_names))
-
-            # Get all source meshes from quantities
-            solver_source_meshes = set()
-            for q_name in solver.quantities_read:
-                q = solver.quantities_read[q_name]
-                solver_source_meshes.add(q.source_mesh_name)
-            for q_name in solver.quantities_write:
-                q = solver.quantities_write[q_name]
-                solver_source_meshes.add(q.source_mesh_name)
-
-            other_solver_source_meshes = set()
-            for q_name in other_solver_for_coupling.quantities_read:
-                q = other_solver_for_coupling.quantities_read[q_name]
-                other_solver_source_meshes.add(q.source_mesh_name)
-            for q_name in other_solver_for_coupling.quantities_write:
-                q = other_solver_for_coupling.quantities_write[q_name]
-                other_solver_source_meshes.add(q.source_mesh_name)
-
-            # print("Current solver " + solver.name + " source meshes: " + str(solver_source_meshes))
-            # print("Other solver " + other_solver_for_coupling.name + " source meshes: " + str(other_solver_source_meshes))
-
-            coupled_meshes = []
-            for mesh in solver_mesh_names:
-                # Check if this mesh is shared by both solvers
-                if mesh in other_solver_source_meshes:
-                    # Use the provide and receive meshes from the config
-                    is_solver_providing_mesh = mesh in config.solver_provide_meshes[solver.name]
-                    is_other_solver_receiving_mesh = mesh in config.solver_receive_meshes[other_solver_for_coupling.name]
-                    is_solver_receiving_mesh = mesh in config.solver_receive_meshes[solver.name]
-                    is_other_solver_providing_mesh = mesh in config.solver_provide_meshes[other_solver_for_coupling.name]
-
-                    # Check if meshes are provided/received in complementary ways
-                    if (is_solver_providing_mesh and is_other_solver_receiving_mesh) or \
-                    (is_solver_receiving_mesh and is_other_solver_providing_mesh):
-                        coupled_meshes.append(mesh)
-
-            # the from and to attributes
-            from_s = "___"
-            to_s = "__"
-            exchange_mesh_name = q.source_mesh_name
-
-
-            for exchange in config.exchanges:
-                if q_name.lower() in exchange.get('data').lower():
-                    from_s = exchange.get('from')
-                    to_s = exchange.get('to')
-                    data = exchange.get('data')
-
-            read_mappings = [m.copy() for m in config.mappings_read]
-            write_mappings = [m.copy() for m in config.mappings_write]
-
-            read_mapping = next((m for m in read_mappings if 
-                                (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh') ), None)
-            write_mapping = next((m for m in write_mappings if 
-                                (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
-
-            # # Choose mesh based on mapping constraint
-            if read_mapping and read_mapping['constraint'] == 'conservative':
-                exchange_mesh_name = read_mapping['to']
-            elif read_mapping and read_mapping['constraint'] == 'consistent':
-                exchange_mesh_name = read_mapping['from']
-            elif write_mapping and write_mapping['constraint'] == 'conservative':
-                exchange_mesh_name = write_mapping['to']
-            elif write_mapping and write_mapping['constraint'] == 'consistent':
-                exchange_mesh_name = write_mapping['from']
-            else:
-                exchange_mesh_name = q.source_mesh_name
-                if solver.name != simple_solver.name:
-                    exchange_mesh_name = other_mesh_name
-            
-
-
-            e = etree.SubElement(coupling_scheme, "exchange", data=data, mesh=exchange_mesh_name
-                                 ,from___ = from_s, to=to_s)
-            
             # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
                 c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
