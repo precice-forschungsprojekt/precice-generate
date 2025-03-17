@@ -285,7 +285,9 @@ class PS_ImplicitPostProcessing(object):
             for a, b in acceleration.items():
                 if b is not None:
                     if self.name == "IQN-ILS":
-                        if a == "initial-relaxation" or a == "max-used-iterations" or a == "time-windows-reused":
+                        if a == "initial-relaxation":
+                            i = etree.SubElement(post_processing, a, value=str(b), enforce="0")
+                        elif a == "max-used-iterations" or a == "time-windows-reused":
                             i = etree.SubElement(post_processing, a, value=str(b))
                         elif a == "filter":
                             if b.get("type") is not None:
@@ -299,7 +301,7 @@ class PS_ImplicitPostProcessing(object):
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))
                     if self.name == "aitken":
                         if a == "initial-relaxation":
-                            i = etree.SubElement(post_processing, a, value=str(b))
+                            i = etree.SubElement(post_processing, a, value=str(b), enforce="0")
                         elif a == "preconditioner":
                             if b.get("type") is not None:
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")), type=str(b.get("type")))
