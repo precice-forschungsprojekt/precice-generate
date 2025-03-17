@@ -306,8 +306,36 @@ class PS_ImplicitPostProcessing(object):
                             if b.get("type") is not None:
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")), type=str(b.get("type")))
                             else:
-                                i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))                            
-        
+                                i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))
+                    if self.name == "IQN-IMVJ":
+                        if a == "initial-relaxation":
+                            i = etree.SubElement(post_processing, a, value=str(b), enforce="0")
+                        elif a == "max-used-iterations" or a == "time-windows-reused":
+                            i = etree.SubElement(post_processing, a, value=str(b))
+                        elif a == "filter":
+                            if b.get("type") is not None:
+                                i = etree.SubElement(post_processing, a, limit=str(b.get("limit")), type=str(b.get("type")))
+                            else:
+                                i = etree.SubElement(post_processing, a, limit=str(b.get("limit")))
+                        elif a == "preconditioner":
+                            if b.get("type") is not None:
+                                i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")), type=str(b.get("type")))
+                            else:
+                                i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))                          
+                        elif a == "imvj-restart-mode":
+                            i = etree.SubElement(
+                                post_processing,
+                                a,
+                                {
+                                    "truncation-threshold": str(b.get("truncation-threshold")),
+                                    "chunk-size": str(b.get("chunk-size")),
+                                    "reused-time-windows-at-restart": str(b.get("reused-time-windows-at-restart")),
+                                    "type": str(b.get("type"))
+                                }
+                            )
+                            
+
+                            
         if simple_solver:
             for q_name, q in config.coupling_quantities.items():
                 # Use the first mesh from the simplest solver

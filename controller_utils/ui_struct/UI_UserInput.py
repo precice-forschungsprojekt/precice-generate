@@ -73,7 +73,13 @@ class UI_UserInput(object):
                         'type': acceleration.get('filter', {}).get('type', None)
                     },
                     'max-used-iterations': acceleration.get('max-used-iterations', None),
-                    'time-windows-reused': acceleration.get('time-windows-reused', None)
+                    'time-windows-reused': acceleration.get('time-windows-reused', None),
+                    'imvj-restart-mode': {
+                        'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
+                        'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
+                        'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
+                        'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
+                    }
                 }
             
             # --- Parse participants ---
