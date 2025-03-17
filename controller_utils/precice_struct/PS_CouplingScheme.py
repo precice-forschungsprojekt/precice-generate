@@ -284,9 +284,15 @@ class PS_ImplicitPostProcessing(object):
                 if a == "initial-relaxation" or a == "max-used-iterations" or a == "time-windows-reused":
                     i = etree.SubElement(post_processing, a, value=str(b))
                 elif a == "filter":
-                    i = etree.SubElement(post_processing, a, limit=str(b.get("limit")), type=str(b.get("type")))
+                    if b.get("type") is not None:
+                        i = etree.SubElement(post_processing, a, limit=str(b.get("limit")), type=str(b.get("type")))
+                    else:
+                        i = etree.SubElement(post_processing, a, limit=str(b.get("limit")))
                 elif a == "preconditioner":
-                    i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze_after")), type=str(b.get("type")))
+                    if b.get("type") is not None:
+                        i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze_after")), type=str(b.get("type")))
+                    else:
+                        i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze_after")))
         
         if simple_solver:
             for q_name, q in config.coupling_quantities.items():
