@@ -28,6 +28,7 @@ exchanges:
       to-patch: interface
       data: HeatTransfer-Top  # Solid reads temperature
       type: strong
+      mesh: Solid-Top-Mesh-Faces
     - from: Fluid-Bottom
       from-patch: surface
       to: Solid
@@ -40,4 +41,5 @@ exchanges:
       to-patch: surface
       data: HeatTransfer-Bottom # Fluid reads heat flux
       type: strong
+      mesh: Solid-Bottom-Mesh-Faces
     
