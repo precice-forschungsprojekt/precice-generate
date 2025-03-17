@@ -145,10 +145,6 @@ class PS_CouplingScheme(object):
 
 
             for exchange in config.exchanges:
-                print("Exchange for data: ", q_name, exchange.get('data'))
-                print(q_name in exchange.get('data'))
-                print(exchange.get('data') in q_name)
-                # print("Exchange for data: ", q_name, exchange.get('data'), " from: ", exchange.get('from'), " to: ", exchange.get('to'))
                 if q_name in exchange.get('data'):
                     from_s = exchange.get('from')
                     to_s = exchange.get('to')
