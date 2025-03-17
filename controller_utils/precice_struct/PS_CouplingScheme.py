@@ -148,6 +148,7 @@ class PS_CouplingScheme(object):
                 if q_name.lower() in exchange.get('data').lower():
                     from_s = exchange.get('from')
                     to_s = exchange.get('to')
+                    data = exchange.get('data')
 
             read_mappings = [m.copy() for m in config.mappings_read]
             write_mappings = [m.copy() for m in config.mappings_write]
@@ -170,15 +171,17 @@ class PS_CouplingScheme(object):
                 exchange_mesh_name = q.source_mesh_name
                 if solver.name != simple_solver.name:
                     exchange_mesh_name = other_mesh_name
+            
 
-            e = etree.SubElement(coupling_scheme, "exchange", data=q_name, mesh=exchange_mesh_name
+
+            e = etree.SubElement(coupling_scheme, "exchange", data=data, mesh=exchange_mesh_name
                                  ,from___ = from_s, to=to_s)
             
             # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
                 c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
                                  limit=relative_conv_str, mesh=exchange_mesh_name
-                                 ,data=q_name)
+                                 ,data=data)
             pass
 
 
