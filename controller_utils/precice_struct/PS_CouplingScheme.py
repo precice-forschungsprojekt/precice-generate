@@ -246,6 +246,8 @@ class PS_ImplicitPostProcessing(object):
         """ Write out the config XML file of the acceleration in case of implicit coupling
             Only for explicit coupling (one directional) this should not write out anything """
 
+        self.name = config.acceleration["name"] if config.acceleration is not None else "IQN-ILS"
+
         post_processing = etree.SubElement(tag, "acceleration:" + self.name)
 
         # Identify unique solvers and their meshes
