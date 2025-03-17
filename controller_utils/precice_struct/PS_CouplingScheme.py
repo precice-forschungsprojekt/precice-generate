@@ -278,8 +278,11 @@ class PS_ImplicitPostProcessing(object):
         read_mappings = [m.copy() for m in config.mappings_read]
         write_mappings = [m.copy() for m in config.mappings_write]
 
-        if config.acceleration:
-            print("Acceleration: ", config.acceleration)
+        acceleration = config.acceleration
+        print(acceleration)
+        for a, b in acceleration.items():
+            if b is not None:
+                i = etree.SubElement(post_processing, a, value=str(b))
         
         if simple_solver:
             for q_name, q in config.coupling_quantities.items():
