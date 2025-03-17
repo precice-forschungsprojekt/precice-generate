@@ -271,23 +271,23 @@ class PS_ImplicitPostProcessing(object):
         
         # Choose the simplest solver's mesh
         simple_solver = sorted_solvers[0] if sorted_solvers else None
+
+        from_s = "___"
+        to_s = "__"
+        exchange_mesh_name = ""
+        read_mappings = [m.copy() for m in config.mappings_read]
+        write_mappings = [m.copy() for m in config.mappings_write]
         
         if simple_solver:
             for q_name, q in config.coupling_quantities.items():
                 # Use the first mesh from the simplest solver
                 mesh_name = list(solver_meshes[simple_solver])[0]
                 
-                i = etree.SubElement(post_processing, "data", 
-                                     name=q.instance_name, 
-                                     mesh=mesh_name)
+                # i = etree.SubElement(post_processing, "data", 
+                #                      name=q.instance_name, 
+                #                      mesh=mesh_name)
         
                 #Copy over logic from _determine_exchange_mesh to determine right mesh
-                from_s = "___"
-                to_s = "__"
-                exchange_mesh_name = ""
-                read_mappings = [m.copy() for m in config.mappings_read]
-                write_mappings = [m.copy() for m in config.mappings_write]
-
                 for exchange in config.exchanges:
                     # print("Exchange data: " + exchange.get('data'))
                     # print("Quantity name: " + q.instance_name)
@@ -311,4 +311,8 @@ class PS_ImplicitPostProcessing(object):
                         elif write_mapping and write_mapping['constraint'] == 'consistent':
                             exchange_mesh_name = write_mapping['from']
 
-                        print(exchange_mesh_name)
+                # print(exchange_mesh_name)
+                if exchange_mesh_name != "":
+                    i = etree.SubElement(post_processing, "data", 
+                            name=q.instance_name, 
+                            mesh=exchange_mesh_name)
