@@ -204,16 +204,13 @@ class PS_PreCICEConfig(object):
             pass
 
         # 1 quantities
-        data_from_exchanges = [(exchange["data"], self.coupling_quantities[exchange["data"]].dim) for exchange in self.exchanges]
-        # print("data_from_exchanges:", data_from_exchanges)
-        for coupling_quantities_name in self.coupling_quantities:
-            coupling_quantity = self.coupling_quantities[coupling_quantities_name]
+        for data, dim in data_from_exchanges:
             mystr = "scalar"
-            if coupling_quantity.dim > 1:
+            if dim > 1:
                 mystr = "vector"
                 pass
             data_tag = etree.SubElement(precice_configuration_tag, etree.QName("data:"+mystr),
-                                        name=coupling_quantity.name)
+                                        name=data)
             pass
 
         # 2 meshes
