@@ -204,6 +204,7 @@ class PS_PreCICEConfig(object):
             pass
 
         # 1 quantities
+        data_from_exchanges = [exchange["data"] for exchange in self.exchanges]
         for coupling_quantities_name in self.coupling_quantities:
             coupling_quantity = self.coupling_quantities[coupling_quantities_name]
             mystr = "scalar"
