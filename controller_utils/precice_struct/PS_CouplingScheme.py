@@ -282,6 +282,12 @@ class PS_ImplicitPostProcessing(object):
 
         acceleration = config.acceleration
         if acceleration is not None:
+            print("###################################")
+            print(acceleration)
+            print(acceleration["display_standard_values"])
+            print("###################################")
+        if acceleration is not None:
+        # if acceleration is not None and str(acceleration.get("display_standard_values", "")).lower() != "true":
             for a, b in acceleration.items():
                 if b is not None:
                     if self.name == "IQN-ILS":
