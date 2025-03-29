@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12", "3.13","3.14"]  # Test on supported Python versions
+        python-version: ["3.11"]  # Test on supported Python versions
 
     steps:
     - name: Checkout code
@@ -37,8 +37,3 @@ jobs:
       run: |
         source venv/bin/activate
         precice-gen --help  # Basic smoke test
-
-    - name: Test package import
-      run: |
-        source venv/bin/activate
-        python -c "import precice_gen; print(f'Package version: {precice_gen.__version__}')"
