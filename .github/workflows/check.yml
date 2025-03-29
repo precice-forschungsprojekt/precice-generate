@@ -68,9 +68,25 @@ jobs:
         echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
         echo "Found examples: $EXAMPLES_JSON"
 
+    - name: Set matrix for examples
+      run: echo "examples=${{ steps.find-examples.outputs.examples }}"
+
+  generate-configurations:
+    runs-on: ubuntu-latest
+    needs: discover-and-test
+    strategy:
+      matrix:
+        example: ${{ fromJson(needs.discover-and-test.outputs.examples) }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
     - name: Generate precice configurations for examples
-      env:
-        EXAMPLE: ${{ matrix.example }}
       run: |
         echo "Processing example: ${{ matrix.example }}"
         
