@@ -42,6 +42,8 @@ jobs:
     - name: Install dependencies of config-checker
       run: |
         source venv/bin/activate
+        sudo apt install -y libopenmpi-dev
+        python -m pip install --upgrade pip setuptools cython
         cd config-checker
         pip install .
 
