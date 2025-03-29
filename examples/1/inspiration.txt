@@ -1,0 +1,1 @@
+https://precice.org/configuration-coupling-mesh-exchange.html#example-configuration
