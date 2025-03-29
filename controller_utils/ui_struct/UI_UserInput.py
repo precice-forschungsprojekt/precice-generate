@@ -35,8 +35,9 @@ class UI_UserInput(object):
             self.sim_info.max_iterations = simulation_info.get("max-iterations", 50)
             self.sim_info.accuracy = "medium"
 
-            # Initialize coupling type to None
+            # Initialize coupling type+ acceleration to None
             self.coupling_type = None
+            self.acceleration = None
             
             # Extract coupling type from exchanges
             if 'exchanges' in etree:
@@ -56,6 +57,30 @@ class UI_UserInput(object):
                         # Mixed types, default to weak
                         #mylog.rep_error("Mixed exchange types detected. Defaulting to 'weak'.")
                         self.coupling_type = 'weak'
+            
+            # --- Parse Acceleration ---
+            if 'acceleration' in etree:
+                acceleration = etree['acceleration']
+                self.acceleration = {
+                    'name': acceleration.get('name', 'IQN-ILS'),
+                    'initial-relaxation': acceleration.get('initial-relaxation', None),
+                    'preconditioner': {
+                        'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
+                        'type': acceleration.get('preconditioner', {}).get('type', None)
+                    },
+                    'filter': {
+                        'limit': acceleration.get('filter', {}).get('limit', 1e-16),
+                        'type': acceleration.get('filter', {}).get('type', None)
+                    },
+                    'max-used-iterations': acceleration.get('max-used-iterations', None),
+                    'time-windows-reused': acceleration.get('time-windows-reused', None),
+                    'imvj-restart-mode': {
+                        'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
+                        'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
+                        'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
+                        'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
+                    }
+                }
             
             # --- Parse participants ---
             self.participants = {}
@@ -83,7 +108,7 @@ class UI_UserInput(object):
                     
                     new_participant.name = name
                     new_participant.solverName = solver_name
-                    new_participant.solverType = solver_info.get("solver-type", "")
+                    new_participant.solverType = solver_info.get("solver-type", "")  # Use solver as solverType
                     new_participant.dimensionality = solver_info.get("dimensionality", 3)
                 
                 else:
@@ -114,11 +139,12 @@ class UI_UserInput(object):
 
                 # Determine coupling type based on exchanged data
                 data_names = {ex["data"] for ex in ex_list}
-                if "Force" in data_names and "Displacement" in data_names:
+                if any("force" in name.lower() for name in data_names) and any("displacement" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.fsi
-                elif "Force" in data_names:
+                elif any("force" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.f2s
-                elif "Temperature" in data_names:
+                # elif any("temperature" in name.lower() or "heat" in name.lower() for name in data_names):
+                elif any("temperature" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.cht
                 else:
                     coupling.coupling_type = UI_CouplingType.error_coupling
