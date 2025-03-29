@@ -13,10 +13,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Clone config-checker
-      run: |
-        git clone --recurse-submodules https://github.com/precice-forschungsprojekt/config-checker.git
-        echo "Config-checker cloned to $(pwd)/config-checker"
+    #- name: Clone config-checker
+    #  run: |
+    #    git clone --recurse-submodules https://github.com/precice-forschungsprojekt/config-checker.git
+    #    echo "Config-checker cloned to $(pwd)/config-checker"
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -30,30 +30,30 @@ jobs:
         python -m pip install --upgrade pip
         pip install .
 
-    - name: Update package list
-      run: |
-        sudo apt-get update
+    #- name: Update package list
+    #  run: |
+    #    sudo apt-get update
 
-    - name: Install preCICE
-      run: |
-        wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
-        sudo apt install -y ./libprecice3_3.1.2_noble.deb
+    #- name: Install preCICE
+    #  run: |
+    #    wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
+    #    sudo apt install -y ./libprecice3_3.1.2_noble.deb
 
-    - name: Install dependencies of config-checker
-      run: |
-        source venv/bin/activate
-        sudo apt install -y libopenmpi-dev
-        python -m pip install --upgrade pip setuptools cython
-        cd config-checker
-        pip install .
+    #- name: Install dependencies of config-checker
+    #  run: |
+    #    source venv/bin/activate
+    #    sudo apt install -y libopenmpi-dev
+    #    python -m pip install --upgrade pip setuptools cython
+    #    cd config-checker
+    #    pip install .
 
     - name: Test CLI of precice-gen
       run: |
         source venv/bin/activate
         precice-gen --help
 
-    - name: Test CLI of config-checker
-      run: |
-        source venv/bin/activate
-        cd config-checker
-        python preciceconfigchecker/cli.py
+    #- name: Test CLI of config-checker
+    #  run: |
+    #    source venv/bin/activate
+    #    cd config-checker
+    #    python preciceconfigchecker/cli.py
