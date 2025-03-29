@@ -1,0 +1,44 @@
+﻿name: Install and Test Precice-generate
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-production-install:
+    name: Test Production Installation
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13","3.14"]  # Test on supported Python versions
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Create virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+
+    - name: Install package (non-editable)
+      run: |
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install .  # Critical: No `-e` for real installation test
+
+    - name: Verify CLI works
+      run: |
+        source venv/bin/activate
+        precice-gen --help  # Basic smoke test
+
+    - name: Test package import
+      run: |
+        source venv/bin/activate
+        python -c "import precice_gen; print(f'Package version: {precice_gen.__version__}')"
