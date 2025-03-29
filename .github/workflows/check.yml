@@ -13,30 +13,42 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Checkout config-checker
-      uses: actions/checkout@v4
-      with:
-        repository: precice-forschungsprojekt/config-checker
-        path: config-checker
+    - name: Clone config-checker
+      run: |
+        git clone --recurse-submodules https://github.com/precice-forschungsprojekt/config-checker.git
+        echo "Config-checker cloned to $(pwd)/config-checker"
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.12'
 
-    - name: Install dependencies
+    - name: Install dependencies of precice-gen
       run: |
         python -m venv venv
         source venv/bin/activate
         python -m pip install --upgrade pip
         pip install .
+
+    - name: Install MPI dependencies
+      run: |
+        sudo apt-get update  
+        sudo apt-get install -y libopenmpi-dev openmpi-bin
+
+    - name: Install preCICE
+      run: |
+        wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
+        sudo apt install -y ./libprecice3_3.1.2_noble.deb
+
+    - name: Install dependencies of config-checker
+      run: |
+        source venv/bin/activate
         cd config-checker
         pip install .
+
     - name: Test CLI
       run: |
         source venv/bin/activate
         precice-gen --help
         cd config-checker
-        python preciceconfigchecker/cli.py --help
-
-
+        python preciceconfigchecker/cli.py
