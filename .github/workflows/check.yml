@@ -57,3 +57,13 @@ jobs:
     #    source venv/bin/activate
     #    cd config-checker
     #    python preciceconfigchecker/cli.py
+
+    - name: Discover examples
+      id: find-examples
+      run: |
+        # Find all example directories containing precice-config.xml
+        EXAMPLES=$(find examples -name "precice-config.xml" -exec dirname {} \; | sort | uniq)
+        # Convert to JSON array for GitHub Actions output
+        EXAMPLES_JSON=$(echo "$EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
+        echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
+        echo "Found examples: $EXAMPLES_JSON"
