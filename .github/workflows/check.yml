@@ -67,6 +67,8 @@ jobs:
         EXAMPLES_JSON=$(echo "$EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
         echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
         echo "Found examples: $EXAMPLES_JSON"
+      outputs:
+        examples: ${{ steps.find-examples.outputs.examples }}
 
     - name: Set matrix for examples
       run: echo "examples=${{ steps.find-examples.outputs.examples }}"
