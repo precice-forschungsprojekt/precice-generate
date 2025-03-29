@@ -46,9 +46,13 @@ jobs:
         cd config-checker
         pip install .
 
-    - name: Test CLI
+    - name: Test CLI of precice-gen
       run: |
         source venv/bin/activate
         precice-gen --help
+
+    - name: Test CLI of config-checker
+      run: |
+        source venv/bin/activate
         cd config-checker
         python preciceconfigchecker/cli.py
