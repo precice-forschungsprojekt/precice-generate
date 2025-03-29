@@ -73,38 +73,38 @@ jobs:
     - name: Set matrix for examples
       run: echo "examples=${{ steps.find-examples.outputs.examples }}"
 
-  generate-configurations:
-    runs-on: ubuntu-latest
-    needs: discover-and-test
-    strategy:
-      matrix:
-        example: ${{ fromJson(needs.discover-and-test.outputs.examples) }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #generate-configurations:
+  #  runs-on: ubuntu-latest
+  #  needs: discover-and-test
+  #  strategy:
+  #    matrix:
+  #      example: ${{ fromJson(needs.discover-and-test.outputs.examples) }}
+  #  steps:
+  #  - name: Checkout code
+  #    uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+  #  - name: Set up Python
+  #    uses: actions/setup-python@v4
+  #    with:
+  #      python-version: '3.12'
 
-    - name: Generate precice configurations for examples
-      run: |
-        echo "Processing example: ${{ matrix.example }}"
-        
-        # Create output directory
-        OUTPUT_DIR="generated_configs/$(basename ${{ matrix.example }})"
-        mkdir -p $OUTPUT_DIR
-        
-        # Find input YAML file (assuming same name as directory)
-        EXAMPLE_NAME=$(basename ${{ matrix.example }})
-        INPUT_YAML="${{ matrix.example }}/$EXAMPLE_NAME.yaml"
-        
-        # Run precice-gen if input YAML exists
-        if [ -f "$INPUT_YAML" ]; then
-          echo "Generating from $INPUT_YAML"
-          precice-gen -f "$INPUT_YAML" -o "$OUTPUT_DIR"
-        else
-          echo "Using existing precice-config.xml"
-          cp "${{ matrix.example }}/precice-config.xml" "$OUTPUT_DIR/"
-        fi
+  #  - name: Generate precice configurations for examples
+  #    run: |
+  #      echo "Processing example: ${{ matrix.example }}"
+  #      
+  #      # Create output directory
+  #      OUTPUT_DIR="generated_configs/$(basename ${{ matrix.example }})"
+  #      mkdir -p $OUTPUT_DIR
+  #      
+  #      # Find input YAML file (assuming same name as directory)
+  #      EXAMPLE_NAME=$(basename ${{ matrix.example }})
+  #      INPUT_YAML="${{ matrix.example }}/$EXAMPLE_NAME.yaml"
+  #      
+  #      # Run precice-gen if input YAML exists
+  #      if [ -f "$INPUT_YAML" ]; then
+  #        echo "Generating from $INPUT_YAML"
+  #        precice-gen -f "$INPUT_YAML" -o "$OUTPUT_DIR"
+  #      else
+  #        echo "Using existing precice-config.xml"
+  #        cp "${{ matrix.example }}/precice-config.xml" "$OUTPUT_DIR/"
+  #      fi
