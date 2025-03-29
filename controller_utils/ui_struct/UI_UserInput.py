@@ -83,7 +83,7 @@ class UI_UserInput(object):
                             'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
                             'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
                             'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
-                        },
+                        }if any(acceleration.get('imvj-restart-mode', {}).values()) else None,
                         'display_standard_values': acceleration.get('display_standard_values', 'false')
                     }
                 # If display_standard_values is false, set default values to none so they wont get displayed
