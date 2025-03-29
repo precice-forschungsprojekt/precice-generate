@@ -61,27 +61,54 @@ class UI_UserInput(object):
             # --- Parse Acceleration ---
             if 'acceleration' in etree:
                 acceleration = etree['acceleration']
-                self.acceleration = {
-                    'name': acceleration.get('name', 'IQN-ILS'),
-                    'initial-relaxation': acceleration.get('initial-relaxation', None),
-                    'preconditioner': {
-                        'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
-                        'type': acceleration.get('preconditioner', {}).get('type', None)
-                    },
-                    'filter': {
-                        'limit': acceleration.get('filter', {}).get('limit', 1e-16),
-                        'type': acceleration.get('filter', {}).get('type', None)
-                    },
-                    'max-used-iterations': acceleration.get('max-used-iterations', None),
-                    'time-windows-reused': acceleration.get('time-windows-reused', None),
-                    'imvj-restart-mode': {
-                        'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
-                        'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
-                        'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
-                        'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
-                    },
-                    'display_standard_values': acceleration.get('display_standard_values', 'false')
-                }
+                display_standard_values = acceleration.get('display_standard_values', 'false')
+                if display_standard_values.lower() not in ['true', 'false']:
+                    mylog.rep_error(f"Invalid display_standard_values value: {display_standard_values}. Must be 'true' or 'false'.")
+                if display_standard_values.lower() == 'true':
+                    self.acceleration = {
+                        'name': acceleration.get('name', 'IQN-ILS'),
+                        'initial-relaxation': acceleration.get('initial-relaxation', None),
+                        'preconditioner': {
+                            'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
+                            'type': acceleration.get('preconditioner', {}).get('type', None)
+                        },
+                        'filter': {
+                            'limit': acceleration.get('filter', {}).get('limit', 1e-16),
+                            'type': acceleration.get('filter', {}).get('type', None)
+                        },
+                        'max-used-iterations': acceleration.get('max-used-iterations', None),
+                        'time-windows-reused': acceleration.get('time-windows-reused', None),
+                        'imvj-restart-mode': {
+                            'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
+                            'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
+                            'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
+                            'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
+                        },
+                        'display_standard_values': acceleration.get('display_standard_values', 'false')
+                    }
+                # If display_standard_values is false, set default values to none so they wont get displayed
+                else:
+                    self.acceleration = {
+                        'name': acceleration.get('name', 'IQN-ILS'),
+                        'initial-relaxation': acceleration.get('initial-relaxation', None),
+                        'preconditioner': {
+                            'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', None),
+                            'type': acceleration.get('preconditioner', {}).get('type', None)
+                        } if any(acceleration.get('preconditioner', {}).values()) else None,
+                        'filter': {
+                            'limit': acceleration.get('filter', {}).get('limit', None),
+                            'type': acceleration.get('filter', {}).get('type', None)
+                        } if any(acceleration.get('filter', {}).values()) else None,
+                        'max-used-iterations': acceleration.get('max-used-iterations', None),
+                        'time-windows-reused': acceleration.get('time-windows-reused', None),
+                        'imvj-restart-mode': {
+                            'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
+                            'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
+                            'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
+                            'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
+                        } if any(acceleration.get('imvj-restart-mode', {}).values()) else None,
+                        'display_standard_values': acceleration.get('display_standard_values', 'false')
+                    }
                 
             
             # --- Parse participants ---
