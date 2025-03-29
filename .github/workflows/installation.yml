@@ -1,10 +1,14 @@
 ﻿name: Test Production and Dev Installations
 
 on:
-  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published, created]
   push:
     branches: [main]
-
+  pull_request:
+    paths:
+      - 'pyproject.toml'
 jobs:
   test-installations:
     name: Test Installations (Python ${{ matrix.python-version }} - ${{ matrix.install-type }})
