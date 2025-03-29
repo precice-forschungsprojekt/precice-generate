@@ -1,17 +1,24 @@
-﻿name: Install and Test Precice-generate
+﻿name: Test Production and Dev Installations
 
 on:
   pull_request:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  test-production-install:
-    name: Test Production Installation
+  test-installations:
+    name: Test Installations (Python ${{ matrix.python-version }} - ${{ matrix.install-type }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12"]  # Test on supported Python versions
+        python-version: ["3.11", "3.12"]
+        install-type: ["production", "development"]
+        include:
+          - install-type: "production"
+            install-command: "pip install ."
+          - install-type: "development"
+            install-command: "pip install -e ."
 
     steps:
     - name: Checkout code
@@ -27,13 +34,20 @@ jobs:
         python -m venv venv
         source venv/bin/activate
 
-    - name: Install package (non-editable)
+    - name: Install package (${{ matrix.install-type }})
       run: |
         source venv/bin/activate
         pip install --upgrade pip
-        pip install .  # Critical: No `-e` for real installation test
+        ${{ matrix.install-command }}
 
     - name: Verify CLI works
       run: |
         source venv/bin/activate
-        precice-gen --help  # Basic smoke test
+        precice-gen --help
+
+    #- name: Run basic functionality test
+    #  run: |
+    #    source venv/bin/activate
+    #    # Add actual test commands here
+    #    # Example: precice-gen test-input.yaml
+    #    echo "Install type ${{ matrix.install-type }} verified successfully"
