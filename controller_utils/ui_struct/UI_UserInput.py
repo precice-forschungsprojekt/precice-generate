@@ -82,8 +82,7 @@ class UI_UserInput(object):
                     },
                     'display_standard_values': acceleration.get('display_standard_values', 'false')
                 }
-            else:
-                self.acceleration = {'display_standard_values': 'false'}
+                
             
             # --- Parse participants ---
             self.participants = {}

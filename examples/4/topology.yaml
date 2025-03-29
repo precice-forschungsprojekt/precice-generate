@@ -14,10 +14,6 @@ participants:
       solver: CalculiX
       dimensionality: 2
 
-
-acceleration:
-  display_standard_values: false
-
 exchanges:
   - from: Fluid-Top
     from-patch: surface

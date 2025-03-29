@@ -247,6 +247,7 @@ class PS_ImplicitPostProcessing(object):
             Only for explicit coupling (one directional) this should not write out anything """
 
         self.name = config.acceleration["name"] if config.acceleration is not None else "IQN-ILS"
+        self.display_standard_values = config.acceleration["display_standard_values"] if config.acceleration is not None else "false"
 
         post_processing = etree.SubElement(tag, "acceleration:" + self.name)
 
@@ -281,13 +282,7 @@ class PS_ImplicitPostProcessing(object):
         write_mappings = [m.copy() for m in config.mappings_write]
 
         acceleration = config.acceleration
-        if acceleration is not None:
-            print("###################################")
-            print(acceleration)
-            print(acceleration["display_standard_values"])
-            print("###################################")
-        if acceleration is not None:
-        # if acceleration is not None and str(acceleration.get("display_standard_values", "")).lower() != "true":
+        if acceleration is not None and self.display_standard_values:
             for a, b in acceleration.items():
                 if b is not None:
                     if self.name == "IQN-ILS":
