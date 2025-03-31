@@ -45,12 +45,27 @@ jobs:
     #     pip install -e .
     #     cd ..
 
-    # Discover examples
+    # Discover examples with YAML files
     - name: Find all examples
       id: find-examples
       run: |
-        EXAMPLES=$(find examples -name "precice-config.xml" -exec dirname {} \; | sort | uniq)
-        EXAMPLES_JSON=$(echo "$EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
+        # Find all example directories containing YAML files (looking for <dirname>.yaml pattern)
+        EXAMPLES=$(find examples -type f -name "*.yaml" | while read -r yaml_file; do
+          dir=$(dirname "$yaml_file")
+          base=$(basename "$yaml_file" .yaml)
+          if [ "$(basename "$dir")" = "$base" ]; then
+            echo "$dir"
+          fi
+        done | sort | uniq)
+        
+        # Also include examples with existing precice-config.xml
+        EXAMPLES_WITH_XML=$(find examples -name "precice-config.xml" -exec dirname {} \; | sort | uniq)
+        
+        # Combine and deduplicate
+        ALL_EXAMPLES=$(echo -e "$EXAMPLES\n$EXAMPLES_WITH_XML" | sort | uniq)
+        
+        # Convert to JSON array for GitHub Actions output
+        EXAMPLES_JSON=$(echo "$ALL_EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
         echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
         echo "Found examples: $EXAMPLES_JSON"
 
@@ -61,44 +76,74 @@ jobs:
       run: |
         source venv/bin/activate
         
-        # Create output directory
-        mkdir -p _generated
-        
         # Process each example
         for example in $(echo "$EXAMPLES" | jq -r '.[]'); do
+          echo "========================================"
           echo "Processing example: $example"
           example_name=$(basename "$example")
-          
-          # Create example-specific output directory
-          output_dir="_generated/$example_name"
-          mkdir -p "$output_dir"
           
           # Check for YAML input file
           yaml_file="$example/$example_name.yaml"
           
           if [ -f "$yaml_file" ]; then
             echo "Generating configuration from $yaml_file"
-            precice-gen -f "$yaml_file" -o "$output_dir"
+            precice-gen -f "$yaml_file" -o "$(dirname "$yaml_file")"
+            
+            # Check if generation was successful
+            if [ -f "$example/_generated/precice-config.xml" ]; then
+              echo "Generated configuration found in $example/_generated/"
+            else
+              echo "Error: Generation failed - no precice-config.xml created"
+              exit 1
+            fi
           else
             echo "Using existing precice-config.xml"
-            cp "$example/precice-config.xml" "$output_dir/"
+            if [ ! -f "$example/precice-config.xml" ]; then
+              echo "Error: No precice-config.xml found in $example"
+              exit 1
+            fi
+          fi
+          
+          # Determine which config file to validate
+          if [ -f "$example/_generated/precice-config.xml" ]; then
+            config_file="$example/_generated/precice-config.xml"
+          else
+            config_file="$example/precice-config.xml"
           fi
           
           # # Validate the configuration
-          # if [ -f "$output_dir/precice-config.xml" ]; then
-          #   echo "Validating configuration..."
-          #   python config-checker/preciceconfigchecker/cli.py validate "$output_dir/precice-config.xml"
-          #   echo "Validation successful for $example_name"
-          # else
-          #   echo "Error: No configuration file generated for $example_name"
-          #   exit 1
-          # fi
+          # echo "Validating configuration at $config_file..."
+          # python config-checker/preciceconfigchecker/cli.py validate "$config_file"
+          # echo "Validation successful for $example_name"
         done
 
-    # # Optional: Upload generated configs as artifact
-    # - name: Upload generated configurations
-    #   if: always()
+    # # Collect all generated artifacts
+    # - name: Collect generated configurations
+    #   run: |
+    #     # Create directory for artifacts
+    #     mkdir -p artifacts
+        
+    #     # Find and copy all _generated directories
+    #     find examples -type d -name "_generated" | while read -r gen_dir; do
+    #       example_dir=$(dirname "$gen_dir")
+    #       example_name=$(basename "$example_dir")
+          
+    #       # Copy the _generated directory to artifacts
+    #       mkdir -p "artifacts/$example_name"
+    #       cp -r "$gen_dir" "artifacts/$example_name/"
+          
+    #       # Also copy the original precice-config.xml if it exists
+    #       if [ -f "$example_dir/precice-config.xml" ]; then
+    #         cp "$example_dir/precice-config.xml" "artifacts/$example_name/original_precice-config.xml"
+    #       fi
+    #     done
+        
+    #     echo "Collected artifacts:"
+    #     tree artifacts
+
+    # # Upload all artifacts
+    # - name: Upload artifacts
     #   uses: actions/upload-artifact@v3
     #   with:
-    #     name: generated-configs
-    #     path: _generated/
+    #     name: precice-configurations
+    #     path: artifacts/
