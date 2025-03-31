@@ -21,9 +21,9 @@ class UI_SimulationInfo(object):
         """ Method to initialize fields from a parsed YAML file node """
         # catch exceptions if these items are not in the list
         try:
-            self.steady = etree["steady-state"]
-            self.NrTimeStep = etree["timesteps"]
-            self.Dt = etree["time-window-size"]
+            self.steady = etree.get("steady-state")
+            self.NrTimeStep = etree.get("timesteps")
+            self.Dt = etree.get("time-window-size")
             self.display_standard_values = etree.get('display_standard_values', 'false')
             self.max_iterations = etree.get("max-iterations")
             self.accuracy = etree.get("accuracy")

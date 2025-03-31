@@ -177,11 +177,20 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-explicit" )
-        print(self.display_standard_values)
         if self.display_standard_values == 'true':
+            if self.NrTimeStep is None:
+                self.NrTimeStep = 1e-3
+            if self.Dt is None:
+                self.Dt = 1e-3
             i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
             attr = { "value": str(self.Dt)}
             i = etree.SubElement(coupling_scheme, "time-window-size", attr)
+        else:
+            if self.NrTimeStep is not None:
+                i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
+            if self.Dt is not None:
+                attr = { "value": str(self.Dt)}
+                i = etree.SubElement(coupling_scheme, "time-window-size", attr)
 
         # write out the exchange but not the convergence (if empty it will not be written)
         self.write_exchange_and_convergance(config, coupling_scheme, "")
@@ -222,14 +231,29 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
-        print(self.display_standard_values)
 
         if self.display_standard_values== 'true':
+            if self.NrTimeStep is None:
+                self.NrTimeStep = 1e-3
+            if self.Dt is None:
+                self.Dt = 1e-3
+            if self.maxIteration is None:
+                self.maxIteration = 50
             i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
             attr = { "value": str(self.Dt)}
             i = etree.SubElement(coupling_scheme, "time-window-size", attr)
             i = etree.SubElement(coupling_scheme, "max-iterations", value=str(self.maxIteration))
             #i = etree.SubElement(coupling_scheme, "extrapolation-order", value=str(self.extrapolation_order))
+        else:
+            if self.NrTimeStep is not None:
+                i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
+            if self.Dt is not None:
+                attr = { "value": str(self.Dt)}
+                i = etree.SubElement(coupling_scheme, "time-window-size", attr)
+            if self.maxIteration is not None:
+                i = etree.SubElement(coupling_scheme, "max-iterations", value=str(self.maxIteration))
+            #if self.extrapolation_order is not None:
+            #    i = etree.SubElement(coupling_scheme, "extrapolation-order", value=str(self.extrapolation_order))
 
         # write out the exchange and the convergance rate
         self.write_exchange_and_convergance(config, coupling_scheme, str(self.relativeConverganceEps))
