@@ -38,7 +38,7 @@
           },
           "initial-relaxation": {
             "type": "number",
-            "description": "Initial under-relaxation factor",
+            "description": "Initial under-relaxation factor"
           },
           "preconditioner": {
             "type": "object",
