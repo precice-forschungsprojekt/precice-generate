@@ -39,10 +39,8 @@
                 "type": "string"
               }
             },
-            "required": [
-              "freeze-after",
-              "type"
-            ]
+            "required": [ "freeze-after" ],
+            "optional": [ "type" ]
           },
           "filter": {
             "type": "object",
@@ -54,10 +52,8 @@
                 "type": "string"
               }
             },
-            "required": [
-              "limit",
-              "type"
-            ]
+            "required": [ "limit" ],
+            "optional": [ "type" ]
           },
           "max-used-iterations": {
             "type": "integer"
