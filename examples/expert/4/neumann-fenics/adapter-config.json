@@ -1,0 +1,18 @@
+{
+    "participant_name": "Neumann",
+    "precice_config_file_name": "../precice-config.xml",
+    "interfaces": [
+        {
+            "mesh_name": "Neumann-Mesh",
+            "patches": [
+                "surface"
+            ],
+            "write_data_names": [
+                "Temperature"
+            ],
+            "read_data_names": [
+                "HeatTransfer"
+            ]
+        }
+    ]
+}
