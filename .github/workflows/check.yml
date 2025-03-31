@@ -126,9 +126,9 @@ jobs:
         echo "Collected artifacts:"
         tree artifacts
 
-    # Upload all artifacts
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: precice-configurations
-        path: artifacts/
+    # # Upload all artifacts
+    # - name: Upload artifacts
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: precice-configurations
+    #     path: artifacts/
