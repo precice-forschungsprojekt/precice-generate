@@ -232,7 +232,6 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
 
-        print(self.display_standard_values)
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
                 self.NrTimeStep = 1e-3
