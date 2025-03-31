@@ -178,7 +178,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-explicit" )
         print(self.display_standard_values)
-        if self.display_standard_values:
+        if self.display_standard_values == 'true':
             i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
             attr = { "value": str(self.Dt)}
             i = etree.SubElement(coupling_scheme, "time-window-size", attr)
@@ -224,7 +224,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
         print(self.display_standard_values)
 
-        if self.display_standard_values:
+        if self.display_standard_values== 'true':
             i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
             attr = { "value": str(self.Dt)}
             i = etree.SubElement(coupling_scheme, "time-window-size", attr)
