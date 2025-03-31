@@ -158,6 +158,7 @@ class UI_UserInput(object):
             # Group exchanges by unique participant pairs
             groups = {}
             for exchange in exchanges_list:
+                exchanges = exchange.get("data-type").lower() if  exchange.get("data-type") is not None else "scalar"
                 pair = tuple(sorted([exchange["from"], exchange["to"]]))
                 groups.setdefault(pair, []).append(exchange)
 

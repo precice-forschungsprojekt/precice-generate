@@ -12,6 +12,7 @@ class UI_Participant(object):
         self.solverType = ""
         self.list_of_couplings = [] # list of empty couplings
         self.solver_domain = "" # this shows if this participant is a fluid or structure or else solver
+        self.data_type = "scalar"
         pass
 
     def init_from_yaml(self, etree, participant_name: str, mylog: UT_PCErrorLogging):
@@ -21,6 +22,7 @@ class UI_Participant(object):
             self.name = participant_name
             self.solverName = etree["solver"]
             self.solverType = etree["solver-type"]
+            self.data_type = etree["data-type"]
         except:
             mylog.rep_error("Error in YAML initialization of the Participant.")
         pass

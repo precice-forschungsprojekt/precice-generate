@@ -204,9 +204,20 @@ class PS_PreCICEConfig(object):
             pass
 
         # 1 quantities
-        data_from_exchanges = [(exchange["data"], self.coupling_quantities[exchange["data"]].dim) for exchange in self.exchanges]
-        for data, dim in data_from_exchanges:
-            mystr = "scalar"
+        data_from_exchanges = []
+
+        for exchange in self.exchanges:
+            data_key = exchange.get("data")
+            data_type = exchange.get("data-type", "scalar") or "scalar"
+
+            # Safely get coupling_quantity
+            coupling_quantity = self.coupling_quantities.get(data_key)
+            dim = getattr(coupling_quantity, "dim", None)
+
+            data_from_exchanges.append((data_key, dim, data_type))
+
+        for data, dim, data_type in data_from_exchanges:
+            mystr = data_type
             if dim > 1:
                 mystr = "vector"
                 pass
