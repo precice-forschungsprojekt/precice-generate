@@ -1,286 +1,174 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-        "simulation": {
-            "type": "object",
-            "description": "Simulation configuration for legacy and new YAML structures",
-            "properties": {
-                "steady-state": {
-                    "type": "boolean",
-                    "description": "Whether the simulation is in steady-state",
-                    "default": false
-                },
-                "timesteps": {
-                    "type": "integer",
-                    "description": "Number of time steps",
-                    "minimum": 1,
-                    "default": 100
-                },
-                "time-window-size": {
-                    "type": ["number", "string"],
-                    "description": "Size of each time window, supports scientific notation",
-                    "pattern": "^[+-]?([0-9]*[.])?[0-9]+([eE][+-]?[0-9]+)?$",
-                    "default": "1e-3"
-                },
-                "accuracy": {
-                    "type": "string",
-                    "description": "Simulation accuracy level",
-                    "enum": ["low", "medium", "high"],
-                    "default": "medium"
-                },
-                "sync-mode": {
-                    "type": "string",
-                    "description": "Synchronization mode",
-                    "enum": ["on", "off"],
-                    "default": "on"
-                },
-                "mode": {
-                    "type": "string",
-                    "description": "Simulation mode",
-                    "enum": ["fundamental", "advanced"],
-                    "default": "fundamental"
-                }
-            }
+      "coupling-scheme": {
+        "type": "object",
+        "properties": {
+          "max-time": {
+            "type": "integer"
+          },
+          "time-window-size": {
+            "type": "number"
+          },
+          "max-iterations": {
+            "type": "integer"
+          }
         },
-        "coupling-scheme": {
+        "required": [
+          "max-time",
+          "time-window-size",
+          "max-iterations"
+        ]
+      },
+      "acceleration": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "initial-relaxation": {
+            "type": "number"
+          },
+          "preconditioner": {
             "type": "object",
             "properties": {
-                "max-time": {
-                    "type": ["number", "string"],
-                    "description": "Maximum simulation time, supports scientific notation",
-                    "pattern": "^[+-]?([0-9]*[.])?[0-9]+([eE][+-]?[0-9]+)?$"
-                },
-                "time-window-size": {
-                    "type": ["number", "string"],
-                    "description": "Size of each time window, supports scientific notation",
-                    "pattern": "^[+-]?([0-9]*[.])?[0-9]+([eE][+-]?[0-9]+)?$"
-                },
-                "relative-accuracy": {
-                    "type": ["number", "string"],
-                    "description": "Relative accuracy for coupling, supports scientific notation",
-                    "pattern": "^[+-]?([0-9]*[.])?[0-9]+([eE][+-]?[0-9]+)?$"
-                },
-                "sync-mode": {
-                    "type": "string",
-                    "enum": ["on", "off"],
-                    "description": "Synchronization mode for coupling",
-                    "default": "on"
-                },
-                "mode": {
-                    "type": "string",
-                    "enum": ["fundamental", "advanced"],
-                    "description": "Simulation mode",
-                    "default": "fundamental"
-                },
-                "coupling-type": {
-                    "type": "string",
-                    "enum": ["explicit", "implicit"],
-                    "description": "Type of coupling scheme",
-                    "default": "explicit"
-                },
-                "max-iterations": {
-                    "type": "integer",
-                    "description": "Maximum number of iterations for implicit coupling",
-                    "minimum": 1,
-                    "maximum": 100,
-                    "default": 50
-                },
-                "extrapolation-order": {
-                    "type": "integer",
-                    "description": "Order of extrapolation for implicit coupling",
-                    "enum": [1, 2, 3],
-                    "default": 2
-                }
+              "freeze-after": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              }
             },
-            "required": ["max-time", "time-window-size", "relative-accuracy"],
-            "additionalProperties": false
-        },
-        "participants": {
+            "required": [
+              "freeze-after",
+              "type"
+            ]
+          },
+          "filter": {
             "type": "object",
-            "description": "Mapping of participant names to their solver configurations",
-            "additionalProperties": {
-                "anyOf": [
-                    {
-                        "type": "string"
-                    },
-                    {
-                        "type": "object",
-                        "properties": {
-                            "solver": {"type": "string"},
-                            "solver-type": {"type": "string", 
-                                "enum": ["Fluid", "Solid", "Heat", "NotDefined"]},
-                            "solver-domain": {"type": "string", 
-                                "enum": ["fluid", "structure", "heat", "other"]},
-                            "interface": {"type": "string"},
-                            "dimensionality": {"type": "integer", "enum": [1, 2, 3]},
-                            "nature": {"type": "string", "enum": ["STATIONARY", "TRANSIENT"]},
-                            "boundary-codes": {
-                                "type": "array",
-                                "items": {"type": "integer", "minimum": -1},
-                                "maxItems": 2
-                            }
-                        },
-                        "required": ["solver", "solver-type"]
-                    }
-                ]
-            }
-        },
-        "couplings": {
-            "type": "array",
-            "description": "List of coupling configurations between participants",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "description": "Type of coupling",
-                        "enum": ["fsi", "cht", "f2s"]
-                    },
-                    "participants": {
-                        "type": "array",
-                        "description": "Participants involved in the coupling",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "Participant name"
-                                },
-                                "interface": {
-                                    "type": "string",
-                                    "description": "Interface patch name"
-                                },
-                                "domain": {
-                                    "type": "string",
-                                    "description": "Solver domain",
-                                    "enum": ["fluid", "structure", "heat"]
-                                }
-                            },
-                            "required": ["name", "interface"]
-                        },
-                        "minItems": 2,
-                        "maxItems": 2
-                    }
-                },
-                "required": ["type", "participants"]
+            "properties": {
+              "limit": {
+                "type": "number"
+              },
+              "type": {
+                "type": "string"
+              }
             },
-            "maxItems": 10
+            "required": [
+              "limit",
+              "type"
+            ]
+          },
+          "max-used-iterations": {
+            "type": "integer"
+          },
+          "time-windows-reused": {
+            "type": "integer"
+          }
         },
-        "exchanges": {
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 10,
-            "items": {
-                "type": "object",
-                "properties": {
-                    "from": {
-                        "type": "string",
-                        "description": "Source participant name",
-                        "minLength": 1,
-                        "maxLength": 50
-                    },
-                    "from-patch": {
-                        "type": "string", 
-                        "description": "Source patch/interface name",
-                        "minLength": 1,
-                        "maxLength": 50
-                    },
-                    "to": {
-                        "type": "string",
-                        "description": "Target participant name",
-                        "minLength": 1,
-                        "maxLength": 50
-                    },
-                    "to-patch": {
-                        "type": "string",
-                        "description": "Target patch/interface name",
-                        "minLength": 1,
-                        "maxLength": 50
-                    },
-                    "data": {
-                        "type": "string",
-                        "description": "Type of data being exchanged",
-                        "enum": [
-                            "Force", "Displacement", 
-                            "Temperature", "HeatTransfer", 
-                            "Pressure", "Velocity"
-                        ],
-                        "minLength": 1,
-                        "maxLength": 50
-                    },
-                    "type": {
-                        "type": "string",
-                        "enum": ["strong", "weak"],
-                        "description": "Coupling type"
-                    },
-                    "read-quantities": {
-                        "type": "array",
-                        "description": "Quantities read by the target participant",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "enum": [
-                                        "Force", "Displacement", 
-                                        "Temperature", "HeatTransfer", 
-                                        "Pressure", "Velocity"
-                                    ]
-                                },
-                                "unit": {
-                                    "type": "string",
-                                    "description": "Unit of the quantity"
-                                },
-                                "mapping": {
-                                    "type": "string",
-                                    "enum": ["conservative", "consistent"],
-                                    "description": "Mapping type for the quantity"
-                                }
-                            },
-                            "required": ["name"]
-                        }
-                    },
-                    "write-quantities": {
-                        "type": "array",
-                        "description": "Quantities written by the source participant",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "enum": [
-                                        "Force", "Displacement", 
-                                        "Temperature", "HeatTransfer", 
-                                        "Pressure", "Velocity"
-                                    ]
-                                },
-                                "unit": {
-                                    "type": "string",
-                                    "description": "Unit of the quantity"
-                                },
-                                "mapping": {
-                                    "type": "string",
-                                    "enum": ["conservative", "consistent"],
-                                    "description": "Mapping type for the quantity"
-                                }
-                            },
-                            "required": ["name"]
-                        }
-                    }
-                },
-                "required": ["from", "from-patch", "to", "to-patch", "data", "type"]
+        "required": [
+          "name",
+          "initial-relaxation",
+          "preconditioner",
+          "filter",
+          "max-used-iterations",
+          "time-windows-reused"
+        ]
+      },
+      "participants": {
+        "type": "object",
+        "properties": {
+          "Fluid-Top": {
+            "type": "object",
+            "properties": {
+              "solver": {
+                "type": "string"
+              },
+              "dimensionality": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "solver",
+              "dimensionality"
+            ]
+          },
+          "Fluid-Bottom": {
+            "type": "object",
+            "properties": {
+              "solver": {
+                "type": "string"
+              },
+              "dimensionality": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "solver",
+              "dimensionality"
+            ]
+          },
+          "Solid": {
+            "type": "object",
+            "properties": {
+              "solver": {
+                "type": "string"
+              },
+              "dimensionality": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "solver",
+              "dimensionality"
+            ]
+          }
+        },
+        "required": [
+          "Fluid-Top",
+          "Fluid-Bottom",
+          "Solid"
+        ]
+      },
+      "exchanges": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string"
+            },
+            "from-patch": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            },
+            "to-patch": {
+              "type": "string"
+            },
+            "data": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
             }
+          },
+          "required": [
+            "from",
+            "from-patch",
+            "to",
+            "to-patch",
+            "data",
+            "type"
+          ]
         }
+      }
     },
-    "oneOf": [
-        {
-            "required": ["coupling-scheme", "participants", "exchanges"]
-        },
-        {
-            "required": ["simulation", "participants", "couplings"]
-        }
-    ],
-    "additionalProperties": false,
-    "description": "Advanced topology configuration for multi-physics simulations with support for legacy and new YAML structures"
-}
+    "required": [
+      "coupling-scheme",
+      "acceleration",
+      "participants",
+      "exchanges"
+    ]
+  }
