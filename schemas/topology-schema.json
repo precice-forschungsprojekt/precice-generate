@@ -15,6 +15,9 @@
           },
           "display_standard_values": {
             "type": "boolean"
+          },
+          "timesteps": {
+            "type": "integer"
           }
         },
         "required": [ ],
