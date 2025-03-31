@@ -14,7 +14,8 @@
             "type": "integer"
           },
           "display_standard_values": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
           }
         },
         "required": [ ],
@@ -84,7 +85,8 @@
             "optional": [  ]
           },
           "display_standard_values": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false
           }
         },
         "required": [ ],
