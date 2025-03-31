@@ -18,7 +18,7 @@
           }
         },
         "required": [ ],
-        "optional": [ "display_standard_values", "max-time", "time-window-size", "max-iterations" ]
+        "optional": [ "display_standard_values", "max-time", "time-window-size", "max-iterations", "timesteps" ]
       },
       "acceleration": {
         "type": "object",
