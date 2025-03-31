@@ -24,7 +24,7 @@
         "optional": [ "display_standard_values", "max-time", "time-window-size", "max-iterations", "timesteps" ]
       },
       "acceleration": {
-        "oneOf": ["constant", "aitken", "IQN-ILS", "IQN-IMVJ"],
+        "type": "object",
         "properties": {
           "name": {
             "type": "string"
