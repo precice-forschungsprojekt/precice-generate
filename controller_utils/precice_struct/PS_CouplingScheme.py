@@ -172,11 +172,12 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
         self.NrTimeStep = simulation_conf.NrTimeStep
         self.Dt = simulation_conf.Dt
         self.display_standard_values = simulation_conf.display_standard_values
+        self.coupling = simulation_conf.coupling
         pass
 
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
-        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-explicit" )
+        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-explicit" )
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
                 self.NrTimeStep = 1e-3
@@ -225,12 +226,13 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         self.Dt = simulation_conf.Dt
         self.maxIteration = simulation_conf.max_iterations
         self.display_standard_values = simulation_conf.display_standard_values
+        self.coupling = simulation_conf.coupling
 
         pass
 
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
-        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
+        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-implicit" )
 
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:

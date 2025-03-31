@@ -15,6 +15,7 @@ class UI_SimulationInfo(object):
         self.mode = "on"
         self.sync_mode = "fundamental"
         self.display_standard_values = "false"
+        self.coupling = "parallel"
         pass
 
     def init_from_yaml(self, etree, mylog: UT_PCErrorLogging):
@@ -29,6 +30,7 @@ class UI_SimulationInfo(object):
             self.accuracy = etree.get("accuracy")
             self.sync_mode = etree.get("synchronize")
             self.mode = etree.get("mode")
+            self.coupling = etree.get("coupling")
         except:
             mylog.rep_error("Error in YAML initialization of the Simulator info.")
         pass
