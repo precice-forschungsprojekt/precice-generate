@@ -1,7 +1,6 @@
 coupling-scheme:
     max-time: 1e-1
     time-window-size: 1e-3
-    relative-accuracy: 1e-4
 participants:
     Fluid: SU2
     Solid: Calculix
