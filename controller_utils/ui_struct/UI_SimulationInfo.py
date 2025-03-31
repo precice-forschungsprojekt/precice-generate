@@ -14,6 +14,7 @@ class UI_SimulationInfo(object):
         self.accuracy = "medium"
         self.mode = "on"
         self.sync_mode = "fundamental"
+        self.display_standard_values = "false"
         pass
 
     def init_from_yaml(self, etree, mylog: UT_PCErrorLogging):
@@ -23,6 +24,7 @@ class UI_SimulationInfo(object):
             self.steady = etree["steady-state"]
             self.NrTimeStep = etree["timesteps"]
             self.Dt = etree["time-window-size"]
+            self.display_standard_values = etree.get('display_standard_values', 'false')
             self.max_iterations = etree.get("max-iterations", 50)
             self.accuracy = etree["accuracy"]
             self.sync_mode = etree.get("synchronize", "on")
