@@ -1,54 +1,42 @@
 ﻿name: Validate Example Configurations
 
 on:
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
   push:
-    branches: [main]  # Runs on pushes to main branch
-  pull_request:      # Runs on pull requests
+    branches: [main]
+  pull_request:
 
 jobs:
-  # Phase 1: Setup and discovery
-  discover-and-test:
+  process-examples:
     runs-on: ubuntu-latest
-    outputs:
-      examples: ${{ steps.find-examples.outputs.examples }}  # Outputs discovered examples for next job
     
     steps:
-    - name: Checkout repository
+    # Initial setup
+    - name: Checkout code
       uses: actions/checkout@v4
-      
-    # Setup Python environment
+
     - name: Set up Python 3.12
       uses: actions/setup-python@v4
       with:
         python-version: '3.12'
-    
-    # # Install system dependencies
-    # - name: Install system packages
+
+    # - name: Install system dependencies
     #   run: |
     #     sudo apt-get update
-    #     sudo apt install -y libopenmpi-dev
-        
-    # # Install preCICE
+    #     sudo apt install -y libopenmpi-dev jq
+
     # - name: Install preCICE
     #   run: |
     #     wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
     #     sudo apt install -y ./libprecice3_3.1.2_noble.deb
-        
-    # Setup virtual environment
-    - name: Create Python virtual environment
+
+    - name: Setup Python environment
       run: |
         python -m venv venv
         source venv/bin/activate
         python -m pip install --upgrade pip setuptools cython
-        
-    # Install precice-gen
-    - name: Install precice-gen
-      run: |
-        source venv/bin/activate
         pip install .
-        
-    # # Install config-checker
+
     # - name: Install config-checker
     #   run: |
     #     source venv/bin/activate
@@ -56,84 +44,61 @@ jobs:
     #     cd config-checker
     #     pip install -e .
     #     cd ..
-        
-    # Verify installations
-    - name: Verify precice-gen installation
-      run: |
-        source venv/bin/activate
-        precice-gen --help
-        
-    # - name: Verify config-checker installation
-    #   run: |
-    #     source venv/bin/activate
-    #     cd config-checker
-    #     python preciceconfigchecker/cli.py
-    #     cd ..
-        
-    # Discover examples to process
-    - name: Discover example configurations
+
+    # Discover examples
+    - name: Find all examples
       id: find-examples
       run: |
-        # Find all example directories containing precice-config.xml
         EXAMPLES=$(find examples -name "precice-config.xml" -exec dirname {} \; | sort | uniq)
-        
-        # Convert to JSON array for GitHub Actions output
         EXAMPLES_JSON=$(echo "$EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
-        
         echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
         echo "Found examples: $EXAMPLES_JSON"
-        
-  # Phase 2: Configuration generation
-  generate-configurations:
-    runs-on: ubuntu-latest
-    needs: discover-and-test  # Depends on discovery phase
-    strategy:
-      matrix:
-        example: ${{ fromJson(needs.discover-and-test.outputs.examples) }}  # Parallel execution per example
-    
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-        
-    - name: Setup environment
+
+    # Process each example
+    - name: Process examples
+      env:
+        EXAMPLES: ${{ steps.find-examples.outputs.examples }}
       run: |
-        python -m venv venv
         source venv/bin/activate
-        pip install .
         
-    - name: Process example (${{ matrix.example }})
-      run: |
-        echo "Processing example: ${{ matrix.example }}"
+        # Create output directory
+        mkdir -p _generated
         
-        # Create output directory structure
-        EXAMPLE_NAME=$(basename "${{ matrix.example }}")
-        OUTPUT_DIR="generated_configs/$EXAMPLE_NAME"
-        mkdir -p "$OUTPUT_DIR"
-        
-        # Check for input YAML file
-        INPUT_YAML="${{ matrix.example }}/$EXAMPLE_NAME.yaml"
-        
-        if [ -f "$INPUT_YAML" ]; then
-          echo "Generating configuration from YAML file"
-          precice-gen -f "$INPUT_YAML" -o "$OUTPUT_DIR"
-          echo "Generated configuration saved to $OUTPUT_DIR"
-        else
-          echo "Using existing precice-config.xml"
-          cp "${{ matrix.example }}/precice-config.xml" "$OUTPUT_DIR/"
-        fi
-        
-        # # Validate the generated configuration
-        # if [ -f "$OUTPUT_DIR/precice-config.xml" ]; then
-        #   echo "Validating configuration..."
-        #   cd config-checker
-        #   python preciceconfigchecker/cli.py validate "../$OUTPUT_DIR/precice-config.xml"
-        #   cd ..
-        # else
-        #   echo "Error: No configuration file found in output directory"
-        #   exit 1
-        # fi
+        # Process each example
+        for example in $(echo "$EXAMPLES" | jq -r '.[]'); do
+          echo "Processing example: $example"
+          example_name=$(basename "$example")
+          
+          # Create example-specific output directory
+          output_dir="_generated/$example_name"
+          mkdir -p "$output_dir"
+          
+          # Check for YAML input file
+          yaml_file="$example/$example_name.yaml"
+          
+          if [ -f "$yaml_file" ]; then
+            echo "Generating configuration from $yaml_file"
+            precice-gen -f "$yaml_file" -o "$output_dir"
+          else
+            echo "Using existing precice-config.xml"
+            cp "$example/precice-config.xml" "$output_dir/"
+          fi
+          
+          # # Validate the configuration
+          # if [ -f "$output_dir/precice-config.xml" ]; then
+          #   echo "Validating configuration..."
+          #   python config-checker/preciceconfigchecker/cli.py validate "$output_dir/precice-config.xml"
+          #   echo "Validation successful for $example_name"
+          # else
+          #   echo "Error: No configuration file generated for $example_name"
+          #   exit 1
+          # fi
+        done
+
+    # # Optional: Upload generated configs as artifact
+    # - name: Upload generated configurations
+    #   if: always()
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: generated-configs
+    #     path: _generated/
