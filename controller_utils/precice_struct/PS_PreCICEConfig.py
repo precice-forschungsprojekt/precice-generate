@@ -208,7 +208,7 @@ class PS_PreCICEConfig(object):
 
         for exchange in self.exchanges:
             data_key = exchange.get("data")
-            data_type = exchange.get("data-type", "scalar") or "scalar"
+            data_type = exchange.get("data-type")
 
             # Safely get coupling_quantity
             coupling_quantity = self.coupling_quantities.get(data_key)
@@ -217,8 +217,12 @@ class PS_PreCICEConfig(object):
             data_from_exchanges.append((data_key, dim, data_type))
 
         for data, dim, data_type in data_from_exchanges:
-            mystr = data_type
+            mystr = "scalar"
+            if data_type is not None:
+                mystr = data_type
             if dim > 1:
+                if data_type == "scalar":
+                    log.error(f"Data {data} is a vector, but data-type is set to scalar.")
                 mystr = "vector"
                 pass
             data_tag = etree.SubElement(precice_configuration_tag, etree.QName("data:"+mystr),

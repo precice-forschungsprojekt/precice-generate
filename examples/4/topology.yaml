@@ -18,6 +18,7 @@ exchanges:
       to: Neumann
       to-patch: surface
       data: HeatTransfer # Fluid reads heat flux
+      data-type: vector
       type: strong
     - from: Neumann
       from-patch: surface
