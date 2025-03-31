@@ -25,10 +25,10 @@ class UI_SimulationInfo(object):
             self.NrTimeStep = etree["timesteps"]
             self.Dt = etree["time-window-size"]
             self.display_standard_values = etree.get('display_standard_values', 'false')
-            self.max_iterations = etree.get("max-iterations", 50)
-            self.accuracy = etree["accuracy"]
-            self.sync_mode = etree.get("synchronize", "on")
-            self.mode = etree.get("mode", "fundamental")
+            self.max_iterations = etree.get("max-iterations")
+            self.accuracy = etree.get("accuracy")
+            self.sync_mode = etree.get("synchronize")
+            self.mode = etree.get("mode")
         except:
             mylog.rep_error("Error in YAML initialization of the Simulator info.")
         pass

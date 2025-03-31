@@ -27,13 +27,13 @@ class UI_UserInput(object):
         if "coupling-scheme" in etree and "participants" in etree and "exchanges" in etree:
             # --- Parse simulation info from 'coupling-scheme' ---
             simulation_info = etree["coupling-scheme"]
-            self.sim_info.sync_mode = simulation_info.get("sync-mode", "on")
-            self.sim_info.mode = simulation_info.get("mode", "fundamental")
-            self.sim_info.steady = False
-            self.sim_info.NrTimeStep = simulation_info.get("max-time", 1e-3)
-            self.sim_info.Dt = simulation_info.get("time-window-size", 1e-3)
-            self.sim_info.max_iterations = simulation_info.get("max-iterations", 50)
-            self.sim_info.accuracy = "medium"
+            self.sim_info.sync_mode = simulation_info.get("sync-mode")
+            self.sim_info.mode = simulation_info.get("mode")
+            self.sim_info.steady = simulation_info.get("steady-state")
+            self.sim_info.NrTimeStep = simulation_info.get("max-time")
+            self.sim_info.Dt = simulation_info.get("time-window-size")
+            self.sim_info.max_iterations = simulation_info.get("max-iterations")
+            self.sim_info.accuracy = simulation_info.get("accuracy")
             self.sim_info.display_standard_values = simulation_info.get('display_standard_values', 'false')
 
             # Initialize coupling type+ acceleration to None
