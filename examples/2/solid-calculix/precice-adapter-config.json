@@ -1,0 +1,18 @@
+{
+  "participant_name": "Solid",
+  "precice_config_file_name": "../precice-config.xml",
+  "interfaces": [
+    {
+      "mesh_name": "Solid-Mesh",
+      "patches": [
+        "surface"
+      ],
+      "read_data_names": [
+        "Force"
+      ],
+      "write_data_names": [
+        "Displacement"
+      ]
+    }
+  ]
+}

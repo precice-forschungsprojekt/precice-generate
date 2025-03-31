@@ -1,27 +1,27 @@
 coupling-scheme:
     max-time: 1.0
-    time-window-size: 0.1  
+    time-window-size: 1e-3  
     relative-accuracy: 1e-4
-    max-iterations: 100
+    max-iterations: 30  
 
 participants:
-    Dirichlet: 
-        solver: DirichletFEniCS
+    Fluid: 
+        solver: OpenFOAM
         dimensionality: 2
-    Neumann: 
+    Solid: 
         solver: FEniCS
         dimensionality: 2
 
 exchanges:
-    - from: Dirichlet
+    - from: Solid
       from-patch: interface
-      to: Neumann
+      to: Fluid
       to-patch: surface
       data: HeatTransfer # Fluid reads heat flux
       type: strong
-    - from: Neumann
+    - from: Fluid
       from-patch: surface
-      to: Dirichlet
+      to: Solid
       to-patch: interface
       data: Temperature  # Solid reads temperature
       type: strong

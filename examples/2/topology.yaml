@@ -1,27 +1,22 @@
 coupling-scheme:
-    max-time: 1.0
-    time-window-size: 1e-3  
+    max-time: 1e-1
+    time-window-size: 1e-3
     relative-accuracy: 1e-4
-    max-iterations: 30  
-
 participants:
-    Fluid: 
-        solver: OpenFOAM
-        dimensionality: 2
-    Solid: 
-        solver: FEniCS
-        dimensionality: 2
-
+    Fluid: SU2
+    Solid: Calculix
 exchanges:
-    - from: Solid
-      from-patch: interface
-      to: Fluid
-      to-patch: surface
-      data: HeatTransfer # Fluid reads heat flux
-      type: strong
     - from: Fluid
-      from-patch: surface
+      from-patch: interface
       to: Solid
-      to-patch: interface
-      data: Temperature  # Solid reads temperature
+      to-patch: surface
+      data: Force
       type: strong
+    - from: Solid
+      from-patch: surface
+      to: Fluid
+      to-patch: interface
+      data: Displacement
+      type: strong
+        
+        
