@@ -1,6 +1,7 @@
 coupling-scheme:
   max-time: 1e-1
   time-window-size: 1e-3
+  max-iterations: 30
 
 participants:
   Fluid-Top: 
