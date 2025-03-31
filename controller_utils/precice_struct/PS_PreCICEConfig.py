@@ -275,7 +275,7 @@ class PS_PreCICEConfig(object):
                 for q_name in solver.quantities_read:
                     q = solver.quantities_read[q_name]
                     read_tag = etree.SubElement(solver_tag,
-                                                       "read-data", name=q.name, mesh=solvers_mesh_name)
+                                                       "read-data", name=q.instance_name, mesh=solvers_mesh_name)
                     for other_solvers_name in q.list_of_solvers:
                         other_solver = q.list_of_solvers[other_solvers_name]
                         # consistent only read
@@ -303,7 +303,7 @@ class PS_PreCICEConfig(object):
                 for q_name in solver.quantities_write:
                     q = solver.quantities_write[q_name]
                     write_tag = etree.SubElement(solver_tag,
-                                                       "write-data", name=q.name, mesh=solvers_mesh_name)
+                                                       "write-data", name=q.instance_name, mesh=solvers_mesh_name)
                     for other_solvers_name in q.list_of_solvers:
                         other_solver = q.list_of_solvers[other_solvers_name]
                         # conservative only write
