@@ -222,7 +222,7 @@ class PS_PreCICEConfig(object):
                 mystr = data_type
             if dim > 1:
                 if data_type == "scalar":
-                    log.error(f"Data {data} is a vector, but data-type is set to scalar.")
+                    log.rep_info(f"Data {data} is a vector, but data-type is set to scalar.")
                 mystr = "vector"
                 pass
             data_tag = etree.SubElement(precice_configuration_tag, etree.QName("data:"+mystr),
