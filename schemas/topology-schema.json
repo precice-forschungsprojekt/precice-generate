@@ -60,10 +60,32 @@
           },
           "time-windows-reused": {
             "type": "integer"
+          },
+          "imvj-restart-mode": {
+            "type": "object",
+            "properties": {
+              "truncation-threshold": {
+                "type": "number"
+              },
+              "chunk-size": {
+                "type": "integer"
+              },
+              "reused-time-windows-at-restart": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [ "truncation-threshold", "chunk-size", "reused-time-windows-at-restart","type" ],
+            "optional": [  ]
+          },
+          "display_standard_values": {
+            "type": "boolean"
           }
         },
         "required": [ ],
-        "optional": [ "name", "initial-relaxation", "preconditioner", "filter", "max-used-iterations", "time-windows-reused" ]
+        "optional": [ "name", "initial-relaxation", "preconditioner", "filter", "max-used-iterations", "time-windows-reused", "display_standard_values", "imvj-restart-mode" ]
       },
       "participants": {
         "type": "object",
