@@ -17,7 +17,8 @@
             "type": "boolean"
           }
         },
-        "required": [ ]
+        "required": [ ],
+        "optional": [ "display_standard_values", "max-time", "time-window-size", "max-iterations" ]
       },
       "acceleration": {
         "type": "object",
@@ -65,19 +66,13 @@
             "type": "integer"
           }
         },
-        "required": [
-          "name",
-          "initial-relaxation",
-          "preconditioner",
-          "filter",
-          "max-used-iterations",
-          "time-windows-reused"
-        ]
+        "required": [ ],
+        "optional": [ "name", "initial-relaxation", "preconditioner", "filter", "max-used-iterations", "time-windows-reused" ]
       },
       "participants": {
         "type": "object",
         "properties": {
-          "Fluid-Top": {
+          "participant-1": {
             "type": "object",
             "properties": {
               "solver": {
@@ -88,46 +83,12 @@
               }
             },
             "required": [
-              "solver",
-              "dimensionality"
-            ]
-          },
-          "Fluid-Bottom": {
-            "type": "object",
-            "properties": {
-              "solver": {
-                "type": "string"
-              },
-              "dimensionality": {
-                "type": "integer"
-              }
-            },
-            "required": [
-              "solver",
-              "dimensionality"
-            ]
-          },
-          "Solid": {
-            "type": "object",
-            "properties": {
-              "solver": {
-                "type": "string"
-              },
-              "dimensionality": {
-                "type": "integer"
-              }
-            },
-            "required": [
-              "solver",
-              "dimensionality"
-            ]
+              "solver"
+            ],
+            "optional": [ "dimensionality" ]
           }
         },
-        "required": [
-          "Fluid-Top",
-          "Fluid-Bottom",
-          "Solid"
-        ]
+        "minProperties": 2
       },
       "exchanges": {
         "type": "array",
@@ -149,6 +110,9 @@
             "data": {
               "type": "string"
             },
+            "data-type": {
+              "type": "string"
+            },
             "type": {
               "type": "string"
             }
@@ -160,14 +124,15 @@
             "to-patch",
             "data",
             "type"
-          ]
+          ],
+          "optional": [ "data-type" ]
         }
       }
     },
     "required": [
       "coupling-scheme",
-      "acceleration",
       "participants",
       "exchanges"
-    ]
+    ],
+    "optional": [ "acceleration" ]
   }
