@@ -80,8 +80,11 @@ precice-gen --help
 Generate a preCICE configuration file from a YAML topology:
 
 ```bash
-python FileGenerator.py -f path/to/your/topology.yaml
+precice-gen -f path/to/your/topology.yaml
 ```
+
+> [!NOTE]
+> You should validate your files by running them through [config-checker](https://github.com/precice-forschungsprojekt/config-checker) to avoid errors.
 
 ### Configuration
 
@@ -89,74 +92,6 @@ python FileGenerator.py -f path/to/your/topology.yaml
 2. Use the command-line interface to generate the preCICE configuration.
 3. The tool will create the necessary configuration files in the `_generated/` directory.
 
-## Dependencies
-
-- attrs==24.2.0
-- colorama==0.4.6
-- exceptiongroup==1.2.2
-- iniconfig==2.0.0
-- jsonschema==4.23.0
-- jsonschema-specifications==2024.10.1
-- lxml==5.3.0
-- myutils==0.0.21
-- packaging==24.2
-- pip-check-reqs==2.5.3
-- pluggy==1.5.0
-- pyaml==24.9.0
-- pytest==8.3.4
-- PyYAML==6.0.2
-- referencing==0.35.1
-- rpds-py==0.22.1
-- termcolor==2.5.0
-- tomli==2.2.1
-- xmltodict==0.14.2
-
-
-## Project Structure
-
-```
-precice-generate/
-│
-├── .github/                   # GitHub-specific configurations
-├── .git/                      # Git version control directory
-│
-├── controller_utils/          # Utility from controller
-│   ├── precice_struct/        # preCICE configuration structures
-│   │   ├── PS_CouplingScheme.py
-│   │   └── ...
-│   └── ui_struct/             # User interface utilities
-│       ├── UI_SimulationInfo.py
-│       └── ...
-│
-├── generation_utils/          # Core generation utilities
-│   ├── AdapterConfigGenerator.py
-│   ├── Logger.py
-│   └── StructureHandler.py
-│
-├── schemas/                   # JSON/validation schemas
-├── setup_scripts/             # Setup and initialization scripts
-├── templates/                 # Configuration templates
-├── tests/                     # Project test suite
-├── tutorials/                 # Extensive tutorials (from original preCICE)
-├── validation/                # Validation modules
-│
-├── _generated/                # Generated configuration files
-│   └── precice-config.xml     # Example generated configuration
-│
-├── FileGenerator.py           # Main file generation script
-├── README.md                  # Project documentation (This file)
-├── requirements.txt           # Project dependencies
-├── pyproject.toml             # Project configuration
-└── .gitignore                 # Git ignore file
-```
-
-## Logging and Error Handling
-
-The tool provides detailed logging to help you understand the configuration generation process:
-- Tracks input YAML file details
-- Validates user input
-- Generates comprehensive error messages
-- Supports troubleshooting configuration issues
 
 ## Contributing
 
@@ -171,14 +106,6 @@ The tool provides detailed logging to help you understand the configuration gene
 - Ensure all dependencies are correctly installed
 - Verify the format of your input YAML file
 - Check the generated logs for detailed error information
-
-## License
-
-[Specify your project's license]
-
-## Contact
-
-[Add contact information or project maintainer details]
 
 ## Acknowledgements
 
