@@ -45,27 +45,12 @@ jobs:
     #     pip install -e .
     #     cd ..
 
-    # Discover examples with YAML files
+    # Discover examples
     - name: Find all examples
       id: find-examples
       run: |
-        # Find all example directories containing YAML files (looking for <dirname>.yaml pattern)
-        EXAMPLES=$(find examples -type f -name "*.yaml" | while read -r yaml_file; do
-          dir=$(dirname "$yaml_file")
-          base=$(basename "$yaml_file" .yaml)
-          if [ "$(basename "$dir")" = "$base" ]; then
-            echo "$dir"
-          fi
-        done | sort | uniq)
-        
-        # Also include examples with existing precice-config.xml
-        EXAMPLES_WITH_XML=$(find examples -name "precice-config.xml" -exec dirname {} \; | sort | uniq)
-        
-        # Combine and deduplicate
-        ALL_EXAMPLES=$(echo -e "$EXAMPLES\n$EXAMPLES_WITH_XML" | sort | uniq)
-        
-        # Convert to JSON array for GitHub Actions output
-        EXAMPLES_JSON=$(echo "$ALL_EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
+        EXAMPLES=$(find examples -name "topology.yaml" -exec dirname {} \; | sort | uniq)
+        EXAMPLES_JSON=$(echo "$EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
         echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
         echo "Found examples: $EXAMPLES_JSON"
 
