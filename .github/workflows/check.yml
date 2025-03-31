@@ -72,7 +72,7 @@ jobs:
           
           if [ -f "$yaml_file" ]; then
             echo "Generating configuration from $yaml_file"
-            precice-gen -f "$yaml_file" -o "$(dirname "$yaml_file")"
+            precice-gen -f "$yaml_file" -o "$(dirname "$yaml_file")" -v
             
             # Check if generation was successful
             if [ -f "$example/_generated/precice-config.xml" ]; then
@@ -98,7 +98,7 @@ jobs:
           
           # Validate the configuration
           echo "Validating configuration at $config_file..."
-          python config-checker/preciceconfigchecker/cli.py "$config_file"
+          python config-checker/preciceconfigchecker/cli.py "$config_file" --debug
           echo "Validation successful for $example_name"
         done
 
