@@ -1,7 +1,6 @@
 coupling-scheme:
     max-time: 1.0
     time-window-size: 1e-3  
-    relative-accuracy: 1e-4
     max-iterations: 30  
 
 participants:

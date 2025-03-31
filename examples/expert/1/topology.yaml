@@ -1,7 +1,6 @@
 coupling-scheme:
     max-time: 5.0
     time-window-size: 1e-2  
-    relative-accuracy: 1e-4
     max-iterations: 30 
  
 acceleration:
