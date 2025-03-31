@@ -171,15 +171,16 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
         simulation_conf = ui_config.sim_info
         self.NrTimeStep = simulation_conf.NrTimeStep
         self.Dt = simulation_conf.Dt
+        self.display_standard_values = simulation_conf.display_standard_values
         pass
 
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-explicit" )
-
-        i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
-        attr = { "value": str(self.Dt)}
-        i = etree.SubElement(coupling_scheme, "time-window-size", attr)
+        if self.display_standard_values:
+            i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
+            attr = { "value": str(self.Dt)}
+            i = etree.SubElement(coupling_scheme, "time-window-size", attr)
 
         # write out the exchange but not the convergence (if empty it will not be written)
         self.write_exchange_and_convergance(config, coupling_scheme, "")
@@ -197,6 +198,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         self.relativeConverganceEps = 1E-4
         self.extrapolation_order = 2
         self.postProcessing = PS_ImplicitPostProcessing() # this is the postprocessing
+        self.display_standard_values = "false"
         pass
 
     def initFromUI(self, ui_config:UI_UserInput, conf): # conf : PS_PreCICEConfig
@@ -212,6 +214,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         self.NrTimeStep = simulation_conf.NrTimeStep
         self.Dt = simulation_conf.Dt
         self.maxIteration = simulation_conf.max_iterations
+        self.display_standard_values = simulation_conf.display_standard_values
 
         pass
 
@@ -219,11 +222,12 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
 
-        i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
-        attr = { "value": str(self.Dt)}
-        i = etree.SubElement(coupling_scheme, "time-window-size", attr)
-        i = etree.SubElement(coupling_scheme, "max-iterations", value=str(self.maxIteration))
-        #i = etree.SubElement(coupling_scheme, "extrapolation-order", value=str(self.extrapolation_order))
+        if self.display_standard_values:
+            i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
+            attr = { "value": str(self.Dt)}
+            i = etree.SubElement(coupling_scheme, "time-window-size", attr)
+            i = etree.SubElement(coupling_scheme, "max-iterations", value=str(self.maxIteration))
+            #i = etree.SubElement(coupling_scheme, "extrapolation-order", value=str(self.extrapolation_order))
 
         # write out the exchange and the convergance rate
         self.write_exchange_and_convergance(config, coupling_scheme, str(self.relativeConverganceEps))
