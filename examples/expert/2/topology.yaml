@@ -4,6 +4,14 @@ coupling-scheme:
     relative-accuracy: 1e-4
     max-iterations: 100
 
+acceleration:
+  initial-relaxation: 0.1
+  max-used-iterations: 10
+  time-windows-reused: 5
+  filter:
+    type: QR2
+    limit: 1e-3
+
 participants:
     Dirichlet: 
         solver: DirichletFEniCS

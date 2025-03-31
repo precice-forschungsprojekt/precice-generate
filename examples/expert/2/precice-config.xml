@@ -41,19 +41,24 @@
 
   <coupling-scheme:serial-implicit>
     <participants first="Dirichlet" second="Neumann" />
-
     <max-time value="1.0" />
     <time-window-size value="0.1" />
     <max-iterations value="100" />
-
     <exchange data="HeatTransfer" mesh="Dirichlet-Mesh" from="Dirichlet" to="Neumann" />
-    <exchange data="Temperature" mesh="Neumann-Mesh" from="Neumann" to="Dirichlet" initialize="true" />
-
+    <exchange
+      data="Temperature"
+      mesh="Neumann-Mesh"
+      from="Neumann"
+      to="Dirichlet"
+      initialize="true" />
     <relative-convergence-measure data="HeatTransfer" mesh="Dirichlet-Mesh" limit="1e-5" />
     <relative-convergence-measure data="Temperature" mesh="Neumann-Mesh" limit="1e-5" />
-    
     <acceleration:IQN-ILS>
       <data name="Temperature" mesh="Neumann-Mesh" />
+      <initial-relaxation value="0.1" />
+      <max-used-iterations value="10" />
+      <time-windows-reused value="5" />
+      <filter type="QR2" limit="1e-3" />
     </acceleration:IQN-ILS>
   </coupling-scheme:serial-implicit>
 </precice-configuration>
