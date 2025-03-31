@@ -130,24 +130,20 @@
       },
       "participants": {
         "type": "object",
-        "properties": {
-          "participant-1": {
-            "type": "object",
-            "properties": {
-              "solver": {
-                "type": "string"
-              },
-              "dimensionality": {
-                "type": "integer"
-              }
+        "minProperties": 2,
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "solver": {
+              "type": "string"
             },
-            "required": [
-              "solver"
-            ],
-            "optional": [ "dimensionality" ]
-          }
-        },
-        "minProperties": 2
+            "dimensionality": {
+              "type": "integer"
+            }
+          },
+          "required": ["solver"],
+          "optional": ["dimensionality"]
+        }
       },
       "exchanges": {
         "type": "array",
