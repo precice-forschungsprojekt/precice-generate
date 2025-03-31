@@ -27,7 +27,8 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "enum": ["constant", "aitken", "IQN-ILS", "IQN-IMVJ"]
           },
           "initial-relaxation": {
             "type": "number"
