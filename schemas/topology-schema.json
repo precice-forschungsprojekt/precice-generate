@@ -37,7 +37,8 @@
             "type": "object",
             "properties": {
               "freeze-after": {
-                "type": "integer"
+                "type": "integer",
+                "default": -1
               },
               "type": {
                 "type": "string"
@@ -50,7 +51,8 @@
             "type": "object",
             "properties": {
               "limit": {
-                "type": "number"
+                "type": "number",
+                "default": 1e-16
               },
               "type": {
                 "type": "string"
