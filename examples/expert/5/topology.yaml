@@ -7,7 +7,7 @@ acceleration:
     name: IQN-ILS
     initial-relaxation: 0.5
     preconditioner: 
-      freeze_after: -1
+      freeze-after: -1
       type: residual-sum
     filter: 
       limit: 1e-6

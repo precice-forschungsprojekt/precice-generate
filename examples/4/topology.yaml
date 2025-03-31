@@ -2,6 +2,7 @@ coupling-scheme:
     max-time: 1.0
     time-window-size: 0.1  
     max-iterations: 100
+    coupling: serial
 
 participants:
     Dirichlet: 
