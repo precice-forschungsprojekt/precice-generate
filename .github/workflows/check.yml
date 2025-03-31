@@ -20,15 +20,15 @@ jobs:
       with:
         python-version: '3.12'
 
-    # - name: Install system dependencies
-    #   run: |
-    #     sudo apt-get update
-    #     sudo apt install -y libopenmpi-dev jq
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt install -y libopenmpi-dev jq
 
-    # - name: Install preCICE
-    #   run: |
-    #     wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
-    #     sudo apt install -y ./libprecice3_3.1.2_noble.deb
+    - name: Install preCICE
+      run: |
+        wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
+        sudo apt install -y ./libprecice3_3.1.2_noble.deb
 
     - name: Setup Python environment
       run: |
@@ -37,13 +37,13 @@ jobs:
         python -m pip install --upgrade pip setuptools cython
         pip install -e .
 
-    # - name: Install config-checker
-    #   run: |
-    #     source venv/bin/activate
-    #     git clone --recurse-submodules https://github.com/precice-forschungsprojekt/config-checker.git
-    #     cd config-checker
-    #     pip install -e .
-    #     cd ..
+    - name: Install config-checker
+      run: |
+        source venv/bin/activate
+        git clone --recurse-submodules https://github.com/precice-forschungsprojekt/config-checker.git
+        cd config-checker
+        pip install -e .
+        cd ..
 
     # Discover examples
     - name: Find all examples
@@ -96,10 +96,10 @@ jobs:
             config_file="$example/precice-config.xml"
           fi
           
-          # # Validate the configuration
-          # echo "Validating configuration at $config_file..."
-          # python config-checker/preciceconfigchecker/cli.py validate "$config_file"
-          # echo "Validation successful for $example_name"
+          # Validate the configuration
+          echo "Validating configuration at $config_file..."
+          python config-checker/preciceconfigchecker/cli.py "$config_file"
+          echo "Validation successful for $example_name"
         done
 
     # Collect all generated artifacts
