@@ -83,7 +83,7 @@ jobs:
           example_name=$(basename "$example")
           
           # Check for YAML input file
-          yaml_file="$example/$example_name.yaml"
+          yaml_file="$example/topology.yaml"
           
           if [ -f "$yaml_file" ]; then
             echo "Generating configuration from $yaml_file"
