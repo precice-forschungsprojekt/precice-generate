@@ -12,13 +12,12 @@
           },
           "max-iterations": {
             "type": "integer"
+          },
+          "display_standard_values": {
+            "type": "boolean"
           }
         },
-        "required": [
-          "max-time",
-          "time-window-size",
-          "max-iterations"
-        ]
+        "required": [ ]
       },
       "acceleration": {
         "type": "object",
