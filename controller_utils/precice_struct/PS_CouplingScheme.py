@@ -177,7 +177,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-explicit" )
-        if self.display_standard_values == 'true':
+        if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
                 self.NrTimeStep = 1e-3
             if self.Dt is None:
@@ -232,7 +232,8 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
 
-        if self.display_standard_values== 'true':
+        print(self.display_standard_values)
+        if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
                 self.NrTimeStep = 1e-3
             if self.Dt is None:
