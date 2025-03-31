@@ -177,6 +177,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-explicit" )
+        print(self.display_standard_values)
         if self.display_standard_values:
             i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
             attr = { "value": str(self.Dt)}
@@ -221,6 +222,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, "parallel-implicit" )
+        print(self.display_standard_values)
 
         if self.display_standard_values:
             i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
