@@ -17,10 +17,15 @@
           "display_standard_values": {
             "type": "boolean",
             "default": false
+          },
+          "coupling": {
+            "type": "string",
+            "enum": ["parallel", "serial"],
+            "default": "parallel"
           }
         },
         "required": [ ],
-        "optional": [ "display_standard_values", "max-time", "time-window-size", "max-iterations" ]
+        "optional": [ "display_standard_values", "max-time", "time-window-size", "max-iterations", "coupling" ]
       },
       "acceleration": {
         "type": "object",
