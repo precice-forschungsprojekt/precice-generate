@@ -11,6 +11,9 @@ participants:
         solver: FEniCS
         dimensionality: 2
 
+acceleration:
+  name: aitken
+      
 exchanges:
     - from: Solid
       from-patch: interface
