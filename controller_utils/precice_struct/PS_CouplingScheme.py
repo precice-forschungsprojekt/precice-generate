@@ -58,9 +58,9 @@ class PS_CouplingScheme(object):
             for participant_name in config.solvers:
                 participant = config.solvers[participant_name]
                 if participant.name == control_participant_name:
-                    i = etree.SubElement(coupling_scheme, "participants", name=participant_name, control="yes")
+                    i = etree.SubElement(coupling_scheme, "participant", name=participant_name, control="yes")
                 else:
-                    i = etree.SubElement(coupling_scheme, "participants", name=participant_name)
+                    i = etree.SubElement(coupling_scheme, "participant", name=participant_name)
                     pass
                 pass
             pass

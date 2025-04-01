@@ -299,7 +299,7 @@ class PrettyPrinter():
                 # Print initial elements
                 initial_elements = [
                     elem for elem in other_elements 
-                    if str(elem.tag) in ['participants', 'max-time', 'time-window-size']
+                    if str(elem.tag) in ['participants', 'participant', 'max-time', 'time-window-size']
                 ]
                 for child in initial_elements:
                     self.printElement(child, level + 1)
