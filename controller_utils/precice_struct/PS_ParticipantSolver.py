@@ -88,7 +88,7 @@ class PS_ParticipantSolver(object):
                     w = conf.get_coupling_quantitiy(exchange['data'], source_mesh_name, boundary_code2, self, True)
                     conf.add_quantity_to_mesh(other_mesh_name, w)
                     conf.add_quantity_to_mesh(source_mesh_name, w)
-                    self.quantities_write[w.name] = w
+                    self.quantities_write[w.instance_name] = w
                     print("!!! Write = ", w.instance_name)
             elif exchange['to'] == self.name:
                 # This participant is reading data
@@ -96,7 +96,7 @@ class PS_ParticipantSolver(object):
                     r = conf.get_coupling_quantitiy(exchange['data'], other_mesh_name, boundary_code1, self, False)
                     conf.add_quantity_to_mesh(other_mesh_name, r)
                     conf.add_quantity_to_mesh(source_mesh_name, r)
-                    self.quantities_read[r.name] = r
+                    self.quantities_read[r.instance_name] = r
                     print("!!! Read = ", r.instance_name)
         pass
 

@@ -272,12 +272,20 @@ class PS_PreCICEConfig(object):
                 # | Collect all the solvers and mappings from the coupling
                 # -------------------------------------------------
                 used_meshes = {}
-                for q_name in solver.quantities_read:
-                    q = solver.quantities_read[q_name]
-                    print("q name  "+q_name)
-                    print(q.instance_name)
-                    read_tag = etree.SubElement(solver_tag,
-                                                       "read-data", name=q.instance_name, mesh=solvers_mesh_name)
+                print(solver.quantities_read.items())
+                print(solver.quantities_write.items())
+                for q_name, q in solver.quantities_read.items():
+                    print("q name: ", q_name)
+                    print("q instance name: ", q.instance_name)
+
+                    # Ensure instance name is correctly mapped in read tag
+                    read_tag = etree.SubElement(
+                        solver_tag,
+                        "read-data", 
+                        name=q.instance_name, 
+                        mesh=solvers_mesh_name
+                    )
+
                     for other_solvers_name in q.list_of_solvers:
                         other_solver = q.list_of_solvers[other_solvers_name]
                         # consistent only read
