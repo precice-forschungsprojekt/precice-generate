@@ -89,6 +89,7 @@ class PS_ParticipantSolver(object):
                     conf.add_quantity_to_mesh(other_mesh_name, w)
                     conf.add_quantity_to_mesh(source_mesh_name, w)
                     self.quantities_write[w.name] = w
+                    print("!!! Write = ", w.instance_name)
             elif exchange['to'] == self.name:
                 # This participant is reading data
                 if exchange['data'] in r_list:
@@ -96,6 +97,7 @@ class PS_ParticipantSolver(object):
                     conf.add_quantity_to_mesh(other_mesh_name, r)
                     conf.add_quantity_to_mesh(source_mesh_name, r)
                     self.quantities_read[r.name] = r
+                    print("!!! Read = ", r.instance_name)
         pass
 
     def make_participant_fsi_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
