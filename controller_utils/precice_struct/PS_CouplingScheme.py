@@ -97,7 +97,7 @@ class PS_CouplingScheme(object):
         exchange_mesh_name = quantity.source_mesh_name
 
         for exchange in config.exchanges:
-            if quantity.instance_name.lower() in exchange.get('data').lower():
+            if quantity.instance_name.lower() == exchange.get('data').lower():
                 from_s = exchange.get('from')
                 to_s = exchange.get('to')
                 data = exchange.get('data')
@@ -124,7 +124,6 @@ class PS_CouplingScheme(object):
             if solver.name != simple_solver.name:
                 exchange_mesh_name = other_mesh_name
 
-        print("Exchange mesh name: " + data)
         return exchange_mesh_name, data, from_s, to_s
 
     def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
