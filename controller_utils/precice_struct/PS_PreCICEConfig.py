@@ -276,7 +276,6 @@ class PS_PreCICEConfig(object):
                     q = solver.quantities_read[q_name]
                     read_tag = etree.SubElement(solver_tag,
                                                        "read-data", name=q.instance_name, mesh=solvers_mesh_name)
-
                     for other_solvers_name in q.list_of_solvers:
                         other_solver = q.list_of_solvers[other_solvers_name]
                         # consistent only read
