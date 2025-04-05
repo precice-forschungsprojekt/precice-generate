@@ -96,20 +96,11 @@ class PS_CouplingScheme(object):
         to_s = "__"
         exchange_mesh_name = quantity.source_mesh_name
 
-        # Find exchange configuration
-        # print("Length of config.exchanges: " + str(len(config.exchanges)))
         for exchange in config.exchanges:
-            print("##########")
-            print(quantity.name.lower())
-            print(exchange.get('data').lower())
-            if quantity.name.lower() in exchange.get('data').lower():
+            if quantity.instance_name.lower() in exchange.get('data').lower():
                 from_s = exchange.get('from')
                 to_s = exchange.get('to')
                 data = exchange.get('data')
-                # print("Exchange data: " + data)
-                # print("Quantity name: " + quantity.name)
-                print("data   "+data)
-
         # Process mappings
         read_mappings = [m.copy() for m in config.mappings_read]
         write_mappings = [m.copy() for m in config.mappings_write]
