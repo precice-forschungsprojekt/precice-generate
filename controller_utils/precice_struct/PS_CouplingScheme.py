@@ -97,11 +97,18 @@ class PS_CouplingScheme(object):
         exchange_mesh_name = quantity.source_mesh_name
 
         # Find exchange configuration
+        # print("Length of config.exchanges: " + str(len(config.exchanges)))
         for exchange in config.exchanges:
+            print("##########")
+            print(quantity.name.lower())
+            print(exchange.get('data').lower())
             if quantity.name.lower() in exchange.get('data').lower():
                 from_s = exchange.get('from')
                 to_s = exchange.get('to')
                 data = exchange.get('data')
+                # print("Exchange data: " + data)
+                # print("Quantity name: " + quantity.name)
+                print("data   "+data)
 
         # Process mappings
         read_mappings = [m.copy() for m in config.mappings_read]
@@ -126,6 +133,7 @@ class PS_CouplingScheme(object):
             if solver.name != simple_solver.name:
                 exchange_mesh_name = other_mesh_name
 
+        print("Exchange mesh name: " + data)
         return exchange_mesh_name, data, from_s, to_s
 
     def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
