@@ -132,17 +132,24 @@
         "type": "object",
         "minProperties": 2,
         "additionalProperties": {
-          "type": ["object", "string"],
-          "properties": {
-            "solver": {
+          "oneOf": [
+            {
               "type": "string"
             },
-            "dimensionality": {
-              "type": "integer"
+            {
+              "type": "object",
+              "properties": {
+                "solver": {
+                  "type": "string"
+                },
+                "dimensionality": {
+                  "type": "integer"
+                }
+              },
+              "required": ["solver"],
+              "optional": ["dimensionality"]
             }
-          },
-          "required": ["solver"],
-          "optional": ["dimensionality"]
+          ]
         }
       },
       "exchanges": {
