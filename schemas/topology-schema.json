@@ -166,7 +166,9 @@
               "type": "string"
             },
             "data-type": {
-              "type": "string"
+              "type": "string",
+              "enum": ["scalar", "vector"],
+              "default": "scalar"
             },
             "type": {
               "type": "string"
