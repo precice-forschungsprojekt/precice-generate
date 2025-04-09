@@ -132,7 +132,7 @@
         "type": "object",
         "minProperties": 2,
         "additionalProperties": {
-          "type": "object",
+          "type": ["object", "string"],
           "properties": {
             "solver": {
               "type": "string"
