@@ -8,6 +8,7 @@ from generation_utils.AdapterConfigGenerator import AdapterConfigGenerator
 from generation_utils.format_precice_config import PrettyPrinter
 import yaml
 import argparse
+import jsonschema, json
 
 class FileGenerator:
     def __init__(self, input_file: Path, output_path: Path) -> None:
@@ -299,6 +300,13 @@ def main():
         required=False,
         help="Enable verbose logging output.",
     )
+    parser.add_argument(
+        "--validate-topology",
+        action="store_true",
+        required=False,
+        default=True,
+        help="Whether to validate the input topology.yaml file against the preCICE topology schema.",
+    )
 
     args = parser.parse_args()
 
@@ -323,7 +331,15 @@ def main():
             if fileGenerator.logger.has_warnings():
                 for warning in fileGenerator.logger.get_warnings():
                     fileGenerator.logger.warning(warning)
-        
+    if args.validate_topology:
+        with open(Path(__file__).parent / "schemas" / "topology-schema.json") as schema_file:
+            schema = json.load(schema_file)
+        with open(args.input_file) as input_file:
+            data = yaml.load(input_file, Loader=yaml.SafeLoader)
+        try:
+            jsonschema.validate(instance=data, schema=schema)
+        except jsonschema.exceptions.ValidationError as e:
+            print(f"Validation of {args.input_file} failed: {e}")
     
 
 
