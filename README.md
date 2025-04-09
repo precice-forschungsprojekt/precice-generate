@@ -92,6 +92,26 @@ precice-gen -f path/to/your/topology.yaml
 2. Use the command-line interface to generate the preCICE configuration.
 3. The tool will create the necessary configuration files in the `_generated/` directory.
 
+## Creating Topology with Metaconfigurator
+
+You can easily create a topology for your preCICE simulation using the online Metaconfigurator. We provide a preloaded schema to help you get started:
+
+1. Open the Metaconfigurator: [Metaconfigurator Link](https://metaconfigurator.github.io/meta-configurator/?schema=https://github.com/precice-forschungsprojekt/precice-generate/blob/main/schemas/topology-schema.json)
+
+2. Use the interactive interface to define your topology:
+   - The preloaded schema provides a structured way to describe your simulation components
+   - Fill in the required fields for participants, meshes, and connections
+   - Validate your configuration in real-time
+
+3. Once complete, export your topology as a YAML file
+   - Save the generated YAML file
+   - Use this file with the `precice-generate` tool to create your preCICE configuration
+
+### Benefits of Using Metaconfigurator
+- Visual, user-friendly interface
+- Real-time validation against our predefined schema
+- Reduces manual configuration errors
+- Simplifies topology creation process
 
 ## Contributing
 
