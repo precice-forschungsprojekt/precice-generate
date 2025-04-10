@@ -2,6 +2,9 @@
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/precice-forschungsprojekt/precice-generate/check.yml?label=Examples%20generation%20and%20validation%20using%20config-checker)
 
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/precice-forschungsprojekt/precice-generate/installation.yml?label=Installation%20Checker)
+
+
 ## Project Overview
 
 The precice-generate is a Python-based utility designed to automate the generation of preCICE configuration files from YAML topology descriptions. This tool simplifies the process of setting up multi-physics simulations by transforming user-defined YAML configurations into preCICE-compatible XML configuration files.
