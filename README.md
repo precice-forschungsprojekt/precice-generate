@@ -15,7 +15,7 @@ The precice-generate is a Python-based utility designed to automate the generati
 ## Installation
 
 ### Prerequisites
-- Python 3.11 or higher
+- Python 3.11 or higher ([workflow validated](https://github.com/precice-forschungsprojekt/precice-generate/actions/workflows/installation.yml) with 3.11 and 3.12)
 - pip
 - venv
 - (preCICE library)
