@@ -4,6 +4,9 @@
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/precice-forschungsprojekt/precice-generate/installation.yml?label=Installation%20Checker)
 
+![GitHub License](https://img.shields.io/github/license/precice-forschungsprojekt/precice-generate)
+
+
 
 ## Project Overview
 
