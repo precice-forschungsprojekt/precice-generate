@@ -118,6 +118,31 @@ You can easily create a topology for your preCICE simulation using the online Me
 - Reduces manual configuration errors
 - Simplifies topology creation process
 
+## Example Configurations
+
+### Normal Examples (1-5)
+Our project provides a set of progressively complex example configurations to help you get started with preCICE simulations:
+
+- Located in `examples/1` through `examples/5`
+- Designed for beginners and intermediate users
+- Each example includes:
+  - A `topology.yaml` file defining the simulation setup
+  - A `precice-config.xml` file
+  - Subdirectories for different simulation components
+- Showcase simple, linear multi-physics scenarios
+- Ideal for learning basic preCICE configuration concepts
+
+### Expert Examples
+For advanced users, we offer more sophisticated configuration examples:
+
+- Located in `examples/expert`
+- Contain more advanced usage of topology options but just extend the according example with the same number
+- Demonstrate advanced coupling strategies and intricate topology configurations
+- Targeted at users with a better understanding of preCICE
+
+> [!TIP]
+> Start with normal examples (1-5) and progress to expert examples as you become more comfortable with preCICE configurations.
+
 ## Contributing
 
 1. Fork the repository
