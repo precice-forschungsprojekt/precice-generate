@@ -12,18 +12,13 @@ The precice-generate is a Python-based utility designed to automate the generati
 - Comprehensive error logging and handling
 - Simple command-line interface
 
-## Prerequisites
-
-- **Python 3.11** (Required - not compatible with Python 3.8 or earlier)
-- preCICE library
-- Dependencies listed in `requirements.txt`
-
 ## Installation
 
 ### Prerequisites
-- Python 3.10 or higher
+- Python 3.11 or higher
 - pip
 - venv
+- (preCICE library)
 
 ### Manual Installation
 
