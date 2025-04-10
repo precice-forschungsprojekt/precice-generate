@@ -118,9 +118,9 @@ jobs:
           cp -r "$gen_dir" "artifacts/$example_name/"
           
           # Also copy the original precice-config.xml if it exists
-          if [ -f "$example_dir/precice-config.xml" ]; then
-            cp "$example_dir/precice-config.xml" "artifacts/$example_name/original_precice-config.xml"
-          fi
+          #if [ -f "$example_dir/precice-config.xml" ]; then
+          #  cp "$example_dir/precice-config.xml" "artifacts/$example_name/original_precice-config.xml"
+          #fi
         done
         
         echo "Collected artifacts:"
@@ -128,7 +128,7 @@ jobs:
 
     # # Upload all artifacts
     # - name: Upload artifacts
-    #   uses: actions/upload-artifact@v3
+    #   uses: actions/upload-artifact@v4
     #   with:
     #     name: precice-configurations
     #     path: artifacts/
