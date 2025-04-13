@@ -8,15 +8,15 @@ on:
 
 jobs:
   process-examples:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     
     steps:
     - name: Install preCICE
       run: |
         sudo apt update
         sudo apt install -y libboost-dev libboost-log-dev
-        wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
-        sudo apt install -y ./libprecice3_3.1.2_noble.deb
+        wget https://github.com/precice/precice/releases/download/v3.2.0/libprecice3_3.2.0_noble.deb
+        sudo apt install -y ./libprecice3_3.2.0_noble.deb
 
     - name : TTT
       run: |
