@@ -47,7 +47,6 @@ class PS_ParticipantSolver(object):
         self.meshes = {} # we have each mesh for each couling
         self.coupling_participants = {} # for each coupling we also store the name of the participant
 
-        self.solver_type = participant.solverType
         self.solver_name = participant.solverName
         self.name = participant.name
 

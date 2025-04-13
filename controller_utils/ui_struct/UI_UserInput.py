@@ -130,7 +130,6 @@ class UI_UserInput(object):
                     
                     new_participant.name = name
                     new_participant.solverName = solver_info.get("solver", name)
-                    new_participant.solverType = solver_info.get("solver-type", "")
                     new_participant.dimensionality = solver_info.get("dimensionality", 3)
                 
                 else:
