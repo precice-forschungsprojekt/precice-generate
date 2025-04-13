@@ -129,28 +129,27 @@
         "optional": [ "name", "initial-relaxation", "preconditioner", "filter", "max-used-iterations", "time-windows-reused", "display_standard_values", "imvj-restart-mode" ]
       },
       "participants": {
-        "type": "object",
-        "minProperties": 2,
-        "additionalProperties": {
-          "oneOf": [
-            {
-              "type": "object",
-              "properties": {
-                "solver": {
-                  "type": "string"
-                },
-                "dimensionality": {
-                  "type": "integer"
-                }
-              },
-              "required": ["solver"],
-              "additionalProperties": false
-            },
-            {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
               "type": "string"
+            },
+            "solver": {
+              "type": "string"
+            },
+            "solver-type": {
+              "type": "string"
+            },
+            "dimensionality": {
+              "type": "integer",
+              "default": 3
             }
-          ]
-        }
+          },
+          "required": ["name", "solver"]
+        },
+        "minItems": 1
       },
       "exchanges": {
         "type": "array",
