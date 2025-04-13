@@ -32,6 +32,7 @@ jobs:
 
     - name: Test precice-tools
       run: |
+        which precice-tools
         precice-tools version
 
     - name: Setup Python environment
