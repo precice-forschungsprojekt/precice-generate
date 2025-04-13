@@ -1,7 +1,7 @@
 coupling-scheme:
-    max-time: 1.0
-    time-window-size: 0.1  
-    max-iterations: 100
+  max-time: 1.0
+  time-window-size: 0.1  
+  max-iterations: 100
 
 acceleration:
   initial-relaxation: 0.1
@@ -12,23 +12,23 @@ acceleration:
     limit: 1e-3
 
 participants:
-    Dirichlet: 
-        solver: DirichletFEniCS
-        dimensionality: 2
-    Neumann: 
-        solver: FEniCS
-        dimensionality: 2
+  - name: Dirichlet
+    solver: DirichletFEniCS
+    dimensionality: 2
+  - name: Neumann 
+    solver: FEniCS
+    dimensionality: 2
 
 exchanges:
-    - from: Dirichlet
-      from-patch: interface
-      to: Neumann
-      to-patch: surface
-      data: HeatTransfer # Fluid reads heat flux
-      type: strong
-    - from: Neumann
-      from-patch: surface
-      to: Dirichlet
-      to-patch: interface
-      data: Temperature  # Solid reads temperature
-      type: strong
+  - from: Dirichlet
+    from-patch: interface
+    to: Neumann
+    to-patch: surface
+    data: HeatTransfer # Fluid reads heat flux
+    type: strong
+  - from: Neumann
+    from-patch: surface
+    to: Dirichlet
+    to-patch: interface
+    data: Temperature  # Solid reads temperature
+    type: strong

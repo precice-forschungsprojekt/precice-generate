@@ -5,12 +5,12 @@ coupling-scheme:
     coupling: serial
 
 participants:
-    Dirichlet: 
-        solver: DirichletFEniCS
-        dimensionality: 2
-    Neumann: 
-        solver: FEniCS
-        dimensionality: 2
+    - name: Dirichlet
+      solver: DirichletFEniCS
+      dimensionality: 2
+    - name: Neumann 
+      solver: FEniCS
+      dimensionality: 2
 
 exchanges:
     - from: Dirichlet
