@@ -99,7 +99,7 @@ precice-gen -f path/to/your/topology.yaml
 
 You can easily create a topology for your preCICE simulation using the online Metaconfigurator. We provide a preloaded schema to help you get started:
 
-1. Open the Metaconfigurator with the preloaded schema: [Metaconfigurator Link](https://metaconfigurator.github.io/meta-configurator/?schema=https://github.com/precice-forschungsprojekt/precice-generate/blob/main/schemas/topology-schema.json)
+1. Open the Metaconfigurator with the preloaded schema: [Metaconfigurator Link](https://metaconfigurator.github.io/meta-configurator/?schema=https://github.com/precice-forschungsprojekt/precice-generate/blob/main/schemas/topology-schema.json?settings=https://github.com/precice-forschungsprojekt/precice-structure-generator/blob/main/templates/metaConfiguratorSettings.json)
 
 2. Use the interactive interface to define your topology:
    - The preloaded schema provides a structured way to describe your simulation components
