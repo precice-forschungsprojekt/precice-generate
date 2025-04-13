@@ -258,7 +258,6 @@ class FileGenerator:
         """Generates the files of level 1 (everything in the generated sub-folders)."""
 
         participants = self._extract_participants()
-        print(participants)
         for participant in participants:
             target_participant = self.structure.create_level_1_structure(participant, self.user_ui)
             adapter_config = target_participant[1]
