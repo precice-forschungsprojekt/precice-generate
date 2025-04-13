@@ -30,6 +30,10 @@ jobs:
         wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
         sudo apt install -y ./libprecice3_3.1.2_noble.deb
 
+    - name: Test precice-tools
+      run: |
+        precice-tools version
+
     - name: Setup Python environment
       run: |
         python -m venv venv
