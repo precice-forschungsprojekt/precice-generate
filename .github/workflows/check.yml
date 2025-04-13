@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Install preCICE
       run: |
+        sudo apt update
+        sudo apt install -y git
         wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
         sudo apt install -y ./libprecice3_3.1.2_noble.deb
 
