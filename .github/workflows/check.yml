@@ -23,7 +23,7 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt install -y libopenmpi-dev jq
+        sudo apt install -y libopenmpi-dev jq python3-pip python3-venv git
 
     - name: Install preCICE
       run: |
@@ -121,11 +121,6 @@ jobs:
           # Copy the _generated directory to artifacts
           mkdir -p "artifacts/$example_name"
           cp -r "$gen_dir" "artifacts/$example_name/"
-          
-          # Also copy the original precice-config.xml if it exists
-          #if [ -f "$example_dir/precice-config.xml" ]; then
-          #  cp "$example_dir/precice-config.xml" "artifacts/$example_name/original_precice-config.xml"
-          #fi
         done
         
         echo "Collected artifacts:"
