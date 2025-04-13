@@ -169,9 +169,6 @@
             "solver": {
               "type": "string"
             },
-            "solver-type": {
-              "type": "string"
-            },
             "dimensionality": {
               "type": "integer",
               "default": 3
