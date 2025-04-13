@@ -1,22 +1,22 @@
 coupling-scheme:
   display_standard_values: true
 participants:
-    - name: Fluid
-      solver: SU2
-    - name: Solid
-      solver: Calculix
+  - name: Fluid
+    solver: SU2
+  - name: Solid
+    solver: Calculix
 exchanges:
-    - from: Fluid
-      from-patch: interface
-      to: Solid
-      to-patch: surface
-      data: Force
-      type: strong
-    - from: Solid
-      from-patch: surface
-      to: Fluid
-      to-patch: interface
-      data: Displacement
-      type: strong
+  - from: Fluid
+    from-patch: interface
+    to: Solid
+    to-patch: surface
+    data: Force
+    type: strong
+  - from: Solid
+    from-patch: surface
+    to: Fluid
+    to-patch: interface
+    data: Displacement
+    type: strong
         
         
