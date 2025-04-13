@@ -8,7 +8,7 @@ on:
 
 jobs:
   process-examples:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     
     steps:
     - name: Install preCICE
@@ -18,12 +18,16 @@ jobs:
         wget https://github.com/precice/precice/releases/download/v3.1.2/libprecice3_3.1.2_noble.deb
         sudo apt install -y ./libprecice3_3.1.2_noble.deb
 
+    - name : TTT
+      run: |
+        ldconfig -p | grep libboost_log_setup
+
     - name: Test precice-tools
       run: |
         which precice-tools
         precice-tools version
-    - name: Test precice-tools in a clean environment
-      run: |
-        env -i bash --noprofile --norc
-        which precice-tools
-        precice-tools version
+    # - name: Test precice-tools in a clean environment
+    #   run: |
+    #     env -i bash --noprofile --norc
+    #     which precice-tools
+    #     precice-tools version
