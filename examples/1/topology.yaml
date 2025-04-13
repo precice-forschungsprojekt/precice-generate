@@ -1,8 +1,10 @@
 coupling-scheme:
   display_standard_values: true
 participants:
-    Fluid: SU2
-    Solid: Calculix
+    - name: Fluid
+      solver: SU2
+    - name: Solid
+      solver: Calculix
 exchanges:
     - from: Fluid
       from-patch: interface
