@@ -224,5 +224,7 @@
       "participants",
       "exchanges"
     ],
-    "optional": [ "acceleration" ]
-  }
+    "optional": [ "acceleration" ],
+    "title": "preCICE Topology Configuration",
+    "description": "JSON schema defining the topology configuration for preCICE-generated cases. Specifies participants, exchanges, and their coupling relationships."
+}
