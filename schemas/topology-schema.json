@@ -49,13 +49,25 @@
             "default": "IQN-ILS"
           },
           "initial-relaxation": {
-            "oneOf": [
-              {"type": "number"},
-              {
-                "type": "string",
-                "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
-              }
-            ],
+            "type": "object",
+            "properties": {
+              "value": {
+                "oneOf": [
+                  {"type": "number"},
+                      {
+                        "type": "string",
+                        "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
+                      }
+                    ]
+                  },
+                  "enforce": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "additionalProperties": false,
+                "required": ["value"]
+              },
             "description": "Initial under-relaxation factor"
           },
           "preconditioner": {
