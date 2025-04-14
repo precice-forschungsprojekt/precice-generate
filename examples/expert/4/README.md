@@ -3,3 +3,4 @@ This is a first 'Expert' example, which contains more complex acceleration defin
 This accelerations implements a filter which has a type and a limit.
 
 ![](config_graph.png)
+![](image.png)

@@ -7,3 +7,4 @@ This is a first example with more complex structure.
 3. It manually defines acceleration to be used in the config.
 
 ![](config_graph.png)
+![](image.png)

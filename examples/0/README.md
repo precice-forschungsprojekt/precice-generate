@@ -3,3 +3,4 @@ This examples represents the most basic configuration. It was directly inspired 
 Since it contains only a uni-directional data exchange and only data point, its not a fully functional configuration. 
 
 ![](config_graph.png)
+![](image.png)
