@@ -1,15 +1,15 @@
 coupling-scheme:
-  max-time: 0.3
-  time-window-size: 0.01
+  display_standard_values: false
 participants:
-  - name: Propagator
+  - name: Fluid
     solver: SU2
-  - name: Generator
+  - name: Solid
     solver: Calculix
 exchanges:
-  - from: Generator
-    from-mesh: Generator-Mesh
-    to: Propagator
-    to-mesh: Propagator-Mesh
-    data: Color
+  - from: Fluid
+    from-patch: interface
+    to: Solid
+    to-patch: surface
+    data: Force
     type: strong
+        
