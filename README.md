@@ -103,7 +103,6 @@ You can easily create a topology for your preCICE simulation using the online Me
 
 2. Use the interactive interface to define your topology:
    - The preloaded schema provides a structured way to describe your simulation components
-   - Make sure you are in the Data Editor (not Schema Editor)
    - Add configuration details on the right side of the screen
 
 3. Once complete, export your topology as a YAML file
