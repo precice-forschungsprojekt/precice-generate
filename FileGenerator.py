@@ -286,7 +286,7 @@ def main():
         type=Path, 
         required=False, 
         help="Input topology.yaml file",
-        default=Path("examples/0/topology.yaml")
+        default=Path("examples/1/topology.yaml")
     )
     parser.add_argument(
         "-o", "--output-path",
