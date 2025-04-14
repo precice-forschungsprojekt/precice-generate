@@ -176,7 +176,8 @@
           },
           "required": ["name", "solver"]
         },
-        "minItems": 1
+        "minItems": 1,
+        "uniqueItems": true
       },
       "exchanges": {
         "type": "array",
