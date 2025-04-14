@@ -1,0 +1,15 @@
+coupling-scheme:
+  max-time: 0.3
+  time-window-size: 0.01
+participants:
+  - name: Propagator
+    solver: SU2
+  - name: Generator
+    solver: Calculix
+exchanges:
+  - from: Generator
+    from-mesh: Generator-Mesh
+    to: Propagator
+    to-mesh: Propagator-Mesh
+    data: Color
+    type: strong
