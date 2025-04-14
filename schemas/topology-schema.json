@@ -11,7 +11,8 @@
                 "type": "string",
                 "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
               }
-            ]
+            ],
+            "default": 1e-3
           },
           "time-window-size": {
             "oneOf": [
@@ -21,10 +22,11 @@
                 "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
               }
             ],
-            "default": -1
+            "default": 1e-3
           },
           "max-iterations": {
-            "type": "integer"
+            "type": "integer",
+            "default": 50
           },
           "display_standard_values": {
             "type": "boolean",
@@ -187,7 +189,8 @@
           },
           "required": ["name", "solver"]
         },
-        "minItems": 1
+        "minItems": 1,
+        "uniqueItems": true
       },
       "exchanges": {
         "type": "array",
@@ -207,7 +210,8 @@
               "type": "string"
             },
             "data": {
-              "type": "string"
+              "type": "string",
+              "enum": ["Force", "Displacement", "Velocity", "Pressure", "Temperature", "HeatTransfer"]
             },
             "data-type": {
               "type": "string",
