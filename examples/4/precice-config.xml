@@ -47,7 +47,7 @@
     <max-iterations value="100" />
 
     <exchange data="HeatTransfer" mesh="Dirichlet-Mesh" from="Dirichlet" to="Neumann" />
-    <exchange data="Temperature" mesh="Neumann-Mesh" from="Neumann" to="Dirichlet" initialize="true" />
+    <exchange data="Temperature" mesh="Neumann-Mesh" from="Neumann" to="Dirichlet" />
 
     <relative-convergence-measure data="HeatTransfer" mesh="Dirichlet-Mesh" limit="1e-5" />
     <relative-convergence-measure data="Temperature" mesh="Neumann-Mesh" limit="1e-5" />

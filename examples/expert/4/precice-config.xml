@@ -50,7 +50,7 @@
       mesh="Neumann-Mesh"
       from="Neumann"
       to="Dirichlet"
-      initialize="true" />
+    />
     <relative-convergence-measure data="HeatTransfer" mesh="Dirichlet-Mesh" limit="1e-5" />
     <relative-convergence-measure data="Temperature" mesh="Neumann-Mesh" limit="1e-5" />
     <acceleration:IQN-ILS>
