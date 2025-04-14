@@ -4,7 +4,8 @@ coupling-scheme:
   max-iterations: 100
 
 acceleration:
-  initial-relaxation: 0.1
+  initial-relaxation: 
+    value: 0.1
   max-used-iterations: 10
   time-windows-reused: 5
   filter:

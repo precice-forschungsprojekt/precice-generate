@@ -5,7 +5,8 @@ coupling-scheme:
  
 acceleration:
   name: IQN-ILS
-  initial-relaxation: 0.5
+  initial-relaxation: 
+    value: 0.5
   preconditioner: 
     freeze-after: -1
     type: residual-sum

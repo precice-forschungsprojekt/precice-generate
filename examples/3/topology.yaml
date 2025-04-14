@@ -14,7 +14,8 @@ participants:
 
 acceleration:
   name: aitken
-  initial-relaxation: 0.5
+  initial-relaxation: 
+    value: 0.5
       
 exchanges:
   - from: Solid
