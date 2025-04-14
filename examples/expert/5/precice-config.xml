@@ -30,8 +30,8 @@
         <provide-mesh name="Fluid-Top-Mesh"/>
         <receive-mesh name="Solid-Mesh" from="Solid"/>
 
-        <write-data name="Temperature" mesh="Fluid-Top-Mesh"/>
-        <read-data name="HeatTransfer" mesh="Fluid-Top-Mesh"/>
+        <write-data name="Temperature-Top" mesh="Fluid-Top-Mesh"/>
+        <read-data name="HeatTransfer-Top" mesh="Fluid-Top-Mesh"/>
 
         <mapping:nearest-neighbor
             direction="read"
@@ -45,8 +45,8 @@
         <provide-mesh name="Fluid-Bottom-Mesh"/>
         <receive-mesh name="Solid-Mesh" from="Solid"/>
 
-        <write-data name="Temperature" mesh="Fluid-Bottom-Mesh"/>
-        <read-data name="HeatTransfer" mesh="Fluid-Bottom-Mesh"/>
+        <write-data name="Temperature-Bottom" mesh="Fluid-Bottom-Mesh"/>
+        <read-data name="HeatTransfer-Bottom" mesh="Fluid-Bottom-Mesh"/>
 
         <mapping:nearest-neighbor
             direction="read"
@@ -58,11 +58,20 @@
 
     <participant name="Solid">
         <provide-mesh name="Solid-Mesh"/>
+        <receive-mesh name="Fluid-Top-Mesh" from="Fluid-Top"/>
         <receive-mesh name="Fluid-Bottom-Mesh" from="Fluid-Bottom"/>
 
-        <write-data name="HeatTransfer" mesh="Solid-Mesh"/>
-        <read-data name="Temperature" mesh="Solid-Mesh"/>
+        <write-data name="HeatTransfer-Top" mesh="Solid-Mesh"/>
+        <write-data name="HeatTransfer-Bottom" mesh="Solid-Mesh"/>
+        <read-data name="Temperature-Top" mesh="Solid-Mesh"/>
+        <read-data name="Temperature-Bottom" mesh="Solid-Mesh"/>
 
+        <mapping:nearest-neighbor
+            direction="read"
+            from="Fluid-Top-Mesh"
+            to="Solid-Mesh"
+            constraint="consistent"
+         />
         <mapping:nearest-neighbor
             direction="read"
             from="Fluid-Bottom-Mesh"
@@ -76,19 +85,19 @@
     <m2n:sockets acceptor="Fluid-Bottom" connector="Solid" exchange-directory=".."/>
 
     <coupling-scheme:multi>
-        <participants name="Fluid-Top" control="yes"/>
-        <participants name="Fluid-Bottom"/>
-        <participants name="Solid"/>
-        <max-time value="1e-1"/>
-        <time-window-size value="1e-3"/>
+        <participant name="Fluid-Top" control="yes"/>
+        <participant name="Fluid-Bottom"/>
+        <participant name="Solid"/>
+        <max-time value="5.0"/>
+        <time-window-size value="1e-2"/>
 
+        <relative-convergence-measure limit="0.0001" mesh="Fluid-Top-Mesh" data="Temperature-Top"/>
+        <relative-convergence-measure limit="0.0001" mesh="Solid-Mesh" data="HeatTransfer-Top"/>
         <relative-convergence-measure limit="0.0001" mesh="Fluid-Bottom-Mesh" data="Temperature-Bottom"/>
         <relative-convergence-measure limit="0.0001" mesh="Solid-Mesh" data="HeatTransfer-Bottom"/>
-        <relative-convergence-measure limit="0.0001" mesh="Fluid-Bottom-Mesh" data="Temperature-Bottom"/>
-        <relative-convergence-measure limit="0.0001" mesh="Solid-Mesh" data="HeatTransfer-Bottom"/>
 
-        <exchange data="Temperature-Bottom" mesh="Fluid-Bottom-Mesh" from="Fluid-Bottom" to="Solid"/>
-        <exchange data="HeatTransfer-Bottom" mesh="Solid-Mesh" from="Solid" to="Fluid-Bottom"/>
+        <exchange data="Temperature-Top" mesh="Fluid-Top-Mesh" from="Fluid-Top" to="Solid"/>
+        <exchange data="HeatTransfer-Top" mesh="Solid-Mesh" from="Solid" to="Fluid-Top"/>
         <exchange data="Temperature-Bottom" mesh="Fluid-Bottom-Mesh" from="Fluid-Bottom" to="Solid"/>
         <exchange data="HeatTransfer-Bottom" mesh="Solid-Mesh" from="Solid" to="Fluid-Bottom"/>
 
@@ -100,7 +109,6 @@
             <filter limit="1e-6" type="QR1"/>
             <max-used-iterations value="50"/>
             <time-windows-reused value="10"/>
-
             <data name="Temperature-Top" mesh="Fluid-Top-Mesh"/>
             <data name="HeatTransfer-Top" mesh="Solid-Mesh"/>
             <data name="Temperature-Bottom" mesh="Fluid-Bottom-Mesh"/>

@@ -22,6 +22,7 @@ class PS_PreCICEConfig(object):
         self.exchanges = []    # list to store full exchange details
         self.mappings_read = []
         self.mappings_write = []
+        self.couplingScheme_participants = None
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):

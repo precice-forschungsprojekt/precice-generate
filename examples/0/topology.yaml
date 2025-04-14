@@ -1,5 +1,5 @@
 coupling-scheme:
-  display_standard_values: true
+  display_standard_values: false
 participants:
   - name: Fluid
     solver: SU2
@@ -12,11 +12,4 @@ exchanges:
     to-patch: surface
     data: Force
     type: strong
-  - from: Solid
-    from-patch: surface
-    to: Fluid
-    to-patch: interface
-    data: Displacement
-    type: strong
-        
         

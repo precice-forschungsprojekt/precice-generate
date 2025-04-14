@@ -9,7 +9,6 @@ class UI_Participant(object):
         """The constructor."""
         self.name = ""
         self.solverName = ""
-        self.solverType = ""
         self.list_of_couplings = [] # list of empty couplings
         self.solver_domain = "" # this shows if this participant is a fluid or structure or else solver
         self.data_type = "scalar"
@@ -21,7 +20,6 @@ class UI_Participant(object):
         try:
             self.name = participant_name
             self.solverName = etree["solver"]
-            self.solverType = etree["solver-type"]
             self.data_type = etree["data-type"]
         except:
             mylog.rep_error("Error in YAML initialization of the Participant.")

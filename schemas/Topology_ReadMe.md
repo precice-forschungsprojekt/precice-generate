@@ -2,120 +2,84 @@
 
 ## Overview
 
-This JSON schema provides a flexible and robust configuration mechanism for defining multi-physics simulation topologies, specifically designed for complex coupling scenarios in scientific computing and engineering simulations.
+This JSON schema provides a comprehensive configuration mechanism for defining multi-physics simulation topologies, specifically designed for complex coupling scenarios in scientific computing and engineering simulations.
 
-## Key Features
+## Schema Structure
 
-### 1. Flexible Configuration Structures
-The schema supports two primary configuration structures:
-- Modern `coupling-scheme` based configuration
-- Legacy `simulation` based configuration
+The topology schema consists of four main sections:
 
-This ensures backward compatibility and allows for evolving project requirements.
+### 1. Coupling Scheme Configuration
+- Flexible time window and iteration controls
+- Support for parallel and serial coupling modes
+- Optional display of standard values
+- Configurable maximum time and iterations
 
-### 2. Comprehensive Simulation Parameters
+#### Key Parameters
+- `max-time`: Maximum simulation time (integer or scientific notation)
+- `time-window-size`: Size of time windows (number or scientific notation)
+- `max-iterations`: Maximum coupling iterations
+- `coupling`: Coupling mode (parallel/serial)
 
-#### Simulation Configuration
-- `steady-state`: Boolean to indicate steady-state simulation
-- `timesteps`: Number of time steps
-- `time-window-size`: Configurable time window with scientific notation support
-- `accuracy`: Simulation accuracy levels (low/medium/high)
-- `sync-mode`: Synchronization control
-- `mode`: Simulation mode (fundamental/advanced)
+### 2. Acceleration Mechanisms
+Advanced coupling acceleration with multiple configuration options:
 
-#### Coupling Scheme Configuration
-- Advanced coupling parameters
-- Maximum time and relative accuracy settings
-- Iteration and extrapolation controls
-- Explicit and implicit coupling support
+#### Acceleration Methods
+- Supported methods: `constant`, `aitken`, `IQN-ILS`, `IQN-IMVJ`
+- Initial relaxation factor
+- Preconditioner configuration
+- Filtering options (QR1/QR2)
 
-### 3. Participant Configuration
+#### Advanced Features
+- Iteration and time window reuse
+- IMVJ restart mode configuration
+- Singular value truncation
+- Preconditioner freezing
 
-Each participant can be extensively configured:
-- Solver name and type
-- Interface specifications
-- Solver domain (fluid/structure/heat)
-- Dimensionality
-- Solver nature (stationary/transient)
-- Boundary code specifications
+### 3. Participants Configuration
+Define simulation participants with detailed specifications:
 
-### 4. Detailed Coupling Mechanisms
+- Mandatory fields: `name`, `solver`
+- Optional fields: 
+  - `dimensionality` (default: 3)
+- Minimum of 2 participant required
 
-#### Coupling Types
-Supports multiple coupling types:
-- Fluid-Structure Interaction (FSI)
-- Conjugate Heat Transfer (CHT)
-- Fluid-to-Structure (F2S)
+### 4. Exchanges Configuration
+Define data exchanges between participants:
 
-#### Exchange Mechanisms
-Configurable data exchanges between participants:
-- Source and target participants
-- Interface patches
-- Exchanged data types (Force, Displacement, Temperature, etc.)
-- Quantity mapping (conservative/consistent)
-- Read and write quantity specifications
+#### Required Fields
+- `from`: Source participant
+- `from-patch`: Source interface patch
+- `to`: Target participant
+- `to-patch`: Target interface patch
+- `data`: Data identifier
+- `type`: Exchange type
 
-## Validation Features
-
-- Strict type checking
-- Range and enumeration constraints
-- Scientific notation support
-- Flexible structure validation
-- Prevents unexpected configurations
-
-## Example Use Cases
-
-1. **Fluid-Structure Interaction**
-   - Simulate fluid flow around a deformable structure
-   - Exchange force and displacement data
-   - Control coupling precision
-
-2. **Conjugate Heat Transfer**
-   - Model heat transfer between fluid and solid domains
-   - Configure temperature and heat transfer exchanges
-   - Define synchronization and accuracy parameters
+#### Optional Fields
+- `data-type`: Data representation (scalar/vector, default: scalar)
 
 ## Schema Validation Rules
 
-- Supports both modern and legacy YAML structures
-- Requires either:
-  - `coupling-scheme`, `participants`, `exchanges`
-  - `simulation`, `participants`, `couplings`
-- No additional properties allowed
-- Comprehensive error prevention
+- Requires `coupling-scheme`, `participants`, and `exchanges`
+- Optional `acceleration` configuration
+- Supports scientific notation for numeric values
+- Strict type and enumeration constraints
 
-## Recommended Workflow
+## Compatibility and Best Practices
 
-1. Define participants
-2. Configure simulation parameters
-3. Specify coupling mechanisms
-4. Detail data exchanges
-5. Validate against schema
-
-## Compatibility
-
-- Supports complex multi-physics simulations
-- Adaptable to various scientific computing frameworks
 - Designed for preCICE coupling framework
-
-## Best Practices
-
-- Use scientific notation for precise time and accuracy settings
-- Clearly define solver domains
-- Specify mapping types for data exchanges
-- Leverage synchronization and mode settings
+- Supports complex multi-physics simulations
+- Flexible configuration for various scientific computing scenarios
 
 ## Limitations
 
-- Maximum of 10 participants
-- Maximum of 10 couplings/exchanges
-- Predefined data types and solver domains
+- Predefined acceleration and exchange methods
+- Strict schema validation
 
 ## Future Extensions
 
-- Support for more solver domains
-- Additional data exchange types
-- Enhanced validation rules
+- Potential expansion of acceleration methods
+- Enhanced data exchange types
+- More flexible validation rules
 
 ## Contributing
 

@@ -99,7 +99,7 @@ precice-gen -f path/to/your/topology.yaml
 
 You can easily create a topology for your preCICE simulation using the online Metaconfigurator. We provide a preloaded schema to help you get started:
 
-1. Open the Metaconfigurator with the preloaded schema: [Metaconfigurator Link](https://metaconfigurator.github.io/meta-configurator/?schema=https://github.com/precice-forschungsprojekt/precice-generate/blob/main/schemas/topology-schema.json)
+1. Open the Metaconfigurator with the preloaded schema: [Metaconfigurator Link](https://metaconfigurator.github.io/meta-configurator/?schema=https://github.com/precice-forschungsprojekt/precice-generate/blob/main/schemas/topology-schema.json&settings=https://github.com/precice-forschungsprojekt/precice-structure-generator/blob/main/templates/metaConfiguratorSettings.json)
 
 2. Use the interactive interface to define your topology:
    - The preloaded schema provides a structured way to describe your simulation components
@@ -120,10 +120,10 @@ You can easily create a topology for your preCICE simulation using the online Me
 
 ## Example Configurations
 
-### Normal Examples (1-5)
+### Normal Examples (0-5)
 Our project provides a set of progressively complex example configurations to help you get started with preCICE simulations:
 
-- Located in `examples/1` through `examples/5`
+- Located in `examples/0` through `examples/5`
 - Designed for beginners and intermediate users
 - Each example includes:
   - A `topology.yaml` file defining the simulation setup
@@ -141,7 +141,7 @@ For advanced users, we offer more sophisticated configuration examples:
 - Targeted at users with a better understanding of preCICE
 
 > [!TIP]
-> Start with normal examples (1-5) and progress to expert examples as you become more comfortable with preCICE configurations.
+> Start with normal examples (0-5) and progress to expert examples as you become more comfortable with preCICE configurations.
 
 ## Contributing
 

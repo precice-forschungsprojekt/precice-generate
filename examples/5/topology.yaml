@@ -4,15 +4,15 @@ coupling-scheme:
   max-iterations: 30
 
 participants:
-  Fluid-Top: 
-      solver: OpenFOAM
-      dimensionality: 2
-  Fluid-Bottom: 
-      solver: OpenFOAM
-      dimensionality: 2
-  Solid: 
-      solver: CalculiX
-      dimensionality: 2
+  - name: Fluid-Top
+    solver: OpenFOAM
+    dimensionality: 2
+  - name: Fluid-Bottom
+    solver: OpenFOAM
+    dimensionality: 2
+  - name: Solid
+    solver: CalculiX
+    dimensionality: 2
 
 exchanges:
   - from: Fluid-Top

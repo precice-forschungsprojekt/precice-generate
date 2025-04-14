@@ -116,35 +116,25 @@ class UI_UserInput(object):
             # --- Parse participants ---
             self.participants = {}
             participants_data = etree["participants"]
-            for participant_name, solver_info in participants_data.items():
+            for participant in participants_data:
                 new_participant = UI_Participant()
                 
-                # Handle different input formats
-                if isinstance(solver_info, str):
-                    # Simple solver name format
-                    new_participant.name = participant_name
-                    new_participant.solverName = solver_info
-                    new_participant.solverType = ""
-                    new_participant.dimensionality = 3  # Default to 3D
-                
-                elif isinstance(solver_info, dict):
-                    # New dictionary format
-                    if ":" in participant_name:
-                        name, solver_name = participant_name.split(":", 1)
-                        name = name.strip()
-                        solver_name = solver_name.strip()
-                    else:
-                        name = participant_name
-                        solver_name = solver_info.get("solver", participant_name)
+                # Handle new list of dictionaries format
+                if isinstance(participant, dict):
+                    name = participant.get("name")
+                    solver_info = participant
+                    
+                    if name is None:
+                        mylog.rep_error(f"Participant missing 'name' key: {participant}")
+                        continue
                     
                     new_participant.name = name
-                    new_participant.solverName = solver_name
-                    new_participant.solverType = solver_info.get("solver-type", "")
+                    new_participant.solverName = solver_info.get("solver", name)
                     new_participant.dimensionality = solver_info.get("dimensionality", 3)
                 
                 else:
                     # Unsupported format
-                    mylog.rep_error(f"Unsupported participant configuration for {participant_name}")
+                    mylog.rep_error(f"Unsupported participant configuration: {participant}")
                     continue
                 
                 new_participant.list_of_couplings = []
