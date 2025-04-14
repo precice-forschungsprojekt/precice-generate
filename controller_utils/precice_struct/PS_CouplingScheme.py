@@ -322,7 +322,10 @@ class PS_ImplicitPostProcessing(object):
                 if b is not None:
                     if self.name == "IQN-ILS":
                         if a == "initial-relaxation":
-                            i = etree.SubElement(post_processing, a, value=str(b), enforce="false")
+                            if b.get("enforce") is not None:
+                                i = etree.SubElement(post_processing, a, value=str(b.get("value")), enforce=str(b.get("enforce")))
+                            else:
+                                i = etree.SubElement(post_processing, a, value=str(b.get("value")))
                         elif a == "max-used-iterations" or a == "time-windows-reused":
                             i = etree.SubElement(post_processing, a, value=str(b))
                         elif a == "filter":
@@ -337,7 +340,10 @@ class PS_ImplicitPostProcessing(object):
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))
                     if self.name == "aitken":
                         if a == "initial-relaxation":
-                            i = etree.SubElement(post_processing, a, value=str(b), enforce="false")
+                            if b.get("enforce") is not None:
+                                i = etree.SubElement(post_processing, a, value=str(b.get("value")), enforce=str(b.get("enforce")))
+                            else:
+                                i = etree.SubElement(post_processing, a, value=str(b.get("value")))
                         elif a == "preconditioner":
                             if b.get("type") is not None:
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")), type=str(b.get("type")))
@@ -345,7 +351,10 @@ class PS_ImplicitPostProcessing(object):
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))
                     if self.name == "IQN-IMVJ":
                         if a == "initial-relaxation":
-                            i = etree.SubElement(post_processing, a, value=str(b), enforce="false")
+                            if b.get("enforce") is not None:
+                                i = etree.SubElement(post_processing, a, value=str(b.get("value")), enforce=str(b.get("enforce")))
+                            else:
+                                i = etree.SubElement(post_processing, a, value=str(b.get("value")))
                         elif a == "max-used-iterations" or a == "time-windows-reused":
                             i = etree.SubElement(post_processing, a, value=str(b))
                         elif a == "filter":
