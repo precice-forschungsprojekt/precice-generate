@@ -196,7 +196,8 @@
               "type": "string"
             },
             "data": {
-              "type": "string"
+              "type": "string",
+              "enum": ["Force", "Displacement", "Velocity", "Pressure", "Temperature", "HeatTransfer"]
             },
             "data-type": {
               "type": "string",
