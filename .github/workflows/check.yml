@@ -99,6 +99,8 @@ jobs:
           # Validate the configuration
           echo "Validating configuration at $config_file..."
           python config-checker/preciceconfigchecker/cli.py "$config_file" --debug
+          echo "Validating configuration at $config_file... using precice tools check"
+          precice-tools check "$config_file"
           echo "Validation successful for $example_name"
         done
 
