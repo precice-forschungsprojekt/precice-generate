@@ -38,9 +38,12 @@ class PS_CouplingScheme(object):
             if mycomplexity[0] < mycomplexity[1]:
                 i = etree.SubElement(coupling_scheme, "participants", first=mylist[0],
                                      second=mylist[1])
+                config.couplingScheme_participants = mylist[0], mylist[1]
             else:
                 i = etree.SubElement(coupling_scheme, "participants", first=mylist[1],
                                      second=mylist[0])
+                config.couplingScheme_participants = mylist[1], mylist[0]
+            
         else:
             # TODO: is "multi" good for all
             coupling_scheme = etree.SubElement(tag, "coupling-scheme:multi")
@@ -406,6 +409,8 @@ class PS_ImplicitPostProcessing(object):
 
                 # print(exchange_mesh_name)
                 if exchange_mesh_name != "":
-                    i = etree.SubElement(post_processing, "data", 
-                            name=q.instance_name, 
-                            mesh=exchange_mesh_name)
+                    print(config.couplingScheme_participants)
+                    if config.couplingScheme.coupling == 'parallel':
+                        i = etree.SubElement(post_processing, "data", 
+                                name=q.instance_name, 
+                                mesh=exchange_mesh_name)
