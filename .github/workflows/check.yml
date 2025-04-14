@@ -26,8 +26,7 @@ jobs:
       run: |
         which precice-tools
         precice-tools version
-    # - name: Test precice-tools in a clean environment
-    #   run: |
-    #     env -i bash --noprofile --norc
-    #     which precice-tools
-    #     precice-tools version
+    - name: Test precice-tools in a clean environment
+      run: |
+        env -i PATH=/usr/bin:/usr/local/bin bash --noprofile --norc -c 'which precice-tools; precice-tools version'
+
