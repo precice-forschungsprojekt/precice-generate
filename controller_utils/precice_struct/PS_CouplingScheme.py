@@ -409,10 +409,10 @@ class PS_ImplicitPostProcessing(object):
 
                 # print(exchange_mesh_name)
                 if exchange_mesh_name != "":
-                    print(config.couplingScheme_participants)
+                    print(config.couplingScheme_participants[0]+"-Mesh")
                     print(exchange_mesh_name)
-                    if config.couplingScheme.coupling == 'parallel':
-                        if exchange_mesh_name == config.couplingScheme_participants[0]:
+                    if config.couplingScheme.coupling == 'serial':
+                        if exchange_mesh_name == config.couplingScheme_participants[0]+"-Mesh":
                             i = etree.SubElement(post_processing, "data", 
                                     name=q.instance_name, 
                                     mesh=exchange_mesh_name)
