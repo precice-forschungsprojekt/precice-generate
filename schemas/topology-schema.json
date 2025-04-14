@@ -211,7 +211,7 @@
             },
             "data": {
               "type": "string",
-              "enum": ["Force", "Displacement", "Velocity", "Pressure", "Temperature", "HeatTransfer"]
+              "pattern": "^(Force|Displacement|Velocity|Pressure|Temperature|HeatTransfer).*$"
             },
             "data-type": {
               "type": "string",
