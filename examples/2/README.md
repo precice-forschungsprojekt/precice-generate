@@ -1,0 +1,1 @@
+This example is an extension to example 1 since it uses specific, manually set, properties for coupling, like max-time and time-window-size. 
