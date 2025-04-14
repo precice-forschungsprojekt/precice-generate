@@ -18,7 +18,7 @@
     <receive-mesh name="Neumann-Mesh" from="Neumann" />
     <write-data name="HeatTransfer" mesh="Dirichlet-Mesh" />
     <read-data name="Temperature" mesh="Dirichlet-Mesh" />
-    <mapping:nearest-projection
+    <mapping:nearest-neighbor
       direction="read"
       from="Neumann-Mesh"
       to="Dirichlet-Mesh"
@@ -30,7 +30,7 @@
     <receive-mesh name="Dirichlet-Mesh" from="Dirichlet" />
     <write-data name="Temperature" mesh="Neumann-Mesh" />
     <read-data name="HeatTransfer" mesh="Neumann-Mesh" />
-    <mapping:nearest-projection
+    <mapping:nearest-neighbor
       direction="read"
       from="Dirichlet-Mesh"
       to="Neumann-Mesh"
