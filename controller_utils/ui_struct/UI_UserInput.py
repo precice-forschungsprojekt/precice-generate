@@ -69,7 +69,10 @@ class UI_UserInput(object):
                 if display_standard_values.lower() == 'true':
                     self.acceleration = {
                         'name': acceleration.get('name', 'IQN-ILS'),
-                        'initial-relaxation': acceleration.get('initial-relaxation', None),
+                        'initial-relaxation': {
+                            'value': acceleration.get('initial-relaxation', {}).get('value', 0.1),
+                            'enforce': acceleration.get('initial-relaxation', {}).get('enforce', 'false')
+                        },
                         'preconditioner': {
                             'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
                             'type': acceleration.get('preconditioner', {}).get('type', None)
@@ -97,6 +100,10 @@ class UI_UserInput(object):
                             'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', None),
                             'type': acceleration.get('preconditioner', {}).get('type', None)
                         } if any(acceleration.get('preconditioner', {}).values()) else None,
+                        'initial-relaxation': {
+                            'value': acceleration.get('initial-relaxation', {}).get('value', None),
+                            'enforce': acceleration.get('initial-relaxation', {}).get('enforce', None)
+                        } if any(acceleration.get('initial-relaxation', {}).values()) else None,
                         'filter': {
                             'limit': acceleration.get('filter', {}).get('limit', None),
                             'type': acceleration.get('filter', {}).get('type', None)
