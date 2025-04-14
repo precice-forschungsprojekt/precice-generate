@@ -411,6 +411,11 @@ class PS_ImplicitPostProcessing(object):
                 if exchange_mesh_name != "":
                     print(config.couplingScheme_participants)
                     if config.couplingScheme.coupling == 'parallel':
+                        if write_mapping['from'] == config.couplingScheme_participants[0]:
+                            i = etree.SubElement(post_processing, "data", 
+                                    name=q.instance_name, 
+                                    mesh=exchange_mesh_name)
+                    else:
                         i = etree.SubElement(post_processing, "data", 
-                                name=q.instance_name, 
-                                mesh=exchange_mesh_name)
+                                    name=q.instance_name, 
+                                    mesh=exchange_mesh_name)
