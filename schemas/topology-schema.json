@@ -66,9 +66,8 @@
                   }
                 },
                 "additionalProperties": false,
-                "required": ["value"]
-              },
-            "description": "Initial under-relaxation factor"
+                "required": ["value"],
+                "description": "Initial under-relaxation factor"
           },
           "preconditioner": {
             "type": "object",
