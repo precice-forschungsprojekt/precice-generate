@@ -414,6 +414,7 @@ class PS_ImplicitPostProcessing(object):
                             i = etree.SubElement(post_processing, "data", 
                                     name=q.instance_name, 
                                     mesh=exchange_mesh_name)
+                    # parallel coupling
                     else:
                         i = etree.SubElement(post_processing, "data", 
                                     name=q.instance_name, 
