@@ -5,3 +5,5 @@ This is a first example with more complex structure.
 2. It defines dimensionality of each participant.
 
 3. It manually defines acceleration to be used in the config.
+
+![](config_graph.png)
