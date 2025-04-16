@@ -43,7 +43,7 @@ class ConfigGenerator:
 
         # Build the ui
         logger.info("Building the user input info...")
-        user_ui = file_generator.get_user_ui()
+        user_ui = file_generator.user_ui
         user_ui.init_from_yaml(config, file_generator.mylog)
 
         # Generate the precice-config.xml file
