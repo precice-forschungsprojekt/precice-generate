@@ -94,7 +94,9 @@ class ReadmeGenerator:
 
         # Write the README
         structure = file_generator.structure
-        readme_path = structure.output_path / "README.md"
+
+        with open(structure.README, 'w', encoding='utf-8') as readme_file:
+            readme_file.write(readme_content)
         
         try:
             with open(readme_path, 'w', encoding='utf-8') as readme_file:
