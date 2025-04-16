@@ -80,7 +80,7 @@ class FileGenerator:
         """Fills out the files of level 0 (everything in the root folder)."""
         self._generate_clean()
         self.config_generator.generate_precice_config(self)
-        self.readme_generator.generate_readme()
+        self.readme_generator.generate_readme(self)
     
     def _extract_participants(self) -> list[str]:
         """Extracts the participants from the topology.yaml file."""
