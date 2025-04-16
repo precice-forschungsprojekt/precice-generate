@@ -95,14 +95,11 @@ class ReadmeGenerator:
         # Write the README
         structure = file_generator.structure
 
-        with open(structure.README, 'w', encoding='utf-8') as readme_file:
-            readme_file.write(readme_content)
-        
         try:
-            with open(readme_path, 'w', encoding='utf-8') as readme_file:
+            with open(structure.README, 'w', encoding='utf-8') as readme_file:
                 readme_file.write(readme_content)
-            logger.success(f"README.md generated successfully at {readme_path}")
-            return readme_path
+            logger.success(f"README.md generated successfully at {structure.README}")
+            return structure.README
         except Exception as e:
             logger.error(f"Failed to write README.md: {str(e)}")
             return None
