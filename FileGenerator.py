@@ -122,8 +122,7 @@ class FileGenerator:
         except Exception as prettifyException:
             self.logger.error("An error occurred during XML prettification: ", prettifyException)
             
-        
-def main():
+def parse_args():
     parser = argparse.ArgumentParser(description="Takes topology.yaml files as input and writes out needed files to start the precice.")
     parser.add_argument(
         "-f", "--input-file", 
@@ -152,8 +151,11 @@ def main():
         default=True,
         help="Whether to validate the input topology.yaml file against the preCICE topology schema.",
     )
+    return parser.parse_args()
 
-    args = parser.parse_args()
+
+def main():
+    args = parse_args()
 
     fileGenerator = FileGenerator(args.input_file, args.output_path)
 
