@@ -93,7 +93,7 @@ class ReadmeGenerator:
         )
 
         # Write the README
-        structure = file_generator.get_structure()
+        structure = file_generator.structure
         readme_path = structure.output_path / "README.md"
         
         try:
