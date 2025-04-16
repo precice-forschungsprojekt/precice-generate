@@ -52,7 +52,7 @@ class ConfigGenerator:
         precice_config.create_config(user_ui)
 
         # Set the target of the file and write out to it
-        structure = file_generator.get_structure()
+        structure = file_generator.structure
         target = str(structure.precice_config)
         
         try:
