@@ -1,24 +1,24 @@
 from pathlib import Path
 
 class ReadmeGenerator:
-    SOLVER_DOCS = {
-        # CFD Solvers
-        'openfoam': '[https://www.openfoam.com/documentation',](https://www.openfoam.com/documentation',)
-        'su2': '[https://su2code.github.io/docs/home/',](https://su2code.github.io/docs/home/',)
-        'foam-extend': '[https://sourceforge.net/p/foam-extend/',](https://sourceforge.net/p/foam-extend/',)
-        
-        # Structural Solvers
-        'calculix': '[https://www.calculix.de/',](https://www.calculix.de/',)
-        'elmer': '[https://www.elmersolver.com/documentation/',](https://www.elmersolver.com/documentation/',)
-        'code_aster': '[https://www.code-aster.org/V2/doc/default/en/index.php',](https://www.code-aster.org/V2/doc/default/en/index.php',)
-        
-        # Other Solvers
-        'fenics': '[https://fenicsproject.org/docs/',](https://fenicsproject.org/docs/',)
-        'dealii': '[https://dealii.org/current/doxygen/deal.II/index.html',](https://dealii.org/current/doxygen/deal.II/index.html',)
-        
-        # Fallback
-        'default': '[https://precice.org/adapter-list.html'](https://precice.org/adapter-list.html')
-    }
+        SOLVER_DOCS = {
+            # CFD Solvers
+            'openfoam': 'https://www.openfoam.com/documentation',
+            'su2': 'https://su2code.github.io/docs/home/',
+            'foam-extend': 'https://sourceforge.net/p/foam-extend/',
+            
+            # Structural Solvers
+            'calculix': 'https://www.calculix.de/',
+            'elmer': 'https://www.elmersolver.com/documentation/',
+            'code_aster': 'https://www.code-aster.org/V2/doc/default/en/index.php',
+            
+            # Other Solvers
+            'fenics': 'https://fenicsproject.org/docs/',
+            'dealii': 'https://dealii.org/current/doxygen/deal.II/index.html',
+            
+            # Fallback
+            'default': 'https://precice.org/adapter-list.html'
+        }
 
     def generate_readme(self, file_generator):
         """Generates the README.md file with dynamic content based on simulation configuration"""
