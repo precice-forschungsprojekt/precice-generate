@@ -23,7 +23,7 @@ class ConfigGenerator:
         """Generates the precice-config.xml file based on the topology.yaml file."""
         # Check if the topology YAML file is UTF-8 encoded
         topology_file_path = file_generator.input_file
-        logger = file_generator.get_logger()
+        logger = file_generator.logger
         
         if not self.is_utf8_encoded(topology_file_path):
             logger.error(f"Input YAML file {topology_file_path} is not UTF-8 encoded.")
