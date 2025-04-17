@@ -492,7 +492,7 @@ class PS_PreCICEConfig(object):
                 self.solver_receive_meshes[control_participant].append(mesh)
                 #create extra exchange
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
-                    data="test", mesh=mesh,
+                    mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
 
                 
