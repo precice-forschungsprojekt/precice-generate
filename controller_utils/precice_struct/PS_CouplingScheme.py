@@ -158,7 +158,7 @@ class PS_CouplingScheme(object):
             self.relative_convergence_measures.append((exchange_mesh_name, data))
             pass
 
-    def write_exchange_and_convergance_to_etree(self, coupling_scheme, relative_conv_str:str):
+    def write_exchange_and_convergance_to_etree(self, coupling_scheme):
         """Writes to the XML the exchange list"""
         for data, mesh, from_, to_ in self.exchanges:
             e = etree.SubElement(coupling_scheme, "exchange", 
@@ -166,7 +166,7 @@ class PS_CouplingScheme(object):
                                 from___=from_, to=to_)
 
         for mesh, data in self.relative_convergence_measures:
-            c = etree.SubElement(coupling_scheme, "relative-convergence-measure", limit=relative_conv_str,
+            c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
                                  mesh=mesh, data=data)
 
 
