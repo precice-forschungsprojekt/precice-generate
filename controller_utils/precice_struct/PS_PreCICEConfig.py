@@ -445,11 +445,19 @@ class PS_PreCICEConfig(object):
 
                 # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
 
+                #get data via topology
+                for exchange in config.exchanges:
+                    print(f"Providing participant: {providing_participants[0]}")
+                    print(f"Exchange data: {exchange.get('data')}")
+                    
+                    if providing_participants[0].lower() == exchange.get('from').lower():
+                        data = exchange.get('data')
+
                 # Add the mesh to the control participant as receive and add an exchange for it
                 solver_tag = self.solver_tags[control_participant]
                 solver_mesh_tag = etree.SubElement(solver_tag,
                                     "receive-mesh", name=mesh,
                                     from___=providing_participants[0])
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
-                    data= "TODO", mesh=mesh,
+                    data= data, mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
