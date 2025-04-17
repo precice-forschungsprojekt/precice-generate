@@ -428,20 +428,34 @@ class PS_PreCICEConfig(object):
 
         # Find the control participant (the one with the most meshes)
         control_participant = max(config.solvers, key=lambda p: len(config.solvers[p].meshes))
-        print(f"Control participant: {control_participant}")
+        
+        # Combine provided and received meshes for the control participant
+        control_participant_meshes = set(config.solvers[control_participant].meshes)
+        control_participant_meshes.update(self.solver_receive_meshes.get(control_participant, []))
 
-        # Check if each exchanged mesh is present in the control participant's meshes
+        print(f"Control participant: {control_participant}")
         print("Exchanged meshes:")
         for mesh in exchange_mesh_names:
             print(f"  - {mesh}")
         print("Control participant meshes:")
-        for mesh in config.solvers[control_participant].meshes:
-            print(f"  - {mesh}")
-        print("Control participant receive meshes:")
-        for mesh in self.solver_receive_meshes[control_participant]:
+        for mesh in control_participant_meshes:
             print(f"  - {mesh}")
 
         # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
-            if mesh not in (config.solvers[control_participant].meshes or self.solver_receive_meshes[control_participant]):
+            if mesh not in control_participant_meshes:
+                # Find which participant provides this mesh
+                providing_participants = [
+                    p_name for p_name, p in config.solvers.items() 
+                    if mesh in p.meshes
+                ]
+                
                 print(f"Mesh '{mesh}' used in configuration is not available to the control participant")
+                print(f"Mesh '{mesh}' is provided by: {providing_participants}")
+                
+                # If no participant provides the mesh, raise an error
+                if not providing_participants:
+                    raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
+                
+                # If the mesh is not exchanged to the control participant, raise an error
+                raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
