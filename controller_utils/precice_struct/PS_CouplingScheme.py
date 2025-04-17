@@ -158,7 +158,7 @@ class PS_CouplingScheme(object):
             self.relative_convergence_measures.append((exchange_mesh_name, data))
             pass
 
-    def write_exchange_and_convergance_to_etree(self, config, coupling_scheme, relative_conv_str:str):
+    def write_exchange_and_convergance_to_etree(self, coupling_scheme, relative_conv_str:str):
         """Writes to the XML the exchange list"""
         for data, mesh, from_, to_ in self.exchanges:
             e = etree.SubElement(coupling_scheme, "exchange", 
@@ -206,10 +206,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
                 i = etree.SubElement(coupling_scheme, "time-window-size", attr)
 
         # write out the exchange but not the convergence (if empty it will not be written)
-        # self.write_exchange_and_convergance(config, coupling_scheme, "")
-        self.prepare_exchange_and_convergance(config)
-        self.write_exchange_and_convergance_to_etree(coupling_scheme, config, "")
-        pass
+        self.write_exchange_and_convergance(config, coupling_scheme, "")
 
 
 class PS_ImplicitCoupling(PS_CouplingScheme):
@@ -275,9 +272,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
             #    i = etree.SubElement(coupling_scheme, "extrapolation-order", value=str(self.extrapolation_order))
 
         # write out the exchange and the convergance rate
-        # self.write_exchange_and_convergance(config, coupling_scheme, str(self.relativeConverganceEps))
-        self.prepare_exchange_and_convergance(config)
-        self.write_exchange_and_convergance_to_etree(coupling_scheme, config, str(self.relativeConverganceEps))
+        self.write_exchange_and_convergance(config, coupling_scheme, str(self.relativeConverganceEps))
 
         # finally we write out the post processing...
         self.postProcessing.write_precice_xml_config(coupling_scheme, config, self)
