@@ -490,5 +490,10 @@ class PS_PreCICEConfig(object):
                 if control_participant not in self.solver_receive_meshes:
                     self.solver_receive_meshes[control_participant] = []
                 self.solver_receive_meshes[control_participant].append(mesh)
+                #create extra exchange
+                e = etree.SubElement(self.coupling_scheme, "exchange", 
+                    data=data, mesh=mesh,
+                    from___=providing_participants[0], to=control_participant)
+
                 
                 
