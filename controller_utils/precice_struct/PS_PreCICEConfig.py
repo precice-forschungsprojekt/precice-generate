@@ -242,13 +242,14 @@ class PS_PreCICEConfig(object):
         # Initialize dictionaries to store provide and receive meshes
         self.solver_provide_meshes = {}
         self.solver_receive_meshes = {}
-
         # 3 participants
         m2n_pairs_added = set()
+        self.solver_tags = {}
         for solver_name in self.solvers:
             solver = self.solvers[solver_name]
             solver_tag = etree.SubElement(precice_configuration_tag,
                                           "participant", name=solver.name)
+            self.solver_tags[solver_name] = solver_tag
 
             # Initialize lists for this solver's provide and receive meshes
             self.solver_provide_meshes[solver_name] = []
@@ -444,9 +445,12 @@ class PS_PreCICEConfig(object):
                 # If the mesh is not exchanged to the control participant, add it
                 # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
                 # Add the mesh to the control participant as receive and add an exchange for it
-                if control_participant not in self.solver_receive_meshes:
-                    self.solver_receive_meshes[control_participant] = []
-                self.solver_receive_meshes[control_participant].append(mesh)
+                # if control_participant not in self.solver_receive_meshes:
+                #     self.solver_receive_meshes[control_participant] = []
+                # self.solver_receive_meshes[control_participant].append(mesh)
+                solver_mesh_tag = etree.SubElement(solver_tag,
+                                    "receive-mesh", name=q.source_mesh_name,
+                                    from___=q.source_solver.name)
                 #create extra exchange
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
                     mesh=mesh,
