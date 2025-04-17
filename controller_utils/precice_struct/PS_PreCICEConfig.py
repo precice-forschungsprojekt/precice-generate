@@ -341,12 +341,12 @@ class PS_PreCICEConfig(object):
                     mapping_string = type_of_the_mapping_write[other_solver_name]
                     other_solver_mesh_name = self.get_mesh_name_by_participants(other_solver_name, solver_name)
                     
-                    # Always add receive mesh for the participant specifying a mapping if it does not already exist
-                    if other_solver_mesh_name not in self.solver_receive_meshes[solver_name]:
-                        solver_mesh_tag = etree.SubElement(solver_tag,
-                                                           "receive-mesh", name=other_solver_mesh_name,
-                                                           from___=other_solver_name)
-                        self.solver_receive_meshes[solver_name].append(other_solver_mesh_name)
+                    # # Always add receive mesh for the participant specifying a mapping if it does not already exist
+                    # if other_solver_mesh_name not in self.solver_receive_meshes[solver_name]:
+                    #     solver_mesh_tag = etree.SubElement(solver_tag,
+                    #                                        "receive-mesh", name=other_solver_mesh_name,
+                    #                                        from___=other_solver_name)
+                    #     self.solver_receive_meshes[solver_name].append(other_solver_mesh_name)
                     
                     # Add write mapping
                     mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction="write",
