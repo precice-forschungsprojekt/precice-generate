@@ -211,7 +211,11 @@ class PS_PreCICEConfig(object):
         mesh_tags = []
         quant_tags =[]
         solver_tags = []
-        solver_mesh_tags = []
+        provide_mesh_tags = []
+        receive_mesh_tags = []
+        read_tags = []
+        write_tags = []
+        m2n_tags = []
 
         for exchange in self.exchanges:
             data_key = exchange.get("data")
@@ -255,8 +259,9 @@ class PS_PreCICEConfig(object):
         m2n_pairs_added = set()
         for solver_name in self.solvers:
             solver = self.solvers[solver_name]
-            solver_tag = etree.SubElement(precice_configuration_tag,
-                                          "participant", name=solver.name)
+            # solver_tag = etree.SubElement(precice_configuration_tag,
+            #                               "participant", name=solver.name)
+            solver_tags.append(("participant", solver.name))
 
             # Initialize lists for this solver's provide and receive meshes
             self.solver_provide_meshes[solver_name] = []
@@ -265,8 +270,10 @@ class PS_PreCICEConfig(object):
             # there are more then one meshes per participant
             for solvers_mesh_name in solver.meshes:
                 # print("Mesh=", solvers_mesh_name)
-                solver_mesh_tag = etree.SubElement(solver_tag,
-                                              "provide-mesh", name=solvers_mesh_name)
+                # solver_mesh_tag = etree.SubElement(solver_tag,
+                #                               "provide-mesh", name=solvers_mesh_name)
+                provide_mesh_tags.append(("provide-mesh", solvers_mesh_name))
+
                 # Save provided meshes
                 self.solver_provide_meshes[solver_name].append(solvers_mesh_name)
 
@@ -284,8 +291,10 @@ class PS_PreCICEConfig(object):
                 used_meshes = {}
                 for q_name in solver.quantities_read:
                     q = solver.quantities_read[q_name]
-                    read_tag = etree.SubElement(solver_tag,
-                                                       "read-data", name=q.instance_name, mesh=solvers_mesh_name)
+                    # read_tag = etree.SubElement(solver_tag,
+                    #                                    "read-data", name=q.instance_name, mesh=solvers_mesh_name)
+                    read_tags.append(("read-data", q.instance_name, solvers_mesh_name))
+
                     for other_solvers_name in q.list_of_solvers:
                         other_solver = q.list_of_solvers[other_solvers_name]
                         # consistent only read
@@ -299,9 +308,10 @@ class PS_PreCICEConfig(object):
                             # within one participant put the "use-mesh" only once there
                             if solvers_mesh_name != q.source_mesh_name and \
                                             q.source_mesh_name not in used_meshes:
-                                solver_mesh_tag = etree.SubElement(solver_tag,
-                                                                   "receive-mesh", name=q.source_mesh_name,
-                                                                   from___=q.source_solver.name)
+                                # solver_mesh_tag = etree.SubElement(solver_tag,
+                                #                                    "receive-mesh", name=q.source_mesh_name,
+                                #                                    from___=q.source_solver.name)
+                                receive_mesh_tags.append(("receive-mesh", q.source_mesh_name, q.source_solver.name))
                                 # Save received meshes
                                 if solver_name not in self.solver_receive_meshes:
                                     self.solver_receive_meshes[solver_name] = []
@@ -312,8 +322,10 @@ class PS_PreCICEConfig(object):
                     pass
                 for q_name in solver.quantities_write:
                     q = solver.quantities_write[q_name]
-                    write_tag = etree.SubElement(solver_tag,
-                                                       "write-data", name=q.instance_name, mesh=solvers_mesh_name)
+                    # write_tag = etree.SubElement(solver_tag,
+                    #                                    "write-data", name=q.instance_name, mesh=solvers_mesh_name)
+                    write_tags.append(("write-data", q.instance_name, solvers_mesh_name))
+
                     for other_solvers_name in q.list_of_solvers:
                         other_solver = q.list_of_solvers[other_solvers_name]
                         # conservative only write
@@ -334,9 +346,10 @@ class PS_PreCICEConfig(object):
                     other_solver = list_of_solvers_with_higher_complexity_read[other_solver_name]
                     mapping_string = type_of_the_mapping_read[other_solver_name]
                     other_solver_mesh_name = self.get_mesh_name_by_participants(other_solver_name, solver_name)
-                    mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction = "read",
-                                                  from___ = other_solver_mesh_name, to= solvers_mesh_name,
-                                                  constraint = mapping_string)
+                    # mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction = "read",
+                    #                               from___ = other_solver_mesh_name, to= solvers_mesh_name,
+                    #                               constraint = mapping_string)
+
                     self.mappings_read.append({
                         'other_solver_name': other_solver_name,
                         'from': other_solver_mesh_name,
@@ -349,9 +362,9 @@ class PS_PreCICEConfig(object):
                     other_solver = list_of_solvers_with_higher_complexity_write[other_solver_name]
                     mapping_string = type_of_the_mapping_write[other_solver_name]
                     other_solver_mesh_name = self.get_mesh_name_by_participants(other_solver_name, solver_name)
-                    mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction="write",
-                                              from___ = solvers_mesh_name, to = other_solver_mesh_name,
-                                              constraint = mapping_string)
+                    # mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction="write",
+                    #                           from___ = solvers_mesh_name, to = other_solver_mesh_name,
+                    #                           constraint = mapping_string)
                     self.mappings_write.append({
                         'other_solver_name': other_solver_name,
                         'from': solvers_mesh_name,
@@ -366,10 +379,11 @@ class PS_PreCICEConfig(object):
                     # Check if this pair or its reverse has already been added
                     m2n_pair = tuple(sorted([solver_name, other_solver_name]))
                     if m2n_pair not in m2n_pairs_added:
-                        m2n_tag = etree.SubElement(precice_configuration_tag, "m2n:sockets", 
-                                                   acceptor=solver_name, 
-                                                   connector=other_solver_name, 
-                                                   exchange___directory="..")
+                        # m2n_tag = etree.SubElement(precice_configuration_tag, "m2n:sockets", 
+                        #                            acceptor=solver_name, 
+                        #                            connector=other_solver_name, 
+                        #                            exchange___directory="..")
+                        m2n_tags.append(("m2n:sockets", acceptor=solver_name, connector=other_solver_name, exchange___directory=".."))
                         m2n_pairs_added.add(m2n_pair)
                 pass
 
