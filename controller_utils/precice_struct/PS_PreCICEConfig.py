@@ -431,10 +431,11 @@ class PS_PreCICEConfig(object):
 
         pass
 
+        print(self.solver_receive_meshes)
         # Validate mesh exchanges for convergence measures
         self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
 
-        print(self.solver_provide_meshes)
+        # print(self.solver_provide_meshes)
         print(self.solver_receive_meshes)
 
     def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
@@ -483,8 +484,8 @@ class PS_PreCICEConfig(object):
                 if not providing_participants:
                     raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
                 
-                # If the mesh is not exchanged to the control participant, raise an error
-                raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
+                # If the mesh is not exchanged to the control participant, add it
+                # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
                 # Add the mesh to the control participant as receive and add an exchange for it
                 self.solver_receive_meshes.setdefault(control_participant, []).append(mesh)
                 self.mappings_write.append({
