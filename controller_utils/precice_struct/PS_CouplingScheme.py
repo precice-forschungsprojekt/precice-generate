@@ -163,44 +163,6 @@ class PS_CouplingScheme(object):
                                  ,data=data)
             pass
 
-        # Validate mesh exchanges for convergence measures
-        self.validate_convergence_measure_mesh_exchange(config,exchange_mesh_names)
-
-    def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
-        """
-        Validate that meshes used in convergence measures are properly exchanged in multi-coupling schemes.
-        
-        Args:
-            config (PS_PreCICEConfig): The configuration to validate
-            exchange_mesh_names (list): List of mesh names exchanged during configuration
-        
-        Raises:
-            ValueError: If a mesh used in convergence measure is not exchanged to the control participant
-        """
-        # Only validate for multi-coupling schemes with more than 2 solvers
-        if len(config.solvers) <= 2:
-            return
-
-        # Find the control participant (the one with the most meshes)
-        control_participant = max(config.solvers, key=lambda p: len(config.solvers[p].meshes))
-        print(f"Control participant: {control_participant}")
-
-        # Check if each exchanged mesh is present in the control participant's meshes
-        print("Exchanged meshes:")
-        for mesh in exchange_mesh_names:
-            print(f"  - {mesh}")
-        print("Control participant meshes:")
-        for mesh in config.solvers[control_participant].meshes:
-            print(f"  - {mesh}")
-        print("Control participant receive meshes:")
-        for mesh in config.solvers[control_participant].receive_meshes:
-            print(f"  - {mesh}")
-
-        # Check if each exchanged mesh is present in the control participant's meshes
-        for mesh in exchange_mesh_names:
-            if mesh not in (config.solvers[control_participant].meshes or config.solvers[control_participant].receive_meshes):
-                print(f"Mesh '{mesh}' used in configuration is not available to the control participant")
-
 
 class PS_ExplicitCoupling(PS_CouplingScheme):
     """ Explicit coupling scheme """
