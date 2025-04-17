@@ -97,11 +97,8 @@ class PS_ParticipantSolver(object):
                     self.quantities_read[r.instance_name] = r
         pass
 
-    def make_participant_fsi_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str,
-                                   data_forward: str, data_backward: str):
+    def make_participant_fsi_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
         """ This method should setup the participant as a fluid solver for FSI """
-        force_str = data_forward if "Force" in data_forward else data_backward
-        displacement_str = data_forward if "Displacement" in data_forward else data_backward
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["Displacement"], ["Force"])
         # set the type of the solver/participant
@@ -109,11 +106,8 @@ class PS_ParticipantSolver(object):
         self.nature = SolverNature.TRANSIENT
         pass
 
-    def make_participant_fsi_structure(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str,
-                                   data_forward: str, data_backward: str):
+    def make_participant_fsi_structure(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
         """ This method should setup the participant as a structure solver for FSI """
-        force_str = data_forward if "Force" in data_forward else data_backward
-        displacement_str = data_forward if "Displacement" in data_forward else data_backward
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["Force"], ["Displacement"])
         # set the type of the participant
@@ -121,8 +115,7 @@ class PS_ParticipantSolver(object):
         self.nature = SolverNature.TRANSIENT
         pass
 
-    def make_participant_f2s_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str,
-                                   data_forward: str, data_backward: str):
+    def make_participant_f2s_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
         """ This method should setup the participant as a fluid solver for F2S """
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     [], ["Force"])
@@ -131,8 +124,7 @@ class PS_ParticipantSolver(object):
         self.nature = SolverNature.TRANSIENT
         pass
 
-    def make_participant_f2s_structure(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str,
-                                   data_forward: str, data_backward: str):
+    def make_participant_f2s_structure(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
         """ This method should setup the participant as a structure solver for F2S """
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["Force"], [])
