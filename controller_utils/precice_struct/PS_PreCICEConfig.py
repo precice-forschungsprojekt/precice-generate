@@ -23,6 +23,7 @@ class PS_PreCICEConfig(object):
         self.mappings_read = []
         self.mappings_write = []
         self.couplingScheme_participants = None
+        self.exchange_mesh_names = []
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -363,6 +364,9 @@ class PS_PreCICEConfig(object):
                                                    exchange___directory="..")
                         m2n_pairs_added.add(m2n_pair)
                 pass
+
+        # Validate mesh exchanges for convergence measures
+        self.validate_convergence_measure_mesh_exchange(self,exchange_mesh_names)
 
         # 4 coupling scheme
         # TODO: later this migh be more complex !!!

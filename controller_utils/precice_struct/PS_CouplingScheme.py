@@ -134,8 +134,6 @@ class PS_CouplingScheme(object):
         # Find the simplest solver
         simple_solver = self._find_simplest_solver(config)
 
-        exchange_mesh_names = []
-
         # Configure exchanges for each quantity
         for q_name in config.coupling_quantities:
             quantity = config.coupling_quantities[q_name]
@@ -148,8 +146,8 @@ class PS_CouplingScheme(object):
             exchange_mesh_name, data, from_s, to_s = self._determine_exchange_mesh(
                 config, quantity, solver, other_solver, simple_solver)
 
-            if exchange_mesh_name not in exchange_mesh_names:
-                exchange_mesh_names.append(exchange_mesh_name)
+            if exchange_mesh_name not in config.exchange_mesh_names:
+                config.exchange_mesh_names.append(exchange_mesh_name)
 
             # Create the exchange element
             e = etree.SubElement(coupling_scheme, "exchange", 
