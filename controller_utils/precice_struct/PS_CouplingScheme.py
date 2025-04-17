@@ -129,14 +129,12 @@ class PS_CouplingScheme(object):
 
         return exchange_mesh_name, data, from_s, to_s
 
-    def prepare_exchange_and_convergance(self, config):
-        """Prepares the exchanges and relative convergence measures"""
+    def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
+        """Writes to the XML the exchange list"""
         # Find the simplest solver
         simple_solver = self._find_simplest_solver(config)
 
         # Configure exchanges for each quantity
-        self.exchanges = []
-        self.relative_convergence_measures = []
         for q_name in config.coupling_quantities:
             quantity = config.coupling_quantities[q_name]
             solver = quantity.source_solver
@@ -151,23 +149,17 @@ class PS_CouplingScheme(object):
             if exchange_mesh_name not in config.exchange_mesh_names:
                 config.exchange_mesh_names.append(exchange_mesh_name)
 
-            # Add the exchange to the list
-            self.exchanges.append((data, exchange_mesh_name, from_s, to_s))
+            # Create the exchange element
+            e = etree.SubElement(coupling_scheme, "exchange", 
+                                data=data, mesh=exchange_mesh_name,
+                                from___=from_s, to=to_s)
 
             # Use the same mesh for the relative convergence measure
-            self.relative_convergence_measures.append((exchange_mesh_name, data))
+            if relative_conv_str != "":
+                c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
+                                 limit=relative_conv_str, mesh=exchange_mesh_name
+                                 ,data=data)
             pass
-
-    def write_exchange_and_convergance_to_etree(self, coupling_scheme):
-        """Writes to the XML the exchange list"""
-        for data, mesh, from_, to_ in self.exchanges:
-            e = etree.SubElement(coupling_scheme, "exchange", 
-                                data=data, mesh=mesh,
-                                from___=from_, to=to_)
-
-        for mesh, data in self.relative_convergence_measures:
-            c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
-                                 mesh=mesh, data=data)
 
 
 class PS_ExplicitCoupling(PS_CouplingScheme):
