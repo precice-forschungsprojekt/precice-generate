@@ -203,6 +203,14 @@ class PS_CouplingScheme(object):
                     for participant_name, participant in config.solvers.items() 
                     if participant_name != control_participant
                 )
+                # Verify if the mesh is in any other solver's provide or receive meshes
+                mesh_found |= any(
+                    (mesh in config.solver_provide_meshes.get(participant_name, []) 
+                     or mesh in config.solver_receive_meshes.get(participant_name, [])) 
+                    for participant_name in config.solvers 
+                    if participant_name != control_participant
+                )
+
                 
                 print(f"Mesh '{mesh}' found in other participant's meshes: {mesh_found}")
                 
