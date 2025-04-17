@@ -134,6 +134,8 @@ class PS_CouplingScheme(object):
         # Find the simplest solver
         simple_solver = self._find_simplest_solver(config)
 
+        exchange_mesh_names = []
+
         # Configure exchanges for each quantity
         for q_name in config.coupling_quantities:
             quantity = config.coupling_quantities[q_name]
@@ -146,10 +148,12 @@ class PS_CouplingScheme(object):
             exchange_mesh_name, data, from_s, to_s = self._determine_exchange_mesh(
                 config, quantity, solver, other_solver, simple_solver)
 
+            exchange_mesh_names.append(exchange_mesh_name)
+
             # Create the exchange element
             e = etree.SubElement(coupling_scheme, "exchange", 
-                               data=data, mesh=exchange_mesh_name,
-                               from___=from_s, to=to_s)
+                                data=data, mesh=exchange_mesh_name,
+                                from___=from_s, to=to_s)
 
             # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
@@ -158,7 +162,10 @@ class PS_CouplingScheme(object):
                                  ,data=data)
             pass
 
-    def validate_convergence_measure_mesh_exchange(self, config):
+        # Validate mesh exchanges for convergence measures
+        self.validate_convergence_measure_mesh_exchange(config,exchange_mesh_names)
+
+    def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
         """
         Validate that meshes used in convergence measures are properly exchanged in multi-coupling schemes.
         
@@ -175,15 +182,8 @@ class PS_CouplingScheme(object):
         # Find the control participant (the one with the most meshes)
         control_participant = max(config.solvers, key=lambda p: len(config.solvers[p].meshes))
 
-        # Collect all convergence measure meshes
-        conv_measure_meshes = set()
-        for solver_name, solver in config.solvers.items():
-            if hasattr(solver, 'convergenceMeasures'):
-                for measure in solver.convergenceMeasures:
-                    conv_measure_meshes.add(measure.get('mesh'))
-
         # Check if each convergence measure mesh is exchanged to the control participant
-        for mesh in conv_measure_meshes:
+        for mesh in exchange_mesh_names:
             if mesh not in config.solvers[control_participant].meshes:
                 # Check if the mesh is exchanged from another participant to the control participant
                 mesh_exchanged = False
