@@ -404,6 +404,11 @@ class PS_PreCICEConfig(object):
 
         pass
 
+        #edge case
+        print("self.solver_provide_meshes = {}".format(self.solver_provide_meshes))
+        print("self.solver_receive_meshes = {}".format(self.solver_receive_meshes))
+        
+
         print(self.exchange_mesh_names)
         # Validate mesh exchanges for convergence measures
         self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
