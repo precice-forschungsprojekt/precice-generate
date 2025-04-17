@@ -99,6 +99,35 @@ precice-gen -f path/to/your/topology.yaml
 > You should validate your files by running them through precice-tools and the
 > preCICE [config-checker](https://github.com/precice-forschungsprojekt/config-checker) to avoid errors.
 
+### Command-line Arguments
+
+The `FileGenerator.py` script supports the following optional parameters:
+
+- `-f, --input-file`: Path to the input topology.yaml file. 
+  - **Default**: `examples/1/topology.yaml`
+  - **Optional**: Yes
+  - **Description**: Specify a custom topology file for configuration generation.
+
+- `-o, --output-path`: Destination path for the generated folder.
+  - **Default**: Current script's parent directory
+  - **Optional**: Yes
+  - **Description**: Choose a specific output location for generated files.
+
+- `-v, --verbose`: Enable verbose logging.
+  - **Default**: Disabled
+  - **Optional**: Yes
+  - **Description**: Provides detailed logging information during execution.
+
+- `--validate-topology`: Validate the input topology.yaml against the preCICE topology schema.
+  - **Default**: Enabled
+  - **Optional**: Yes
+  - **Description**: Ensures the topology file meets the required schema specifications.
+
+Example usage:
+```bash
+python FileGenerator.py -f custom_topology.yaml -o /path/to/output -v
+```
+
 ### Configuration
 
 1. Prepare a YAML topology file describing your multi-physics simulation setup.
