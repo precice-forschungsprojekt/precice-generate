@@ -207,6 +207,11 @@ class PS_PreCICEConfig(object):
 
         # 1 quantities
         data_from_exchanges = []
+        data_tags = []
+        mesh_tags = []
+        quant_tags =[]
+        solver_tags = []
+        solver_mesh_tags = []
 
         for exchange in self.exchanges:
             data_key = exchange.get("data")
@@ -227,17 +232,20 @@ class PS_PreCICEConfig(object):
                     log.rep_info(f"Data {data} is a vector, but data-type is set to scalar.")
                 mystr = "vector"
                 pass
-            data_tag = etree.SubElement(precice_configuration_tag, etree.QName("data:"+mystr),
-                                        name=data)
+            # data_tag = etree.SubElement(precice_configuration_tag, etree.QName("data:"+mystr),
+            #                             name=data)
+            data_tags.append(("data:"+mystr, data))
             pass
 
         # 2 meshes
         for mesh_name in self.meshes:
             mesh = self.meshes[mesh_name]
-            mesh_tag = etree.SubElement(precice_configuration_tag, "mesh", name=mesh.name, dimensions=str(dimensionality))
+            # mesh_tag = etree.SubElement(precice_configuration_tag, "mesh", name=mesh.name, dimensions=str(dimensionality))
+            mesh_tags.append(("mesh", mesh.name, str(dimensionality)))
             for quantities_name in mesh.quantities:
                 quant = mesh.quantities[quantities_name]
-                quant_tag = etree.SubElement(mesh_tag, "use-data", name=quant.instance_name)
+                # quant_tag = etree.SubElement(mesh_tag, "use-data", name=quant.instance_name)
+                quant_tags.append(("use-data", quant.instance_name))
 
         # Initialize dictionaries to store provide and receive meshes
         self.solver_provide_meshes = {}
