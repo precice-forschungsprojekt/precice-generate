@@ -429,6 +429,9 @@ class PS_PreCICEConfig(object):
         # Validate mesh exchanges for convergence measures
         self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
 
+        print(self.solver_provide_meshes)
+        print(self.solver_receive_meshes)
+
     def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
         """
         Validate that meshes used in convergence measures are properly exchanged in multi-coupling schemes.
@@ -477,3 +480,13 @@ class PS_PreCICEConfig(object):
                 
                 # If the mesh is not exchanged to the control participant, raise an error
                 raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
+                # Add the mesh to the control participant as receive and add an exchange for it
+                self.solver_receive_meshes.setdefault(control_participant, []).append(mesh)
+                self.mappings_write.append({
+                    'other_solver_name': providing_participants[0],
+                    'from': mesh,
+                    'to': mesh,
+                    'constraint': 'consistent'
+                })
+                
+                
