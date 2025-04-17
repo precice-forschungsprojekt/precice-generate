@@ -395,6 +395,7 @@ class PS_PreCICEConfig(object):
         # 4 coupling scheme
         # TODO: later this migh be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
+        pass
 
         # =========== generate XML ===========================
 
