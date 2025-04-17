@@ -383,7 +383,12 @@ class PS_PreCICEConfig(object):
                         #                            acceptor=solver_name, 
                         #                            connector=other_solver_name, 
                         #                            exchange___directory="..")
-                        m2n_tags.append(("m2n:sockets", acceptor=solver_name, connector=other_solver_name, exchange___directory=".."))
+                        m2n_tags.append({
+                            "tag": "m2n:sockets", 
+                            "acceptor": solver_name, 
+                            "connector": other_solver_name, 
+                            "exchange___directory": ".."
+                        })
                         m2n_pairs_added.add(m2n_pair)
                 pass
 
