@@ -432,11 +432,13 @@ class PS_PreCICEConfig(object):
         pass
 
         print(self.solver_receive_meshes)
+        print(self.mappings_write)
         # Validate mesh exchanges for convergence measures
         self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
 
         # print(self.solver_provide_meshes)
         print(self.solver_receive_meshes)
+        print(self.mappings_write)
 
     def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
         """
