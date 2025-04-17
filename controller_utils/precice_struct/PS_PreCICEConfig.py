@@ -23,6 +23,7 @@ class PS_PreCICEConfig(object):
         self.mappings_read = []
         self.mappings_write = []
         self.couplingScheme_participants = None
+        self.couplingScheme = None
         self.exchange_mesh_names = []
         pass
 
