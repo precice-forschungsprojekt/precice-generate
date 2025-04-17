@@ -440,7 +440,8 @@ class PS_PreCICEConfig(object):
         for mesh in config.solvers[control_participant].meshes:
             print(f"  - {mesh}")
         print("Control participant receive meshes:")
-        for mesh in config.solvers[control_participant].receive_meshes:
+        print("self.solver_receive_meshes = {}".format(self.solver_receive_meshes))
+        for mesh in self.solver_receive_meshes:
             print(f"  - {mesh}")
 
         # Check if each exchanged mesh is present in the control participant's meshes
