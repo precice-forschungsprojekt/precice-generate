@@ -446,10 +446,7 @@ class PS_PreCICEConfig(object):
                 # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
 
                 #get data via topology
-                for exchange in config.exchanges:
-                    print(f"Providing participant: {providing_participants[0]}")
-                    print(f"Exchange data: {exchange.get('data')}")
-                    
+                for exchange in config.exchanges:                  
                     if providing_participants[0].lower() == exchange.get('from').lower():
                         data = exchange.get('data')
 
