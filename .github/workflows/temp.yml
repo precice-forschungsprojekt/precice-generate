@@ -1,10 +1,10 @@
-﻿name: TEMP VALIDATE CONFIGURATIONS
+﻿name: TEMP VALIDATE CONFIGURATIONS (DOES NOT WORK)
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-  pull_request:
+  # push:
+  #   branches: [main]
+  # pull_request:
 
 jobs:
   process-examples:
