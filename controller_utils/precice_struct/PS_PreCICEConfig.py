@@ -442,17 +442,13 @@ class PS_PreCICEConfig(object):
                 if not providing_participants:
                     raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
 
-                # If the mesh is not exchanged to the control participant, add it
                 # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
+
                 # Add the mesh to the control participant as receive and add an exchange for it
-                # if control_participant not in self.solver_receive_meshes:
-                #     self.solver_receive_meshes[control_participant] = []
-                # self.solver_receive_meshes[control_participant].append(mesh)
                 solver_tag = self.solver_tags[control_participant]
                 solver_mesh_tag = etree.SubElement(solver_tag,
                                     "receive-mesh", name=mesh,
                                     from___=providing_participants[0])
-                #create extra exchange
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
                     mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
