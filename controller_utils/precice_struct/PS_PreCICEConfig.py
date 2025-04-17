@@ -487,7 +487,9 @@ class PS_PreCICEConfig(object):
                 # If the mesh is not exchanged to the control participant, add it
                 # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
                 # Add the mesh to the control participant as receive and add an exchange for it
-                self.solver_receive_meshes.setdefault(control_participant, []).append(mesh)
+                if control_participant not in self.solver_receive_meshes:
+                    self.solver_receive_meshes[control_participant] = []
+                self.solver_receive_meshes[control_participant].append(mesh)
                 self.mappings_write.append({
                     'other_solver_name': providing_participants[0],
                     'from': mesh,
