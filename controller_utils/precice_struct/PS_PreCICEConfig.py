@@ -23,6 +23,7 @@ class PS_PreCICEConfig(object):
         self.mappings_read = []
         self.mappings_write = []
         self.couplingScheme_participants = None
+        self.exchange_mesh_names = []
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -368,6 +369,8 @@ class PS_PreCICEConfig(object):
         # TODO: later this migh be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
 
+        # Validate mesh exchanges for convergence measures
+        self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
         # =========== generate XML ===========================
 
         xml_string = etree.tostring(precice_configuration_tag, #pretty_print=True, xml_declaration=True,
@@ -402,3 +405,49 @@ class PS_PreCICEConfig(object):
         log.rep_info("Output XML file: " + filename)
 
         pass
+
+    def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
+        """
+        Validate that meshes used in convergence measures are properly exchanged in multi-coupling schemes.
+        
+        Args:
+            config (PS_PreCICEConfig): The configuration to validate
+            exchange_mesh_names (list): List of mesh names exchanged during configuration
+        
+        Raises:
+            ValueError: If a mesh used in convergence measure is not exchanged to the control participant
+        """
+        # Only validate for multi-coupling schemes with more than 2 solvers
+        if len(config.solvers) <= 2:
+            return
+
+        # Find the control participant (the one with the most meshes)
+        control_participant = max(config.solvers, key=lambda p: len(config.solvers[p].meshes))
+
+        # Combine provided and received meshes for the control participant
+        control_participant_meshes = set(config.solvers[control_participant].meshes)
+        control_participant_meshes.update(self.solver_receive_meshes.get(control_participant, []))
+
+        # Check if each exchanged mesh is present in the control participant's meshes
+        for mesh in exchange_mesh_names:
+            if mesh not in control_participant_meshes:
+                # Find which participant provides this mesh
+                providing_participants = [
+                    p_name for p_name, p in config.solvers.items() 
+                    if mesh in p.meshes
+                ]
+
+                # If no participant provides the mesh, raise an error
+                if not providing_participants:
+                    raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
+
+                # If the mesh is not exchanged to the control participant, add it
+                # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
+                # Add the mesh to the control participant as receive and add an exchange for it
+                if control_participant not in self.solver_receive_meshes:
+                    self.solver_receive_meshes[control_participant] = []
+                self.solver_receive_meshes[control_participant].append(mesh)
+                #create extra exchange
+                e = etree.SubElement(self.coupling_scheme, "exchange", 
+                    mesh=mesh,
+                    from___=providing_participants[0], to=control_participant)
