@@ -396,12 +396,10 @@ class PS_PreCICEConfig(object):
         # TODO: later this migh be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
 
-        print(self.solver_receive_meshes)
+
         # Validate mesh exchanges for convergence measures
         self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
 
-        # print(self.solver_provide_meshes)
-        print(self.solver_receive_meshes)
 
         # =========== generate XML ===========================
 
@@ -460,14 +458,6 @@ class PS_PreCICEConfig(object):
         control_participant_meshes = set(config.solvers[control_participant].meshes)
         control_participant_meshes.update(self.solver_receive_meshes.get(control_participant, []))
 
-        print(f"Control participant: {control_participant}")
-        print("Exchanged meshes:")
-        for mesh in exchange_mesh_names:
-            print(f"  - {mesh}")
-        print("Control participant meshes:")
-        for mesh in control_participant_meshes:
-            print(f"  - {mesh}")
-
         # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
             if mesh not in control_participant_meshes:
@@ -476,9 +466,6 @@ class PS_PreCICEConfig(object):
                     p_name for p_name, p in config.solvers.items() 
                     if mesh in p.meshes
                 ]
-                
-                print(f"Mesh '{mesh}' used in configuration is not available to the control participant")
-                print(f"Mesh '{mesh}' is provided by: {providing_participants}")
                 
                 # If no participant provides the mesh, raise an error
                 if not providing_participants:
