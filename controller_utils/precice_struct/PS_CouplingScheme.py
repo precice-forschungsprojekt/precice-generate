@@ -182,16 +182,28 @@ class PS_CouplingScheme(object):
 
         # Find the control participant (the one with the most meshes)
         control_participant = max(config.solvers, key=lambda p: len(config.solvers[p].meshes))
+        print(f"Control participant: {control_participant}")
+
+        # Check if each exchanged mesh is present in the control participant's meshes
+        print("Exchanged meshes:")
+        for mesh in exchange_mesh_names:
+            print(f"  - {mesh}")
+        print("Control participant meshes:")
+        for mesh in config.solvers[control_participant].meshes:
+            print(f"  - {mesh}")
 
         # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
             if mesh not in config.solvers[control_participant].meshes:
+                print(f"Mesh '{mesh}' used in configuration is not available to the control participant")
                 # Verify if the mesh is in any other participant's meshes
                 mesh_found = any(
                     mesh in participant.meshes 
                     for participant_name, participant in config.solvers.items() 
                     if participant_name != control_participant
                 )
+                
+                print(f"Mesh '{mesh}' found in other participant's meshes: {mesh_found}")
                 
                 if not mesh_found:
                     raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
