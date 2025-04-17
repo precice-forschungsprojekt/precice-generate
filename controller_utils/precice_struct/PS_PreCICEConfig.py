@@ -453,6 +453,6 @@ class PS_PreCICEConfig(object):
                 solver_mesh_tag = etree.SubElement(solver_tag,
                                     "receive-mesh", name=mesh,
                                     from___=providing_participants[0])
-                e = etree.SubElement(self.coupling_scheme, "exchange", 
-                    data= data, mesh=mesh,
-                    from___=providing_participants[0], to=control_participant)
+                # e = etree.SubElement(self.coupling_scheme, "exchange", 
+                #     data= data, mesh=mesh,
+                #     from___=providing_participants[0], to=control_participant)
