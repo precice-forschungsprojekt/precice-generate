@@ -38,8 +38,7 @@ jobs:
         git clone https://github.com/precice/precice.git
         cd precice
         sudo cmake --preset=production
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/software/precice -DPRECICE_FEATURE_PETSC_MAPPING=OFF -DPRECICE_FEATURE_PYTHON_ACTIONS=OFF ..
+        #cd build
         sudo make install
         cd ..
 
