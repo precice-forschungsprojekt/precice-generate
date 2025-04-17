@@ -443,5 +443,5 @@ class PS_PreCICEConfig(object):
 
         # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
-            if mesh not in (config.solvers[control_participant].meshes or config.solvers[control_participant].receive_meshes):
+            if mesh not in (config.solvers[control_participant].meshes or self.solver_receive_meshes[control_participant]):
                 print(f"Mesh '{mesh}' used in configuration is not available to the control participant")
