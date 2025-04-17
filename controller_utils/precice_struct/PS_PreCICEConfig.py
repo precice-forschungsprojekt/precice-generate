@@ -450,5 +450,5 @@ class PS_PreCICEConfig(object):
                                     "receive-mesh", name=mesh,
                                     from___=providing_participants[0])
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
-                    mesh=mesh,
+                    data= "TODO", mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
