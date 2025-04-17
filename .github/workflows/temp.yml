@@ -37,7 +37,11 @@ jobs:
         source venv/bin/activate
         git clone https://github.com/precice/precice.git
         cd precice
-        sudo make install .
+        sudo cmake --preset=production
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=~/software/precice -DPRECICE_FEATURE_PETSC_MAPPING=OFF -DPRECICE_FEATURE_PYTHON_ACTIONS=OFF ..
+        sudo make install
         cd ..
 
     # Discover examples
