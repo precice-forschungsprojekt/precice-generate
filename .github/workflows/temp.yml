@@ -38,7 +38,7 @@ jobs:
         git clone https://github.com/precice/precice.git
         cd precice
         sudo cmake --preset=production
-        #cd build
+        cd build
         sudo make install
         cd ..
 
