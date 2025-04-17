@@ -365,9 +365,6 @@ class PS_PreCICEConfig(object):
                         m2n_pairs_added.add(m2n_pair)
                 pass
 
-        # Validate mesh exchanges for convergence measures
-        self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
-
         # 4 coupling scheme
         # TODO: later this migh be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
@@ -406,6 +403,10 @@ class PS_PreCICEConfig(object):
         log.rep_info("Output XML file: " + filename)
 
         pass
+
+        print(self.exchange_mesh_names)
+        # Validate mesh exchanges for convergence measures
+        self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
 
     def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
         """
