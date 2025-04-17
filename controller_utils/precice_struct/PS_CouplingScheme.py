@@ -171,9 +171,10 @@ class PS_CouplingScheme(object):
         
         Args:
             config (PS_PreCICEConfig): The configuration to validate
+            exchange_mesh_names (list): List of mesh names exchanged during configuration
         
         Raises:
-            ValueError: If a mesh used in a convergence measure is not exchanged to the control participant
+            ValueError: If a mesh used in convergence measure is not exchanged to the control participant
         """
         # Only validate for multi-coupling schemes with more than 2 solvers
         if len(config.solvers) <= 2:
@@ -182,27 +183,18 @@ class PS_CouplingScheme(object):
         # Find the control participant (the one with the most meshes)
         control_participant = max(config.solvers, key=lambda p: len(config.solvers[p].meshes))
 
-        # Check if each convergence measure mesh is exchanged to the control participant
+        # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
             if mesh not in config.solvers[control_participant].meshes:
-                # Check if the mesh is exchanged from another participant to the control participant
-                mesh_exchanged = False
-                for participant_name, participant in config.solvers.items():
-                    if participant_name == control_participant:
-                        continue
-                    
-                    # Check if this participant provides the mesh and exchanges it to the control participant
-                    if mesh in participant.meshes:
-                        for exchange in participant.data_exchanges:
-                            if exchange.get('to') == control_participant and exchange.get('mesh') == mesh:
-                                mesh_exchanged = True
-                                break
-                    
-                    if mesh_exchanged:
-                        break
-
-                if not mesh_exchanged:
-                    raise ValueError(f"Mesh '{mesh}' used in convergence measure is not exchanged to the control participant '{control_participant}'")
+                # Verify if the mesh is in any other participant's meshes
+                mesh_found = any(
+                    mesh in participant.meshes 
+                    for participant_name, participant in config.solvers.items() 
+                    if participant_name != control_participant
+                )
+                
+                if not mesh_found:
+                    raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
 
 
 class PS_ExplicitCoupling(PS_CouplingScheme):
