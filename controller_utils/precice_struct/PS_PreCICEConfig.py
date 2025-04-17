@@ -443,8 +443,6 @@ class PS_PreCICEConfig(object):
                 if not providing_participants:
                     raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
 
-                # raise ValueError(f"Mesh '{mesh}' is not exchanged to the control participant '{control_participant}'")
-
                 #get data via topology
                 for exchange in config.exchanges:                  
                     if providing_participants[0].lower() == exchange.get('from').lower():
@@ -458,3 +456,25 @@ class PS_PreCICEConfig(object):
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
                     data= data, mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
+                # also create mapping
+                # Determine constraint based on the mapping type from read/write quantities
+                constraint = "consistent"  # default fallback
+                solver = self.solvers[providing_participants[0]]
+                for q_name in solver.quantities_read:
+                    q = solver.quantities_read[q_name]
+                    for other_solvers_name in q.list_of_solvers:
+                        if other_solvers_name == providing_participants[0] and q.is_consistent:
+                            constraint = q.mapping_string
+                            break
+                
+                if constraint == "consistent":
+                    for q_name in solver.quantities_write:
+                        q = solver.quantities_write[q_name]
+                        for other_solvers_name in q.list_of_solvers:
+                            if other_solvers_name == providing_participants[0] and not q.is_consistent:
+                                constraint = q.mapping_string
+                                break
+                
+                mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction = "read",
+                                from___ = providing_participants[0]+"-Mesh", to= control_participant+"-Mesh",
+                                constraint = constraint)
