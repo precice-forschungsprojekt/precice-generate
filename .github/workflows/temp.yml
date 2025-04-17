@@ -42,90 +42,96 @@ jobs:
         sudo make install
         cd ..
 
-    # Discover examples
-    - name: Find all examples
-      id: find-examples
+    - name: Copy over fix try
       run: |
-        EXAMPLES=$(find examples -path 'examples/0' -prune -o -name "topology.yaml" -exec dirname {} \; | sort | uniq)
-        EXAMPLES_JSON=$(echo "$EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
-        echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
-        echo "Found examples: $EXAMPLES_JSON"
+          sudo cp /usr/local/lib/libev.* /usr/lib
+          sudo ldconfig
 
-    # Process each example
-    - name: Process examples
-      env:
-        EXAMPLES: ${{ steps.find-examples.outputs.examples }}
-      run: |
-        source venv/bin/activate
+    #     find /usr /usr/local -name libprecice.so.3
+    # # Discover examples
+    # - name: Find all examples
+    #   id: find-examples
+    #   run: |
+    #     EXAMPLES=$(find examples -path 'examples/0' -prune -o -name "topology.yaml" -exec dirname {} \; | sort | uniq)
+    #     EXAMPLES_JSON=$(echo "$EXAMPLES" | jq -R -s -c 'split("\n") | map(select(. != ""))')
+    #     echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
+    #     echo "Found examples: $EXAMPLES_JSON"
+
+    # # Process each example
+    # - name: Process examples
+    #   env:
+    #     EXAMPLES: ${{ steps.find-examples.outputs.examples }}
+    #   run: |
+    #     source venv/bin/activate
         
-        # Process each example
-        for example in $(echo "$EXAMPLES" | jq -r '.[]'); do
-          echo "========================================"
-          echo "Processing example: $example"
-          example_name=$(basename "$example")
+    #     # Process each example
+    #     for example in $(echo "$EXAMPLES" | jq -r '.[]'); do
+    #       echo "========================================"
+    #       echo "Processing example: $example"
+    #       example_name=$(basename "$example")
           
-          # Check for YAML input file
-          yaml_file="$example/topology.yaml"
+    #       # Check for YAML input file
+    #       yaml_file="$example/topology.yaml"
           
-          if [ -f "$yaml_file" ]; then
-            echo "Generating configuration from $yaml_file"
-            precice-gen -f "$yaml_file" -o "$(dirname "$yaml_file")" -v
+    #       if [ -f "$yaml_file" ]; then
+    #         echo "Generating configuration from $yaml_file"
+    #         precice-gen -f "$yaml_file" -o "$(dirname "$yaml_file")" -v
             
-            # Check if generation was successful
-            if [ -f "$example/_generated/precice-config.xml" ]; then
-              echo "Generated configuration found in $example/_generated/"
-            else
-              echo "Error: Generation failed - no precice-config.xml created"
-              exit 1
-            fi
-          else
-            echo "Using existing precice-config.xml"
-            if [ ! -f "$example/precice-config.xml" ]; then
-              echo "Error: No precice-config.xml found in $example"
-              exit 1
-            fi
-          fi
+    #         # Check if generation was successful
+    #         if [ -f "$example/_generated/precice-config.xml" ]; then
+    #           echo "Generated configuration found in $example/_generated/"
+    #         else
+    #           echo "Error: Generation failed - no precice-config.xml created"
+    #           exit 1
+    #         fi
+    #       else
+    #         echo "Using existing precice-config.xml"
+    #         if [ ! -f "$example/precice-config.xml" ]; then
+    #           echo "Error: No precice-config.xml found in $example"
+    #           exit 1
+    #         fi
+    #       fi
           
-          # Determine which config file to validate
-          if [ -f "$example/_generated/precice-config.xml" ]; then
-            config_file="$example/_generated/precice-config.xml"
-          else
-            config_file="$example/precice-config.xml"
-          fi
+    #       # Determine which config file to validate
+    #       if [ -f "$example/_generated/precice-config.xml" ]; then
+    #         config_file="$example/_generated/precice-config.xml"
+    #       else
+    #         config_file="$example/precice-config.xml"
+    #       fi
           
-          # Validate the configuration
-          echo "Validating configuration at $config_file... using precice tools check"
-          precice-tools check "$config_file"
-          echo "Validation successful for $example_name"
-        done
+    #       # Validate the configuration
+    #       echo "Validating configuration at $config_file... using precice tools check"
+    #       precice-tools check "$config_file"
+    #       echo "Validation successful for $example_name"
+    #     done
 
-    # Collect all generated artifacts
-    - name: Collect generated configurations
-      run: |
-        # Create directory for artifacts
-        mkdir -p artifacts
+    # # Collect all generated artifacts
+    # - name: Collect generated configurations
+    #   run: |
+    #     # Create directory for artifacts
+    #     mkdir -p artifacts
         
-        # Find and copy all _generated directories
-        find examples -type d -name "_generated" | while read -r gen_dir; do
-          example_dir=$(dirname "$gen_dir")
-          example_name=$(basename "$example_dir")
+    #     # Find and copy all _generated directories
+    #     find examples -type d -name "_generated" | while read -r gen_dir; do
+    #       example_dir=$(dirname "$gen_dir")
+    #       example_name=$(basename "$example_dir")
           
-          # Copy the _generated directory to artifacts
-          mkdir -p "artifacts/$example_name"
-          cp -r "$gen_dir" "artifacts/$example_name/"
+    #       # Copy the _generated directory to artifacts
+    #       mkdir -p "artifacts/$example_name"
+    #       cp -r "$gen_dir" "artifacts/$example_name/"
           
-          # Also copy the original precice-config.xml if it exists
-          #if [ -f "$example_dir/precice-config.xml" ]; then
-          #  cp "$example_dir/precice-config.xml" "artifacts/$example_name/original_precice-config.xml"
-          #fi
-        done
+    #       # Also copy the original precice-config.xml if it exists
+    #       #if [ -f "$example_dir/precice-config.xml" ]; then
+    #       #  cp "$example_dir/precice-config.xml" "artifacts/$example_name/original_precice-config.xml"
+    #       #fi
+    #     done
         
-        echo "Collected artifacts:"
-        tree artifacts
+    #     echo "Collected artifacts:"
+    #     tree artifacts
 
-    # Upload all artifacts
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: precice-configurations
-        path: artifacts/
+    # # Upload all artifacts
+    # - name: Upload artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: precice-configurations
+    #     path: artifacts/
