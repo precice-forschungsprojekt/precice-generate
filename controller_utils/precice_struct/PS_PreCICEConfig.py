@@ -136,17 +136,17 @@ class PS_PreCICEConfig(object):
             if coupling.coupling_type == UI_CouplingType.fsi:
                 # VERY IMPORTANT: we rely here on the fact that the participants are sorted alphabetically
                 participant1_solver.make_participant_fsi_fluid(
-                    self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name )
+                    self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name, data_forward, data_backward )
                 participant2_solver.make_participant_fsi_structure(
-                    self, coupling.boundaryC1, coupling.boundaryC2, participant1_solver.name)
+                    self, coupling.boundaryC1, coupling.boundaryC2, participant1_solver.name, data_forward, data_backward)
                 pass
             # ========== F2S =========
             if coupling.coupling_type == UI_CouplingType.f2s:
                 # VERY IMPORTANT: we rely here on the fact that the participants are sorted alphabetically
                 participant1_solver.make_participant_f2s_fluid(
-                    self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name )
+                    self, coupling.boundaryC1, coupling.boundaryC2, participant2_solver.name, data_forward, data_backward )
                 participant2_solver.make_participant_f2s_structure(
-                    self, coupling.boundaryC1, coupling.boundaryC2, participant1_solver.name)
+                    self, coupling.boundaryC1, coupling.boundaryC2, participant1_solver.name, data_forward, data_backward)
                 pass
             # ========== CHT =========
             if coupling.coupling_type == UI_CouplingType.cht:
