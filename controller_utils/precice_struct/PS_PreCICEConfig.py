@@ -396,6 +396,13 @@ class PS_PreCICEConfig(object):
         # TODO: later this migh be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
 
+        print(self.solver_receive_meshes)
+        # Validate mesh exchanges for convergence measures
+        self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
+
+        # print(self.solver_provide_meshes)
+        print(self.solver_receive_meshes)
+
         # =========== generate XML ===========================
 
         xml_string = etree.tostring(precice_configuration_tag, #pretty_print=True, xml_declaration=True,
@@ -430,13 +437,6 @@ class PS_PreCICEConfig(object):
         log.rep_info("Output XML file: " + filename)
 
         pass
-
-        print(self.solver_receive_meshes)
-        # Validate mesh exchanges for convergence measures
-        self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
-
-        # print(self.solver_provide_meshes)
-        print(self.solver_receive_meshes)
 
     def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
         """
@@ -492,7 +492,7 @@ class PS_PreCICEConfig(object):
                 self.solver_receive_meshes[control_participant].append(mesh)
                 #create extra exchange
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
-                    data=data, mesh=mesh,
+                    data="test", mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
 
                 
