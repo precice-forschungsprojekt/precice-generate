@@ -1,4 +1,4 @@
-﻿name: Validate Example Configurations
+﻿name: TEMP VALIDATE CONFIGURATIONS
 
 on:
   workflow_dispatch:
