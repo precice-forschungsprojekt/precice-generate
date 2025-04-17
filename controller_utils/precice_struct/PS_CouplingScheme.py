@@ -197,7 +197,6 @@ class PS_CouplingScheme(object):
         for mesh in exchange_mesh_names:
             if mesh not in (config.solvers[control_participant].meshes or config.solvers[control_participant].receive_meshes):
                 print(f"Mesh '{mesh}' used in configuration is not available to the control participant")
-                raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
 
 
 class PS_ExplicitCoupling(PS_CouplingScheme):
