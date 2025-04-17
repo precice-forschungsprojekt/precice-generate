@@ -288,7 +288,7 @@ class PS_PreCICEConfig(object):
                             list_of_solvers_with_higher_complexity_read[other_solvers_name] = other_solver
                             type_of_the_mapping_read[other_solvers_name] = q.mapping_string
                             # Always add receive mesh for read quantities
-                            if solvers_mesh_name != q.source_mesh_name or \
+                            if solvers_mesh_name != q.source_mesh_name and \
                                q.source_mesh_name not in used_meshes:
                                 solver_mesh_tag = etree.SubElement(solver_tag,
                                                                    "receive-mesh", name=q.source_mesh_name,
@@ -340,6 +340,13 @@ class PS_PreCICEConfig(object):
                     other_solver = list_of_solvers_with_higher_complexity_write[other_solver_name]
                     mapping_string = type_of_the_mapping_write[other_solver_name]
                     other_solver_mesh_name = self.get_mesh_name_by_participants(other_solver_name, solver_name)
+                    
+                    # Always add receive mesh for the participant specifying a mapping
+                    solver_mesh_tag = etree.SubElement(solver_tag,
+                                                       "receive-mesh", name=other_solver_mesh_name,
+                                                       from___=other_solver_name)
+                    
+                    # Add write mapping
                     mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction="write",
                                               from___ = solvers_mesh_name, to = other_solver_mesh_name,
                                               constraint = mapping_string)
