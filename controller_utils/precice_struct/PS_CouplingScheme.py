@@ -182,7 +182,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-explicit" )
-        config.coupling_scheme = f"{self.coupling}-explicit"
+        config.coupling_scheme = coupling_scheme
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
                 self.NrTimeStep = 1e-3
@@ -240,7 +240,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         if self.coupling not in ['serial', 'parallel']:
             raise ValueError(f"coupling must be 'serial' or 'parallel', but got {self.coupling}")
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-implicit" )
-        config.coupling_scheme = f"{self.coupling}-implicit"
+        config.coupling_scheme = coupling_scheme
 
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
