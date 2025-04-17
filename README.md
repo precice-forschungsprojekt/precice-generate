@@ -95,13 +95,7 @@ Generate a preCICE configuration file from a YAML topology:
 precice-gen -f path/to/your/topology.yaml
 ```
 
-> [!NOTE]
-> You should validate your files by running them through precice-tools and the
-> preCICE [config-checker](https://github.com/precice-forschungsprojekt/config-checker) to avoid errors.
-
-### Command-line Arguments
-
-The `FileGenerator.py` script supports the following optional parameters:
+The `precice-gen` tool supports the following optional parameters:
 
 - `-f, --input-file`: Path to the input topology.yaml file. 
   - **Default**: `examples/1/topology.yaml`
@@ -125,8 +119,12 @@ The `FileGenerator.py` script supports the following optional parameters:
 
 Example usage:
 ```bash
-python FileGenerator.py -f custom_topology.yaml -o /path/to/output -v
+precice-gen -f custom_topology.yaml -o /path/to/output -v
 ```
+
+> [!NOTE]
+> You should validate your files by running them through precice-tools and the
+> preCICE [config-checker](https://github.com/precice-forschungsprojekt/config-checker) to avoid errors.
 
 ### Configuration
 
