@@ -366,7 +366,7 @@ class PS_PreCICEConfig(object):
                 pass
 
         # Validate mesh exchanges for convergence measures
-        self.validate_convergence_measure_mesh_exchange(self,exchange_mesh_names)
+        self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
 
         # 4 coupling scheme
         # TODO: later this migh be more complex !!!
