@@ -195,27 +195,9 @@ class PS_CouplingScheme(object):
 
         # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
-            if mesh not in config.solvers[control_participant].meshes:
+            if mesh not in (config.solvers[control_participant].meshes or config.solvers[control_participant].receive_meshes):
                 print(f"Mesh '{mesh}' used in configuration is not available to the control participant")
-                # Verify if the mesh is in any other participant's meshes
-                mesh_found = any(
-                    mesh in participant.meshes 
-                    for participant_name, participant in config.solvers.items() 
-                    if participant_name != control_participant
-                )
-                # Verify if the mesh is in any other solver's provide or receive meshes
-                mesh_found |= any(
-                    (mesh in config.solver_provide_meshes.get(participant_name, []) 
-                     or mesh in config.solver_receive_meshes.get(participant_name, [])) 
-                    for participant_name in config.solvers 
-                    if participant_name != control_participant
-                )
-
-                
-                print(f"Mesh '{mesh}' found in other participant's meshes: {mesh_found}")
-                
-                if not mesh_found:
-                    raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
+                raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
 
 
 class PS_ExplicitCoupling(PS_CouplingScheme):
