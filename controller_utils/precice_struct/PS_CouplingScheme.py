@@ -192,6 +192,9 @@ class PS_CouplingScheme(object):
         print("Control participant meshes:")
         for mesh in config.solvers[control_participant].meshes:
             print(f"  - {mesh}")
+        print("Control participant receive meshes:")
+        for mesh in config.solvers[control_participant].receive_meshes:
+            print(f"  - {mesh}")
 
         # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
