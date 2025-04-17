@@ -148,7 +148,8 @@ class PS_CouplingScheme(object):
             exchange_mesh_name, data, from_s, to_s = self._determine_exchange_mesh(
                 config, quantity, solver, other_solver, simple_solver)
 
-            exchange_mesh_names.append(exchange_mesh_name)
+            if exchange_mesh_name not in exchange_mesh_names:
+                exchange_mesh_names.append(exchange_mesh_name)
 
             # Create the exchange element
             e = etree.SubElement(coupling_scheme, "exchange", 
