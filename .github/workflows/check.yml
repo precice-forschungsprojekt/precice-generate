@@ -45,6 +45,13 @@ jobs:
         pip install -e .
         cd ..
 
+    - name: Run precice tools check
+      run: |
+        for file in $(find examples -name precice-config.xml); do
+          echo "Checking file: $file"
+          precice-tools check "$file"
+        done
+
     # Discover examples
     - name: Find all examples
       id: find-examples
