@@ -105,7 +105,7 @@
 
         <acceleration:IQN-ILS>
             <initial-relaxation value="0.5" enforce="0"/>
-            <preconditioner freeze_after="-1" type="residual-sum"/>
+            <preconditioner freeze-after="-1" type="residual-sum"/>
             <filter limit="1e-6" type="QR1"/>
             <max-used-iterations value="50"/>
             <time-windows-reused value="10"/>
