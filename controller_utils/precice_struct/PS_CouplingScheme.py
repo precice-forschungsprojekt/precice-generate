@@ -213,7 +213,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         self.maxIteration = 50
         self.relativeConverganceEps = 1E-4
         self.extrapolation_order = 2
-        self.postProcessing = PS_ImplicitPostProcessing() # this is the postprocessing
+        self.acceleration = PS_ImplicitAcceleration() # this is the acceleration
         self.display_standard_values = "false"
         pass
 
@@ -223,7 +223,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
 
         # TODO: should we add all quantities?
         # later do delte some quantities from the list?
-        self.postProcessing.post_process_quantities = conf.coupling_quantities
+        self.acceleration.post_process_quantities = conf.coupling_quantities
 
         simulation_conf = ui_config.sim_info
 
@@ -269,15 +269,15 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         self.write_exchange_and_convergance(config, coupling_scheme, str(self.relativeConverganceEps))
 
         # finally we write out the post processing...
-        self.postProcessing.write_precice_xml_config(coupling_scheme, config, self)
+        self.acceleration.write_precice_xml_config(coupling_scheme, config, self)
 
         pass
 
 
-class PS_ImplicitPostProcessing(object):
+class PS_ImplicitAcceleration(object):
     """ Class to model the post-processing part of the implicit coupling """
     def __init__(self):
-        """ Ctor for the postprocessing """
+        """ Ctor for the acceleration """
         self.name = "IQN-ILS"
         self.precondition_type = "residual-sum"
         self.post_process_quantities = {} # The quantities that are in the acceleration
