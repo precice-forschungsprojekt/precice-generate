@@ -1,10 +1,10 @@
 from pathlib import Path
-from generation_utils.StructureHandler import StructureHandler
-from generation_utils.Logger import Logger
+from generation_utils.structure_handler import StructureHandler
+from generation_utils.logger import Logger
 from controller_utils.ui_struct.UI_UserInput import UI_UserInput
 from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 from controller_utils.precice_struct import PS_PreCICEConfig
-from generation_utils.AdapterConfigGenerator import AdapterConfigGenerator
+from generation_utils.adapter_config_generator import AdapterConfigGenerator
 from generation_utils.format_precice_config import PrettyPrinter
 import yaml
 import argparse

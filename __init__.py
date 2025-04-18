@@ -1,1 +1,1 @@
-from .FileGenerator import FileGenerator
+from .file_generator import FileGenerator
