@@ -458,10 +458,13 @@ class PS_PreCICEConfig(object):
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
                     data= data, mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
+                config.used_data_for_iteration.append(data) if data not in config.used_data_for_iteration else None
+
     #ensure that every data used for convergence measures and iteration acceleration is exchanged
-        print(config.used_data_for_iteration)
         print(config.used_data_for_acceleration)
-        exchanged_data = []
+        print(config.exchanges)
+        exchanged_data_on_control = []
         for exchange in config.exchanges:
-            exchanged_data.append(exchange.get('data'))
-        print("Data exchanged:", exchanged_data)
+            if exchange.get('to').lower() == control_participant.lower():
+                exchanged_data_on_control.append(exchange.get('data'))
+        print("Data exchanged to control:", exchanged_data_on_control)
