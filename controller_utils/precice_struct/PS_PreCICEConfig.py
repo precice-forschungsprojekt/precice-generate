@@ -456,3 +456,4 @@ class PS_PreCICEConfig(object):
                 e = etree.SubElement(self.coupling_scheme, "exchange", 
                     data= data, mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
+    #ensure that every data used for convergence measures and iteration acceleration is exchanged
