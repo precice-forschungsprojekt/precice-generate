@@ -25,8 +25,6 @@ class PS_PreCICEConfig(object):
         self.couplingScheme_participants = None
         self.couplingScheme = None
         self.exchange_mesh_names = []
-        self.used_data_for_acceleration = []
-        self.used_data_for_iteration = []
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
