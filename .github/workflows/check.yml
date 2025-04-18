@@ -47,9 +47,9 @@ jobs:
 
     - name: Run precice tools check on originals
       run: |
-        for file in $(find examples -name precice-config.xml); do
+        for file in $(find examples -path 'examples/0' -prune -o -name precice-config.xml -exec dirname {} \; | sort | uniq); do
           echo "Checking file: $file"
-          precice-tools check "$file"
+          precice-tools check "$file/precice-config.xml"
         done
 
     # Discover examples
