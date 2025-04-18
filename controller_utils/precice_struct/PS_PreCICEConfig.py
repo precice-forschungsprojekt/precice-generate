@@ -27,6 +27,7 @@ class PS_PreCICEConfig(object):
         self.exchange_mesh_names = []
         self.used_data_for_acceleration = []
         self.used_data_for_iteration = []
+        self.unused_data= []
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -459,3 +460,5 @@ class PS_PreCICEConfig(object):
                     data= data, mesh=mesh,
                     from___=providing_participants[0], to=control_participant)
     #ensure that every data used for convergence measures and iteration acceleration is exchanged
+        print(config.used_data_for_iteration)
+        print(config.used_data_for_acceleration)
