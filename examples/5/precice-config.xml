@@ -48,7 +48,6 @@
             direction="read"
             from="Fluid-Bottom-Mesh"
             to="Fluid-Top-Mesh"
-            data="Temperature-Bottom"
             constraint="consistent"
          />
     </participant>
