@@ -29,9 +29,12 @@
     <participant name="Fluid-Top">
         <provide-mesh name="Fluid-Top-Mesh"/>
         <receive-mesh name="Solid-Mesh" from="Solid"/>
+        <receive-mesh name="Fluid-Bottom-Mesh" from="Fluid-Bottom"/>
 
         <write-data name="Temperature-Top" mesh="Fluid-Top-Mesh"/>
         <read-data name="HeatTransfer-Top" mesh="Fluid-Top-Mesh"/>
+        <write-data name="Temperature-Bottom" mesh="Fluid-Top-Mesh"/>
+        <read-data name="HeatTransfer-Bottom" mesh="Fluid-Top-Mesh"/>
 
         <mapping:nearest-neighbor
             direction="read"
@@ -100,6 +103,7 @@
         <exchange data="HeatTransfer-Top" mesh="Solid-Mesh" from="Solid" to="Fluid-Top"/>
         <exchange data="Temperature-Bottom" mesh="Fluid-Bottom-Mesh" from="Fluid-Bottom" to="Solid"/>
         <exchange data="HeatTransfer-Bottom" mesh="Solid-Mesh" from="Solid" to="Fluid-Bottom"/>
+        <exchange data="Temperature-Bottom" mesh="Fluid-Bottom-Mesh" from="Fluid-Bottom" to="Fluid-Top"/>
 
         <max-iterations value="30"/>
 
