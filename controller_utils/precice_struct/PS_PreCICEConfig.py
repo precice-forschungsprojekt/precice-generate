@@ -461,3 +461,7 @@ class PS_PreCICEConfig(object):
     #ensure that every data used for convergence measures and iteration acceleration is exchanged
         print(config.used_data_for_iteration)
         print(config.used_data_for_acceleration)
+        exchanged_data = []
+        for exchange in config.exchanges:
+            exchanged_data.append(exchange.get('data'))
+        print("Data exchanged:", exchanged_data)
