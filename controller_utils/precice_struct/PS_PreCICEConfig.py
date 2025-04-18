@@ -477,4 +477,7 @@ class PS_PreCICEConfig(object):
         print("Data exchanged to control:", exchanged_data_on_control)
         merged_data = list(set(config.used_data_for_iteration) | set(config.used_data_for_acceleration))
         print(merged_data)
+        merged_data = [d for d in merged_data if d not in exchanged_data_on_control]
+        print(merged_data)
+
 
