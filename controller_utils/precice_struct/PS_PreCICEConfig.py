@@ -432,52 +432,57 @@ class PS_PreCICEConfig(object):
         control_participant_meshes = set(config.solvers[control_participant].meshes)
         control_participant_meshes.update(self.solver_receive_meshes.get(control_participant, []))
 
+        exchanged_data_on_control = []
+        for exchange in config.exchanges:
+            if exchange.get('to').lower() == control_participant.lower():
+                exchanged_data_on_control.append(exchange.get('data'))
+
         # Check if each exchanged mesh is present in the control participant's meshes
         for mesh in exchange_mesh_names:
+            # Find which participant provides this mesh
+            providing_participants = [
+                p_name for p_name, p in config.solvers.items() 
+                if mesh in p.meshes
+            ]
+
+            # If no participant provides the mesh, raise an error
+            if not providing_participants:
+                raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
+
+            #get data via topology
+            for exchange in config.exchanges:                  
+                if providing_participants[0].lower() == exchange.get('from').lower():
+                    data = exchange.get('data')
+                    
             if mesh not in control_participant_meshes:
-                # Find which participant provides this mesh
-                providing_participants = [
-                    p_name for p_name, p in config.solvers.items() 
-                    if mesh in p.meshes
-                ]
-
-                # If no participant provides the mesh, raise an error
-                if not providing_participants:
-                    raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
-
-                #get data via topology
-                for exchange in config.exchanges:                  
-                    if providing_participants[0].lower() == exchange.get('from').lower():
-                        data = exchange.get('data')
-
                 # Add the mesh to the control participant as receive and add an exchange for it
                 solver_tag = self.solver_tags[control_participant]
                 solver_mesh_tag = etree.SubElement(solver_tag,
                                     "receive-mesh", name=mesh,
                                     from___=providing_participants[0])
-                e = etree.SubElement(self.coupling_scheme, "exchange", 
-                    data= data, mesh=mesh,
-                    from___=providing_participants[0], to=control_participant)
-                config.exchanges.append({
-                    'data': data,
-                    'mesh': mesh,
-                    'from': providing_participants[0],
-                    'to': control_participant
-                })
-                config.used_data_for_iteration.append(data) if data not in config.used_data_for_iteration else None
+
+
+
+                # e = etree.SubElement(self.coupling_scheme, "exchange", 
+                #     data= data, mesh=mesh,
+                #     from___=providing_participants[0], to=control_participant)
+                # config.exchanges.append({
+                #     'data': data,
+                #     'mesh': mesh,
+                #     'from': providing_participants[0],
+                #     'to': control_participant
+                # })
+                # config.used_data_for_iteration.append(data) if data not in config.used_data_for_iteration else None
 
     #ensure that every data used for convergence measures and iteration acceleration is exchanged
-        exchanged_data_on_control = []
-        for exchange in config.exchanges:
-            if exchange.get('to').lower() == control_participant.lower():
-                exchanged_data_on_control.append(exchange.get('data'))
+
         merged_data = list(set(config.used_data_for_iteration) | set(config.used_data_for_acceleration))
         merged_data = [d for d in merged_data if d not in exchanged_data_on_control]
 
         #add exchanges for missing data
-        data_exchanges = [exchange for exchange in config.exchanges if exchange.get('data') in merged_data and exchange.get('from').lower() != control_participant.lower()]
-        #remove from and to patch from dict
-        cleaned_data = [{k: v for k, v in item.items() if k not in ('from-patch', 'to-patch', 'type')} for item in data_exchanges]
+        missing_exchanges = [exchange for exchange in config.exchanges if exchange.get('data') in merged_data and exchange.get('from').lower() != control_participant.lower()]
+        #remove from and to patch and type from dict
+        cleaned_data = [{k: v for k, v in item.items() if k not in ('from-patch', 'to-patch', 'type')} for item in missing_exchanges]
         #change 'to' to control participant
         for exchange in cleaned_data:
             exchange['to'] = control_participant
