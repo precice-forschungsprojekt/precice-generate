@@ -8,6 +8,7 @@ class Logger:
         self.root_generated = Path(__file__).parent
         self._errors = []
         self._warnings = []
+        self._messages = []
 
     def _log(self, msg: str, level: str, color: str, symbol: str) -> None:
         """
@@ -19,7 +20,18 @@ class Logger:
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         formatted_msg = f"{timestamp} {symbol} [{level}] {msg}"
-        print(colored(formatted_msg, color))
+        self._messages.append(formatted_msg)
+
+
+    def print_all(self) -> None:
+        """Prints all logged messages and clears the log state."""
+        for message in self._messages:
+            print(message)
+        self._messages.clear()
+    
+    def clear_messages(self) -> None:
+        """Clears all logged messages."""
+        self._messages.clear()
 
     def success(self, msg: str) -> None:
         """Logs a success message."""
