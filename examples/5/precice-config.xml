@@ -44,6 +44,13 @@
             to="Fluid-Top-Mesh"
             constraint="consistent"
          />
+        <mapping:nearest-neighbor
+            direction="read"
+            from="Fluid-Bottom-Mesh"
+            to="Fluid-Top-Mesh"
+            data="Temperature-Bottom"
+            constraint="consistent"
+         />
     </participant>
 
     <participant name="Fluid-Bottom">
