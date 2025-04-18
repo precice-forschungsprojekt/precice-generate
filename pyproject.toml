@@ -47,7 +47,7 @@ dev = [
 ]
 
 [project.scripts]
-precice-gen = "FileGenerator:main"
+precice-gen = "file_generator:main"
 
 [project.urls]
 Repository = "https://github.com/precice-forschungsprojekt/precice-generate"
@@ -56,11 +56,11 @@ Documentation = "https://github.com/precice-forschungsprojekt/precice-generate/b
 
 [tool.setuptools]
 py-modules = [
-    "FileGenerator",
-    "generation_utils.AdapterConfigGenerator",
+    "file_generator",
+    "generation_utils.adapter_config_generator",
     "generation_utils.format_precice_config",
-    "generation_utils.Logger",
-    "generation_utils.StructureHandler",
+    "generation_utils.logger",
+    "generation_utils.structure_handler",
     "controller_utils.myutils.UT_PCErrorLogging",
     "controller_utils.precice_struct.PS_CouplingScheme",
     "controller_utils.precice_struct.PS_Mesh",
