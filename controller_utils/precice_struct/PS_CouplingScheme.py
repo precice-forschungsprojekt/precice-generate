@@ -159,6 +159,7 @@ class PS_CouplingScheme(object):
                 c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
                                  limit=relative_conv_str, mesh=exchange_mesh_name
                                  ,data=data)
+                config.used_data_for_iteration.append(data)
             pass
 
 
@@ -428,8 +429,10 @@ class PS_ImplicitAcceleration(object):
                             i = etree.SubElement(post_processing, "data", 
                                     name=q.instance_name, 
                                     mesh=exchange_mesh_name)
+                            config.used_data_for_acceleration.append(q.instance_name)
                     # parallel coupling
                     else:
                         i = etree.SubElement(post_processing, "data", 
                                     name=q.instance_name, 
                                     mesh=exchange_mesh_name)
+                        config.used_data_for_acceleration.append(q.instance_name)
