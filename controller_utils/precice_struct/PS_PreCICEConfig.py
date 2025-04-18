@@ -467,16 +467,12 @@ class PS_PreCICEConfig(object):
                 config.used_data_for_iteration.append(data) if data not in config.used_data_for_iteration else None
 
     #ensure that every data used for convergence measures and iteration acceleration is exchanged
-        print(config.used_data_for_iteration)
-        print(config.used_data_for_acceleration)
-        print(config.exchanges)
         exchanged_data_on_control = []
         for exchange in config.exchanges:
             if exchange.get('to').lower() == control_participant.lower():
                 exchanged_data_on_control.append(exchange.get('data'))
         print("Data exchanged to control:", exchanged_data_on_control)
         merged_data = list(set(config.used_data_for_iteration) | set(config.used_data_for_acceleration))
-        print(merged_data)
         merged_data = [d for d in merged_data if d not in exchanged_data_on_control]
         print(merged_data)
 
