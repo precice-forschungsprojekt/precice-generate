@@ -102,6 +102,7 @@
         <exchange data="Temperature-Bottom" mesh="Fluid-Bottom-Mesh" from="Fluid-Bottom" to="Solid"/>
         <exchange data="HeatTransfer-Bottom" mesh="Solid-Mesh" from="Solid" to="Fluid-Bottom"/>
         <exchange data="Temperature-Bottom" mesh="Fluid-Bottom-Mesh" from="Fluid-Bottom" to="Fluid-Top"/>
+        <exchange data="HeatTransfer-Bottom" mesh="Solid-Mesh" from="Solid" to="Fluid-Top"/>
 
         <max-iterations value="30"/>
 
