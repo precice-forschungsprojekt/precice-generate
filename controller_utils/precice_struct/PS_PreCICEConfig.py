@@ -453,6 +453,17 @@ class PS_PreCICEConfig(object):
             for exchange in config.exchanges:                  
                 if providing_participants[0].lower() == exchange.get('from').lower():
                     data = exchange.get('data')
+                    if (data not in exchanged_data_on_control) and (exchange.get('from').lower() != control_participant.lower()):
+                        exchanged_data_on_control.append(data)
+                        e = etree.SubElement(self.coupling_scheme, "exchange", 
+                            data= data, mesh=mesh,
+                            from___=providing_participants[0], to=control_participant)
+                        config.exchanges.append({
+                            'data': data,
+                            'mesh': mesh,
+                            'from': providing_participants[0],
+                            'to': control_participant
+                        }) 
                     
             if mesh not in control_participant_meshes:
                 # Add the mesh to the control participant as receive and add an exchange for it
@@ -462,34 +473,4 @@ class PS_PreCICEConfig(object):
                                     from___=providing_participants[0])
 
 
-
-                # e = etree.SubElement(self.coupling_scheme, "exchange", 
-                #     data= data, mesh=mesh,
-                #     from___=providing_participants[0], to=control_participant)
-                # config.exchanges.append({
-                #     'data': data,
-                #     'mesh': mesh,
-                #     'from': providing_participants[0],
-                #     'to': control_participant
-                # })
-                # config.used_data_for_iteration.append(data) if data not in config.used_data_for_iteration else None
-
-    #ensure that every data used for convergence measures and iteration acceleration is exchanged
-
-        merged_data = list(set(config.used_data_for_iteration) | set(config.used_data_for_acceleration))
-        merged_data = [d for d in merged_data if d not in exchanged_data_on_control]
-
-        #add exchanges for missing data
-        missing_exchanges = [exchange for exchange in config.exchanges if exchange.get('data') in merged_data and exchange.get('from').lower() != control_participant.lower()]
-        #remove from and to patch and type from dict
-        cleaned_data = [{k: v for k, v in item.items() if k not in ('from-patch', 'to-patch', 'type')} for item in missing_exchanges]
-        #change 'to' to control participant
-        for exchange in cleaned_data:
-            exchange['to'] = control_participant
-        #add exchanges to XML
-        for exchange in cleaned_data:
-            e = etree.SubElement(self.coupling_scheme, "exchange", 
-                data= exchange.get('data'), mesh="TODO",
-                from___=exchange.get('from'), to=exchange.get('to'))
-            config.exchanges.append(exchange)
 
