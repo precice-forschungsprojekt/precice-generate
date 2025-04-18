@@ -476,13 +476,13 @@ class PS_PreCICEConfig(object):
         merged_data = [d for d in merged_data if d not in exchanged_data_on_control]
         print("Missing data:",merged_data)
         #add exchanges for missing data
-        data_exchanges = [exchange for exchange in config.exchanges if exchange.get('data') in merged_data]
-        # for exchange in data_exchanges:
-        #     exchange['to'] = control_participant
+        data_exchanges = [exchange for exchange in config.exchanges if exchange.get('data') in merged_data and exchange.get('from').lower() != control_participant.lower()]
         print(data_exchanges)
         #remove from and to patch from dict
-        # print(type())
         cleaned_data = [{k: v for k, v in item.items() if k not in ('from-patch', 'to-patch')} for item in data_exchanges]
+        print(cleaned_data)
+        for exchange in cleaned_data:
+            exchange['to'] = control_participant
         print(cleaned_data)
 
 
