@@ -333,8 +333,8 @@ def main():
                 for warning in fileGenerator.logger.get_warnings():
                     fileGenerator.logger.warning(warning)
             fileGenerator.logger.print_all()
-        else:
-            fileGenerator.logger.print_all()
+    else:
+        fileGenerator.logger.print_all()
     if args.validate_topology:
         with open(Path(__file__).parent / "schemas" / "topology-schema.json") as schema_file:
             schema = json.load(schema_file)
