@@ -20,13 +20,13 @@ class Logger:
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         formatted_msg = f"{timestamp} {symbol} [{level}] {msg}"
-        self._messages.append(formatted_msg)
+        self._messages.append((formatted_msg, color))
 
 
     def print_all(self) -> None:
         """Prints all logged messages and clears the log state."""
-        for message in self._messages:
-            print(message)
+        for message, color in self._messages:
+            print(colored(message, color))
         self._messages.clear()
     
     def clear_messages(self) -> None:
