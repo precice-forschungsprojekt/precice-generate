@@ -12,6 +12,8 @@
     <mesh name="Fluid-Top-Mesh" dimensions="2">
         <use-data name="Temperature-Top"/>
         <use-data name="HeatTransfer-Top"/>
+        <use-data name="Temperature-Bottom"/>
+        <use-data name="HeatTransfer-Bottom"/>
     </mesh>
 
     <mesh name="Solid-Mesh" dimensions="2">
