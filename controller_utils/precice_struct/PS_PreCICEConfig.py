@@ -474,6 +474,33 @@ class PS_PreCICEConfig(object):
         print("Data exchanged to control:", exchanged_data_on_control)
         merged_data = list(set(config.used_data_for_iteration) | set(config.used_data_for_acceleration))
         merged_data = [d for d in merged_data if d not in exchanged_data_on_control]
-        print(merged_data)
+        print("Missing data:",merged_data)
+        #add exchanges for missing data
+        data_exchanges = [exchange for exchange in config.exchanges if exchange.get('data') in merged_data]
+        # for exchange in data_exchanges:
+        #     exchange['to'] = control_participant
+        print(data_exchanges)
+        #remove from and to patch from dict
+        # print(type())
+        cleaned_data = [{k: v for k, v in item.items() if k not in ('from-patch', 'to-patch')} for item in data_exchanges]
+        print(cleaned_data)
+
+
+
+            # for participant in config.solvers:
+            #     if data in config.solvers[participant].get_data_names():
+            #         #get mesh
+            #         mesh = config.solvers[participant].meshes[0]
+            #         #add exchange
+            #         e = etree.SubElement(self.coupling_scheme, "exchange", 
+            #             data= data, mesh=mesh,
+            #             from___=participant, to=control_participant)
+            #         config.exchanges.append({
+            #             'data': data,
+            #             'mesh': mesh,
+            #             'from': participant,
+            #             'to': control_participant
+            #         })
+            #         config.used_data_for_iteration.append(data) if data not in config.used_data_for_iteration else None
 
 
