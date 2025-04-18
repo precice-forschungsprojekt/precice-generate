@@ -322,7 +322,6 @@ def main():
     # Format the generated preCICE configuration
     fileGenerator.format_precice_config()
     
-    fileGenerator.logger.warning("aaa")
     # Handle output based on verbose mode and log state
     if not args.verbose:
         if not fileGenerator.logger.has_errors():
@@ -331,7 +330,6 @@ def main():
             fileGenerator.logger.success("Everything worked. You can find the generated files at: " + str(fileGenerator.structure.generated_root))
             # Always show warnings if any exist
             if fileGenerator.logger.has_warnings():
-                print("aaaaaaaaaaaaaaaa")
                 for warning in fileGenerator.logger.get_warnings():
                     fileGenerator.logger.warning(warning)
             fileGenerator.logger.print_all()
