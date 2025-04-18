@@ -43,14 +43,16 @@ class Logger:
 
     def warning(self, msg: str) -> None:
         """Logs a warning message."""
+        if not msg in self._warnings:
+            self._warnings.append(msg)
         self._log(msg, "WARNING", "yellow", "⚠️")
-        self._warnings.append(msg)
 
     def error(self, msg: str) -> None:
         """Logs an error message."""
+        if not msg in self._errors:
+            self._errors.append(msg)
         self._log(msg, "ERROR", "red", "❌")
-        self._errors.append(msg)
-
+        
     def has_errors(self) -> bool:
         """Check if any errors have been logged."""
         return len(self._errors) > 0
