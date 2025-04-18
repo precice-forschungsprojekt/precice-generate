@@ -12,8 +12,6 @@
     <mesh name="Fluid-Top-Mesh" dimensions="2">
         <use-data name="Temperature-Top"/>
         <use-data name="HeatTransfer-Top"/>
-        <use-data name="Temperature-Bottom"/>
-        <use-data name="HeatTransfer-Bottom"/>
     </mesh>
 
     <mesh name="Solid-Mesh" dimensions="2">
@@ -35,18 +33,10 @@
 
         <write-data name="Temperature-Top" mesh="Fluid-Top-Mesh"/>
         <read-data name="HeatTransfer-Top" mesh="Fluid-Top-Mesh"/>
-        <write-data name="Temperature-Bottom" mesh="Fluid-Top-Mesh"/>
-        <read-data name="HeatTransfer-Bottom" mesh="Fluid-Top-Mesh"/>
 
         <mapping:nearest-neighbor
             direction="read"
             from="Solid-Mesh"
-            to="Fluid-Top-Mesh"
-            constraint="consistent"
-         />
-        <mapping:nearest-neighbor
-            direction="read"
-            from="Fluid-Bottom-Mesh"
             to="Fluid-Top-Mesh"
             constraint="consistent"
          />
