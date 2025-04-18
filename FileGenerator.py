@@ -322,6 +322,7 @@ def main():
     # Format the generated preCICE configuration
     fileGenerator.format_precice_config()
     
+
     # Handle output based on verbose mode and log state
     if not args.verbose:
         if not fileGenerator.logger.has_errors():
@@ -332,6 +333,8 @@ def main():
             if fileGenerator.logger.has_warnings():
                 for warning in fileGenerator.logger.get_warnings():
                     fileGenerator.logger.warning(warning)
+            fileGenerator.logger.print_all()
+        else:
             fileGenerator.logger.print_all()
     else:
         fileGenerator.logger.print_all()
