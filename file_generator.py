@@ -92,6 +92,7 @@ class FileGenerator:
         self.logger.print_all()
 
     def validate_topology(self, args):
+        """Validate the topology.yaml file against the JSON schema."""
         if args.validate_topology:
             with open(Path(__file__).parent / "schemas" / "topology-schema.json") as schema_file:
                 schema = json.load(schema_file)
