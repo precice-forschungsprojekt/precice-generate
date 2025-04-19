@@ -23,6 +23,8 @@ class PS_PreCICEConfig(object):
         self.mappings_read = []
         self.mappings_write = []
         self.couplingScheme_participants = None
+        self.couplingScheme = None
+        self.exchange_mesh_names = []
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -241,13 +243,14 @@ class PS_PreCICEConfig(object):
         # Initialize dictionaries to store provide and receive meshes
         self.solver_provide_meshes = {}
         self.solver_receive_meshes = {}
-
         # 3 participants
         m2n_pairs_added = set()
+        self.solver_tags = {}
         for solver_name in self.solvers:
             solver = self.solvers[solver_name]
             solver_tag = etree.SubElement(precice_configuration_tag,
                                           "participant", name=solver.name)
+            self.solver_tags[solver_name] = solver_tag
 
             # Initialize lists for this solver's provide and receive meshes
             self.solver_provide_meshes[solver_name] = []
@@ -340,6 +343,15 @@ class PS_PreCICEConfig(object):
                     other_solver = list_of_solvers_with_higher_complexity_write[other_solver_name]
                     mapping_string = type_of_the_mapping_write[other_solver_name]
                     other_solver_mesh_name = self.get_mesh_name_by_participants(other_solver_name, solver_name)
+                    
+                    # Always add receive mesh for the participant specifying a mapping if it does not already exist
+                    if other_solver_mesh_name not in self.solver_receive_meshes[solver_name]:
+                        solver_mesh_tag = etree.SubElement(solver_tag,
+                                                           "receive-mesh", name=other_solver_mesh_name,
+                                                           from___=other_solver_name)
+                        self.solver_receive_meshes[solver_name].append(other_solver_mesh_name)
+                    
+                    # Add write mapping
                     mapped_tag = etree.SubElement(solver_tag, "mapping:nearest-neighbor", direction="write",
                                               from___ = solvers_mesh_name, to = other_solver_mesh_name,
                                               constraint = mapping_string)
@@ -368,6 +380,8 @@ class PS_PreCICEConfig(object):
         # TODO: later this migh be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
 
+        # Validate mesh exchanges for convergence measures
+        self.validate_convergence_measure_mesh_exchange(self,self.exchange_mesh_names)
         # =========== generate XML ===========================
 
         xml_string = etree.tostring(precice_configuration_tag, #pretty_print=True, xml_declaration=True,
@@ -402,3 +416,68 @@ class PS_PreCICEConfig(object):
         log.rep_info("Output XML file: " + filename)
 
         pass
+
+    def validate_convergence_measure_mesh_exchange(self, config, exchange_mesh_names):
+        """
+        Validate that meshes used in convergence measures are properly exchanged in multi-coupling schemes.
+        
+        Args:
+            config (PS_PreCICEConfig): The configuration to validate
+            exchange_mesh_names (list): List of mesh names exchanged during configuration
+        
+        Raises:
+            ValueError: If a mesh used in convergence measure is not exchanged to the control participant
+        """
+        # Only validate for multi-coupling schemes with more than 2 solvers
+        if len(config.solvers) <= 2:
+            return
+
+        # Find the control participant (the one with the most meshes)
+        control_participant = max(config.solvers, key=lambda p: len(config.solvers[p].meshes))
+
+        # Combine provided and received meshes for the control participant
+        control_participant_meshes = set(config.solvers[control_participant].meshes)
+        control_participant_meshes.update(self.solver_receive_meshes.get(control_participant, []))
+
+        exchanged_data_on_control = []
+        for exchange in config.exchanges:
+            if exchange.get('to').lower() == control_participant.lower():
+                exchanged_data_on_control.append(exchange.get('data'))
+
+        # Check if each exchanged mesh is present in the control participant's meshes
+        for mesh in exchange_mesh_names:
+            # Find which participant provides this mesh
+            providing_participants = [
+                p_name for p_name, p in config.solvers.items() 
+                if mesh in p.meshes
+            ]
+
+            # If no participant provides the mesh, raise an error
+            if not providing_participants:
+                raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
+
+            #get data via topology
+            for exchange in config.exchanges:                  
+                if providing_participants[0].lower() == exchange.get('from').lower():
+                    data = exchange.get('data')
+                    if (data not in exchanged_data_on_control) and (exchange.get('from').lower() != control_participant.lower()):
+                        exchanged_data_on_control.append(data)
+                        e = etree.SubElement(self.coupling_scheme, "exchange", 
+                            data= data, mesh=mesh,
+                            from___=providing_participants[0], to=control_participant)
+                        config.exchanges.append({
+                            'data': data,
+                            'mesh': mesh,
+                            'from': providing_participants[0],
+                            'to': control_participant
+                        }) 
+                    
+            if mesh not in control_participant_meshes:
+                # Add the mesh to the control participant as receive and add an exchange for it
+                solver_tag = self.solver_tags[control_participant]
+                solver_mesh_tag = etree.SubElement(solver_tag,
+                                    "receive-mesh", name=mesh,
+                                    from___=providing_participants[0])
+
+
+
