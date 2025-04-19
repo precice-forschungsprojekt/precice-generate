@@ -146,10 +146,13 @@ class PS_CouplingScheme(object):
             exchange_mesh_name, data, from_s, to_s = self._determine_exchange_mesh(
                 config, quantity, solver, other_solver, simple_solver)
 
+            if exchange_mesh_name not in config.exchange_mesh_names:
+                config.exchange_mesh_names.append(exchange_mesh_name)
+
             # Create the exchange element
             e = etree.SubElement(coupling_scheme, "exchange", 
-                               data=data, mesh=exchange_mesh_name,
-                               from___=from_s, to=to_s)
+                                data=data, mesh=exchange_mesh_name,
+                                from___=from_s, to=to_s)
 
             # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
@@ -179,6 +182,7 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-explicit" )
+        config.coupling_scheme = coupling_scheme
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
                 self.NrTimeStep = 1e-3
@@ -236,6 +240,7 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         if self.coupling not in ['serial', 'parallel']:
             raise ValueError(f"coupling must be 'serial' or 'parallel', but got {self.coupling}")
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-implicit" )
+        config.coupling_scheme = coupling_scheme
 
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
@@ -335,7 +340,8 @@ class PS_ImplicitAcceleration(object):
                                 i = etree.SubElement(post_processing, a, limit=str(b.get("limit")))
                         elif a == "preconditioner":
                             if b.get("type") is not None:
-                                i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")), type=str(b.get("type")))
+                                i = etree.SubElement(post_processing, a, type=str(b.get("type")))                                
+                                i.set("freeze-after", str(b.get("freeze-after")))
                             else:
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))
                     if self.name == "aitken":
@@ -346,7 +352,8 @@ class PS_ImplicitAcceleration(object):
                                 i = etree.SubElement(post_processing, a, value=str(b.get("value")))
                         elif a == "preconditioner":
                             if b.get("type") is not None:
-                                i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")), type=str(b.get("type")))
+                                i = etree.SubElement(post_processing, a, type=str(b.get("type")))                                
+                                i.set("freeze-after", str(b.get("freeze-after")))
                             else:
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))
                     if self.name == "IQN-IMVJ":
@@ -364,7 +371,8 @@ class PS_ImplicitAcceleration(object):
                                 i = etree.SubElement(post_processing, a, limit=str(b.get("limit")))
                         elif a == "preconditioner":
                             if b.get("type") is not None:
-                                i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")), type=str(b.get("type")))
+                                i = etree.SubElement(post_processing, a, type=str(b.get("type")))                                
+                                i.set("freeze-after", str(b.get("freeze-after")))
                             else:
                                 i = etree.SubElement(post_processing, a, freeze_after=str(b.get("freeze-after")))                          
                         elif a == "imvj-restart-mode":

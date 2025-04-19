@@ -8,6 +8,7 @@ class Logger:
         self.root_generated = Path(__file__).parent
         self._errors = []
         self._warnings = []
+        self._messages = []
 
     def _log(self, msg: str, level: str, color: str, symbol: str) -> None:
         """
@@ -19,7 +20,18 @@ class Logger:
         """
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         formatted_msg = f"{timestamp} {symbol} [{level}] {msg}"
-        print(colored(formatted_msg, color))
+        self._messages.append((formatted_msg, color))
+
+
+    def print_all(self) -> None:
+        """Prints all logged messages and clears the log state."""
+        for message, color in self._messages:
+            print(colored(message, color))
+        self._messages.clear()
+    
+    def clear_messages(self) -> None:
+        """Clears all logged messages."""
+        self._messages.clear()
 
     def success(self, msg: str) -> None:
         """Logs a success message."""
@@ -31,14 +43,16 @@ class Logger:
 
     def warning(self, msg: str) -> None:
         """Logs a warning message."""
+        if not msg in self._warnings:
+            self._warnings.append(msg)
         self._log(msg, "WARNING", "yellow", "⚠️")
-        self._warnings.append(msg)
 
     def error(self, msg: str) -> None:
         """Logs an error message."""
+        if not msg in self._errors:
+            self._errors.append(msg)
         self._log(msg, "ERROR", "red", "❌")
-        self._errors.append(msg)
-
+        
     def has_errors(self) -> bool:
         """Check if any errors have been logged."""
         return len(self._errors) > 0

@@ -1,5 +1,5 @@
 from pathlib import Path
-from generation_utils.Logger import Logger
+from generation_utils.logger import Logger
 from lxml import etree
 import json
 import yaml
