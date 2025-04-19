@@ -290,7 +290,7 @@ class PS_PreCICEConfig(object):
                             type_of_the_mapping[other_solvers_name] = q.mapping_string
                             list_of_solvers_with_higher_complexity_read[other_solvers_name] = other_solver
                             type_of_the_mapping_read[other_solvers_name] = q.mapping_string
-                            # Always add receive mesh for read quantities
+                            # within one participant put the "use-mesh" only once there
                             if solvers_mesh_name != q.source_mesh_name and \
                                q.source_mesh_name not in used_meshes:
                                 solver_mesh_tag = etree.SubElement(solver_tag,
