@@ -15,7 +15,7 @@ authors = [
     { name = "Toddelismyname", email = "116207910+Toddelismyname@users.noreply.github.com" }
 ]
 
-requires-python = ">= 3.10"
+requires-python = ">= 3.9"
 dependencies = [
     "attrs==25.3.0",
     "jsonschema==4.23.0",
