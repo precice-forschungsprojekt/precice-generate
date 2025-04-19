@@ -24,9 +24,9 @@ user-defined YAML configurations into preCICE-compatible XML configuration files
 
 ### Prerequisites
 
-- Python 3.11 or
+- Python 3.9 or
   higher ([workflow validated](https://github.com/precice-forschungsprojekt/precice-generate/actions/workflows/installation.yml)
-  with 3.11 and 3.12)
+  with 3.9, 3.10, 3.11 and 3.12)
 - pip
 - venv
 - (preCICE library)
