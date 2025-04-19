@@ -31,7 +31,7 @@ class FileGenerator:
     
     def generate_level_0(self) -> None:
         """Fills out the files of level 0 (everything in the root folder)."""
-        self.other_files_generator.generate_clean(target=self.structure.clean)
+        self.other_files_generator.generate_clean(clean_sh=self.structure.clean)
         self.config_generator.generate_precice_config(self)
         self.readme_generator.generate_readme(self)
     
