@@ -6,6 +6,7 @@ from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 from controller_utils.precice_struct import PS_PreCICEConfig
 from generation_utils.adapter_config_generator import AdapterConfigGenerator
 from generation_utils.format_precice_config import PrettyPrinter
+from generation_utils.other_files_generator import OtherFilesGenerator
 import yaml
 import argparse
 import jsonschema, json
@@ -25,60 +26,12 @@ class FileGenerator:
         self.structure = StructureHandler(output_path)
         self.config_generator = ConfigGenerator()
         self.readme_generator = ReadmeGenerator()
+        self.other_files_generator = OtherFilesGenerator()
     
-    def _generate_static_files(self, target: Path, name: str) -> None:
-        """Generate static files from templates
-            :param target: target file path
-            :param name: name of the function"""
-        try:
-            tempalte = Path(__file__).parent / "templates" / f"template_{name}"
-            self.logger.info(f"Reading in the template file for {name}")
-
-            # Check if the template file exists
-            if not tempalte.exists():
-                raise FileNotFoundError(f"Template file not found: {tempalte}")
-
-            # Read the template content
-            template_content = tempalte.read_text(encoding="utf-8")
-
-            self.logger.info(f"Writing the template to the target: {str(target)}")
-
-            # Write content to the target file
-            with open(target, 'w', encoding="utf-8") as template:
-                template.write(template_content)
-
-            self.logger.success(f"Successfully written {name} content to: {str(target)}")
-
-        except FileNotFoundError as fileNotFoundException:
-            self.logger.error(f"File not found: {fileNotFoundException}")
-        except PermissionError as premissionErrorException:
-            self.logger.error(f"Permission error: {premissionErrorException}")
-        except Exception as generalExcpetion:
-            self.logger.error(f"An unexpected error occurred: {generalExcpetion}")
-        pass
-    
-    def _generate_run(self, run_sh: Path) -> None:
-        """Generates the run.sh file
-            :param run_sh: Path to the run.sh file"""
-        self._generate_static_files(target=run_sh,
-                                    name="run.sh")
-
-    def _generate_clean(self) -> None:
-        """Generates the clean.sh file."""
-        self._generate_static_files(target=self.structure.clean,
-                                    name="clean.sh")
-
-    def _generate_adapter_config(self, target_participant: str, adapter_config: Path) -> None:
-        """Generates the adapter-config.json file."""
-        adapter_config_generator = AdapterConfigGenerator(adapter_config_path=adapter_config,
-                                                            precice_config_path=self.structure.precice_config, 
-                                                            topology_path=self.input_file,  
-                                                            target_participant=target_participant)
-        adapter_config_generator.write_to_file()
     
     def generate_level_0(self) -> None:
         """Fills out the files of level 0 (everything in the root folder)."""
-        self._generate_clean()
+        self.other_files_generator.generate_clean()
         self.config_generator.generate_precice_config(self)
         self.readme_generator.generate_readme(self)
     
@@ -106,8 +59,8 @@ class FileGenerator:
             target_participant = self.structure.create_level_1_structure(participant, self.user_ui)
             adapter_config = target_participant[1]
             run_sh = target_participant[2]
-            self._generate_adapter_config(target_participant=participant, adapter_config=adapter_config)
-            self._generate_run(run_sh)
+            self.other_files_generator.generate_adapter_config(target_participant=participant, adapter_config=adapter_config)
+            self.other_files_generator.generate_run(run_sh)
 
     def format_precice_config(self) -> None:
         """Formats the generated preCICE configuration file."""
