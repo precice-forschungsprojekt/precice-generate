@@ -17,10 +17,15 @@ authors = [
 
 requires-python = ">= 3.10"
 dependencies = [
+    "attrs==25.3.0",
     "jsonschema==4.23.0",
-    "lxml==5.3.0",
-    "myutils==0.0.21",
-    "termcolor==2.5.0",
+    "jsonschema-specifications==2024.10.1",
+    "lxml==5.3.2",
+    "PyYAML==6.0.2",
+    "referencing==0.36.2",
+    "rpds-py==0.24.0",
+    "termcolor==3.0.1",
+    "typing_extensions==4.13.2"
 ]
 
 [project.scripts]
