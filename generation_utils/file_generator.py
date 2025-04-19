@@ -1,17 +1,18 @@
-from pathlib import Path
-from generation_utils.structure_handler import StructureHandler
-from generation_utils.logger import Logger
 from controller_utils.ui_struct.UI_UserInput import UI_UserInput
 from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 from controller_utils.precice_struct import PS_PreCICEConfig
-from generation_utils.adapter_config_generator import AdapterConfigGenerator
-from generation_utils.format_precice_config import PrettyPrinter
-from generation_utils.other_files_generator import OtherFilesGenerator
+
+from .structure_handler import StructureHandler
+from .logger import Logger
+from .adapter_config_generator import AdapterConfigGenerator
+from .format_precice_config import PrettyPrinter
+from .other_files_generator import OtherFilesGenerator
+from .config_generator import ConfigGenerator
+from .readme_generator import ReadmeGenerator
+
+from pathlib import Path
 import yaml
-import argparse
 import jsonschema, json
-from generation_utils.config_generator import ConfigGenerator
-from generation_utils.readme_generator import ReadmeGenerator
 
 class FileGenerator:
     def __init__(self, input_file: Path, output_path: Path) -> None:
@@ -94,7 +95,7 @@ class FileGenerator:
     def validate_topology(self, args):
         """Validate the topology.yaml file against the JSON schema."""
         if args.validate_topology:
-            with open(Path(__file__).parent / "schemas" / "topology-schema.json") as schema_file:
+            with open(Path(__file__).parent.parent / "schemas" / "topology-schema.json") as schema_file:
                 schema = json.load(schema_file)
             with open(args.input_file) as input_file:
                 data = yaml.load(input_file, Loader=yaml.SafeLoader)
@@ -102,61 +103,3 @@ class FileGenerator:
                 jsonschema.validate(instance=data, schema=schema)
             except jsonschema.exceptions.ValidationError as e:
                 print(f"Validation of {args.input_file} failed: {e}")
-
-
-            
-def parse_args():
-    parser = argparse.ArgumentParser(description="Takes topology.yaml files as input and writes out needed files to start the precice.")
-    parser.add_argument(
-        "-f", "--input-file", 
-        type=Path, 
-        required=False, 
-        help="Input topology.yaml file",
-        default=Path("examples/1/topology.yaml")
-    )
-    parser.add_argument(
-        "-o", "--output-path",
-        type=Path,
-        required=False,
-        help="Output path for the generated folder.",
-        default=Path(__file__).parent
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        required=False,
-        help="Enable verbose logging output.",
-    )
-    parser.add_argument(
-        "--validate-topology",
-        action="store_true",
-        required=False,
-        default=True,
-        help="Whether to validate the input topology.yaml file against the preCICE topology schema.",
-    )
-    return parser.parse_args()
-
-
-def main():
-    args = parse_args()
-
-    fileGenerator = FileGenerator(args.input_file, args.output_path)
-
-    # Clear any previous log state
-    fileGenerator.logger.clear_log_state()
-
-    fileGenerator.generate_level_0()
-    fileGenerator.generate_level_1()
-
-    # Format the generated preCICE configuration
-    fileGenerator.format_precice_config()
-    
-
-    fileGenerator.handle_output(args)
-
-    fileGenerator.validate_topology(args)
-    
-
-
-if __name__ == "__main__":
-    main()

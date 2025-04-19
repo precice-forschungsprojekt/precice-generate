@@ -56,11 +56,15 @@ Documentation = "https://github.com/precice-forschungsprojekt/precice-generate/b
 
 [tool.setuptools]
 py-modules = [
-    "file_generator",
+    "cli",
     "generation_utils.adapter_config_generator",
     "generation_utils.format_precice_config",
     "generation_utils.logger",
     "generation_utils.structure_handler",
+    "generation_utils.other_files_generator",
+    "generation_utils.config_generator",
+    "generation_utils.readme_generator",
+    "generation_utils.file_generator",
     "controller_utils.myutils.UT_PCErrorLogging",
     "controller_utils.precice_struct.PS_CouplingScheme",
     "controller_utils.precice_struct.PS_Mesh",
