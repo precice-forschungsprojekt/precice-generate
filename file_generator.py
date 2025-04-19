@@ -91,7 +91,18 @@ class FileGenerator:
                         self.logger.warning(warning)
         self.logger.print_all()
 
-        
+    def validate_topology(self, args):
+        if args.validate_topology:
+            with open(Path(__file__).parent / "schemas" / "topology-schema.json") as schema_file:
+                schema = json.load(schema_file)
+            with open(args.input_file) as input_file:
+                data = yaml.load(input_file, Loader=yaml.SafeLoader)
+            try:
+                jsonschema.validate(instance=data, schema=schema)
+            except jsonschema.exceptions.ValidationError as e:
+                print(f"Validation of {args.input_file} failed: {e}")
+
+
             
 def parse_args():
     parser = argparse.ArgumentParser(description="Takes topology.yaml files as input and writes out needed files to start the precice.")
@@ -142,15 +153,7 @@ def main():
 
     fileGenerator.handle_output(args)
 
-    if args.validate_topology:
-        with open(Path(__file__).parent / "schemas" / "topology-schema.json") as schema_file:
-            schema = json.load(schema_file)
-        with open(args.input_file) as input_file:
-            data = yaml.load(input_file, Loader=yaml.SafeLoader)
-        try:
-            jsonschema.validate(instance=data, schema=schema)
-        except jsonschema.exceptions.ValidationError as e:
-            print(f"Validation of {args.input_file} failed: {e}")
+    fileGenerator.validate_topology(args)
     
 
 
