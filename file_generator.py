@@ -76,6 +76,23 @@ class FileGenerator:
         except Exception as prettifyException:
             self.logger.error("An error occurred during XML prettification: ", prettifyException)
             
+    def handle_output(self, args):
+        """
+        Handle output based on verbose mode and log state
+        """
+        if not args.verbose:
+            if not self.logger.has_errors():
+                self.logger.clear_messages()
+                # No errors, show success message
+                self.logger.success("Everything worked. You can find the generated files at: " + str(self.structure.generated_root))
+                # Always show warnings if any exist
+                if self.logger.has_warnings():
+                    for warning in self.logger.get_warnings():
+                        self.logger.warning(warning)
+        self.logger.print_all()
+
+        
+            
 def parse_args():
     parser = argparse.ArgumentParser(description="Takes topology.yaml files as input and writes out needed files to start the precice.")
     parser.add_argument(
@@ -123,18 +140,7 @@ def main():
     fileGenerator.format_precice_config()
     
 
-    # Handle output based on verbose mode and log state
-    if not args.verbose:
-        if not fileGenerator.logger.has_errors():
-            fileGenerator.logger.clear_messages()
-            # No errors, show success message
-            fileGenerator.logger.success("Everything worked. You can find the generated files at: " + str(fileGenerator.structure.generated_root))
-            # Always show warnings if any exist
-            if fileGenerator.logger.has_warnings():
-                for warning in fileGenerator.logger.get_warnings():
-                    fileGenerator.logger.warning(warning)
-
-    fileGenerator.logger.print_all()
+    fileGenerator.handle_output(args)
 
     if args.validate_topology:
         with open(Path(__file__).parent / "schemas" / "topology-schema.json") as schema_file:
