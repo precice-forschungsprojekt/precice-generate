@@ -59,7 +59,8 @@ class FileGenerator:
             target_participant = self.structure.create_level_1_structure(participant, self.user_ui)
             adapter_config = target_participant[1]
             run_sh = target_participant[2]
-            self.other_files_generator.generate_adapter_config(target_participant=participant, adapter_config=adapter_config)
+            self.other_files_generator.generate_adapter_config(target_participant=participant, adapter_config=adapter_config,
+                                                                precice_config=self.structure.precice_config, topology_path=self.input_file)
             self.other_files_generator.generate_run(run_sh)
 
     def format_precice_config(self) -> None:
