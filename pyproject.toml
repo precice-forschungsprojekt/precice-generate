@@ -47,7 +47,7 @@ dev = [
 ]
 
 [project.scripts]
-precice-gen = "file_generator:main"
+precice-gen = "cli:main"
 
 [project.urls]
 Repository = "https://github.com/precice-forschungsprojekt/precice-generate"
