@@ -44,13 +44,18 @@ Define simulation participants with detailed specifications:
 - Minimum of 2 participant required
 
 ### 4. Exchanges Configuration
-Define data exchanges between participants:
+Each exchange defines a one-way data transfer between participants:
 
 #### Required Fields
-- `from`: Name of the source participant sending data
-- `from-patch`: Specific interface patch or surface on the source participant from which data is sent
-- `to`: Name of the target participant receiving data
-- `to-patch`: Specific interface patch or surface on the target participant where data is received
+- `from`: Name of the source participant sending data (must match a name in the participants section)
+- `from-patch`: Source Interface Surface
+  - The physical boundary or interface region on the source participant's mesh where data is extracted.
+  - For fluids: Typically the fluid-structure interface (e.g., "interface")
+  - For solids: Typically the surface contacting the fluid (e.g., "surface")
+- `to`: Name of the target participant receiving data (must match a name in the participants section)
+- `to-patch`: Target Interface Surface
+  - The physical boundary or interface region on the target participant's mesh where data will be applied.
+  - Must correspond to a defined boundary condition in the target solver
 - `data`: Type of data being exchanged (e.g., Force, Displacement, Velocity)
 - `type`: Coupling type defining the exchange interaction
   - `strong`: Tight coupling with immediate data synchronization
@@ -67,14 +72,26 @@ Define data exchanges between participants:
 
 #### Example
 ```yaml
+coupling-scheme:
+  display_standard_values: true
+participants:
+  - name: Fluid
+    solver: SU2
+  - name: Solid
+    solver: Calculix
 exchanges:
   - from: Fluid
-    from-patch: interface
+    from-patch: interface      # Fluid side boundary where forces are measured
     to: Solid
-    to-patch: surface
+    to-patch: surface         # Solid surface receiving fluid forces
     data: Force
     type: strong
-    data-type: vector
+  - from: Solid
+    from-patch: surface       # Solid surface where displacements occur
+    to: Fluid
+    to-patch: interface      # Fluid boundary that adapts to displacements
+    data: Displacement
+    type: strong
 ```
 
 ## Schema Validation Rules
