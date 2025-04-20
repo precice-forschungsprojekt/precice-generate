@@ -6,12 +6,14 @@
     <mesh name="Fluid-Mesh" dimensions="3">
         <use-data name="Force"/>
     </mesh>
+
     <mesh name="Solid-Mesh" dimensions="3">
         <use-data name="Force"/>
     </mesh>
 
     <participant name="Fluid">
         <provide-mesh name="Fluid-Mesh"/>
+        <receive-mesh name="Solid-Mesh" from="Solid"/>
 
         <write-data name="Force" mesh="Fluid-Mesh"/>
 
@@ -22,6 +24,7 @@
             constraint="conservative"
          />
     </participant>
+
     <participant name="Solid">
         <provide-mesh name="Solid-Mesh"/>
 
