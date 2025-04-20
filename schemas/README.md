@@ -47,15 +47,35 @@ Define simulation participants with detailed specifications:
 Define data exchanges between participants:
 
 #### Required Fields
-- `from`: Source participant
-- `from-patch`: Source interface patch
-- `to`: Target participant
-- `to-patch`: Target interface patch
-- `data`: Data identifier
-- `type`: Exchange type
+- `from`: Name of the source participant sending data
+- `from-patch`: Specific interface patch or surface on the source participant from which data is sent
+- `to`: Name of the target participant receiving data
+- `to-patch`: Specific interface patch or surface on the target participant where data is received
+- `data`: Type of data being exchanged (e.g., Force, Displacement, Velocity)
+- `type`: Coupling type defining the exchange interaction
+  - `strong`: Tight coupling with immediate data synchronization
+  - `weak`: Loose coupling with less frequent data exchange
 
 #### Optional Fields
-- `data-type`: Data representation (scalar/vector, default: scalar)
+- `data-type`: Specifies the data representation
+  - `scalar`: Single numeric value (default)
+  - `vector`: Multi-dimensional numeric data
+
+#### Data Type Constraints
+- Supported data types: Force, Displacement, Velocity, Pressure, Temperature, HeatTransfer
+- Naming follows the pattern: `[BaseType][OptionalModifier]`
+
+#### Example
+```yaml
+exchanges:
+  - from: Fluid
+    from-patch: interface
+    to: Solid
+    to-patch: surface
+    data: Force
+    type: strong
+    data-type: vector
+```
 
 ## Schema Validation Rules
 
