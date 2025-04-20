@@ -173,17 +173,21 @@
       },
       "participants": {
         "type": "array",
+        "description": "List of participants in the coupling simulation",
         "items": {
           "type": "object",
           "properties": {
             "name": {
-              "type": "string"
+              "type": "string",
+              "description": "Unique name of the participant"
             },
             "solver": {
-              "type": "string"
+              "type": "string",
+              "description": "Solver used by the participant"
             },
             "dimensionality": {
               "type": "integer",
+              "description": "Dimensionality of the participant's problem",
               "default": 3
             }
           },
@@ -194,37 +198,46 @@
       },
       "exchanges": {
         "type": "array",
+        "description": "Defines the data exchanges between participants in the coupling simulation",
         "items": {
           "type": "object",
           "properties": {
             "from": {
-              "type": "string"
+              "type": "string",
+              "description": "Name of the source participant sending data"
             },
             "from-patch": {
-              "type": "string"
+              "type": "string", 
+              "description": "Specific interface patch or surface on the source participant from which data is sent"
             },
             "to": {
-              "type": "string"
+              "type": "string",
+              "description": "Name of the target participant receiving data"
             },
             "to-patch": {
-              "type": "string"
+              "type": "string",
+              "description": "Specific interface patch or surface on the target participant where data is received"
             },
             "data": {
               "type": "string",
+              "description": "Type of data being exchanged (e.g., Force, Displacement, Velocity)",
               "pattern": "^(Force|Displacement|Velocity|Pressure|Temperature|HeatTransfer).*$"
             },
             "data-type": {
               "type": "string",
+              "description": "Specifies whether the data is a scalar or vector quantity",
               "enum": ["scalar", "vector"],
               "default": "scalar"
             },
             "type": {
-              "type": "string"
+              "type": "string", 
+              "description": "Defines the coupling type: 'strong' for tight coupling, 'weak' for loose coupling",
+              "enum": ["strong", "weak"]
             }
           },
           "required": [
             "from",
-            "from-patch",
+            "from-patch", 
             "to",
             "to-patch",
             "data",
