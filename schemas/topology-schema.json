@@ -5,23 +5,11 @@
         "type": "object",
         "properties": {
           "max-time": {
-            "oneOf": [
-              {"type": "integer"},
-              {
-                "type": "string",
-                "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
-              }
-            ],
+            "type": "number",
             "default": 1e-3
           },
           "time-window-size": {
-            "oneOf": [
-              {"type": "number"},
-              {
-                "type": "string",
-                "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
-              }
-            ],
+            "type": "number",
             "default": 1e-3
           },
           "max-iterations": {
@@ -54,18 +42,12 @@
             "type": "object",
             "properties": {
               "value": {
-                "oneOf": [
-                  {"type": "number"},
-                      {
-                        "type": "string",
-                        "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
-                      }
-                    ]
-                  },
-                  "enforce": {
-                    "type": "boolean",
-                    "default": false
-                  }
+                "type": "number"
+              },
+              "enforce": {
+                "type": "boolean",
+                "default": false
+              }
                 },
                 "additionalProperties": false,
                 "required": ["value"],
@@ -95,13 +77,7 @@
             "description": "QR1/2 filter configuration",
             "properties": {
               "limit": {
-                "oneOf": [
-                  {"type": "number"},
-                  {
-                    "type": "string",
-                    "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
-                  }
-                ],
+                "type": "number",
                 "description": "Threshold for filtering singular values",
                 "exclusiveMinimum": 0,
                 "default": 1e-16
@@ -130,13 +106,7 @@
             "description": "Configuration for IMVJ restart mode",
             "properties": {
               "truncation-threshold": {
-                "oneOf": [
-                  {"type": "number"},
-                  {
-                    "type": "string",
-                    "pattern": "^-?([0-9]+\\.?[0-9]*|\\.?[0-9]+)([eE][-+]?[0-9]+)?$"
-                  }
-                ],
+                "type": "number",
                 "description": "Threshold for truncating singular values during restart",
                 "exclusiveMinimum": 0,
                 "default": 0.0001
