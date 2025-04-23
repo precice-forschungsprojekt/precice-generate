@@ -61,6 +61,9 @@ Each exchange defines a one-way data transfer between participants:
 - `to-patch`: Target Interface Surface
   - The physical boundary or interface region on the target participant's mesh where data will be applied.
   - Must correspond to a defined boundary condition in the target solver.
+> [!NOTE]
+> `from-patch` and `to-patch` are only relevant for generating `adapter-config.json` files.
+
 
 #### Optional Fields
 - `data-type`: Specifies the data representation
