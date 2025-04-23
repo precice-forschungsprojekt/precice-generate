@@ -48,18 +48,19 @@ Each exchange defines a one-way data transfer between participants:
 
 #### Required Fields
 - `from`: Name of the source participant sending data (must match a name in the participants section)
-- `from-patch`: Source Interface Surface
-  - The physical boundary or interface region on the source participant's mesh where data is extracted.
-  - For fluids: Typically the fluid-structure interface (e.g., "interface")
-  - For solids: Typically the surface contacting the fluid (e.g., "surface")
 - `to`: Name of the target participant receiving data (must match a name in the participants section)
-- `to-patch`: Target Interface Surface
-  - The physical boundary or interface region on the target participant's mesh where data will be applied.
-  - Must correspond to a defined boundary condition in the target solver
 - `data`: Type of data being exchanged (e.g., Force, Displacement, Velocity)
 - `type`: Coupling type defining the exchange interaction
   - `strong`: Tight coupling with immediate data synchronization
   - `weak`: Loose coupling with less frequent data exchange
+- `from-patch`: Source Interface Surface
+  - The physical boundary or interface region on the source participant's mesh where data is extracted.
+  - Must correspond to a defined boundary condition in the source solver.
+  - For fluids: Typically the fluid-structure interface (e.g., "interface")
+  - For solids: Typically the surface contacting the fluid (e.g., "surface")
+- `to-patch`: Target Interface Surface
+  - The physical boundary or interface region on the target participant's mesh where data will be applied.
+  - Must correspond to a defined boundary condition in the target solver.
 
 #### Optional Fields
 - `data-type`: Specifies the data representation
