@@ -170,7 +170,7 @@ class UI_UserInput(object):
                 data_names = {ex["data"] for ex in ex_list}
                 
                 # Check if any exchange has type='custom'
-                if any(ex.get('type', '').lower() == 'custom' for ex in ex_list):
+                if any(ex.get('coupling-type', '').lower() == 'custom' for ex in ex_list):
                     coupling.coupling_type = UI_CouplingType.custom
                 # Check for FSI (both force and displacement)
                 elif any("force" in name.lower() for name in data_names) and any("displacement" in name.lower() for name in data_names):
