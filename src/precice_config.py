@@ -13,7 +13,7 @@ class PreciceConfig:
 
     def init_participants(self):
         """ Initialize participants """
-        #TODO receive mesh
+        #TODO receive mesh ## Receivers must receive the sender’s mesh at their specified patch
         for exchange in self.topology.exchanges:
             for p in self.topology.participants:
                 if exchange['from'] == p.name:
@@ -24,6 +24,8 @@ class PreciceConfig:
                     # This participant is reading data
                     if exchange['data'] not in p.read_data:
                         p.read_data.append(exchange['data'])
+                    if exchange['from'] + "-Mesh" not in p.received_meshes:
+                        p.received_meshes.append(exchange['from'] + "-Mesh")
 
     def write_precice_xml_config(self, filename:str, log:UT_PCErrorLogging):
         """ This is the main entry point to write preCICE config into an XML file"""
