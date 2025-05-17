@@ -11,7 +11,7 @@ class PS_Mesh(object):
         pass
 
     def add_source_solver(self, source_solver):
-        """ Sets the cource solver that provides this mesh """
+        """ Sets the source solver that provides this mesh """
         self.source_solver = source_solver
         pass
 
