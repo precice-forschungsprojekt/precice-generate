@@ -168,11 +168,17 @@ class UI_UserInput(object):
 
                 # Determine coupling type based on exchanged data
                 data_names = {ex["data"] for ex in ex_list}
-                if any("force" in name.lower() for name in data_names) and any("displacement" in name.lower() for name in data_names):
+                
+                # Check if any exchange has type='custom'
+                if any(ex.get('type', '').lower() == 'custom' for ex in ex_list):
+                    coupling.coupling_type = UI_CouplingType.custom
+                # Check for FSI (both force and displacement)
+                elif any("force" in name.lower() for name in data_names) and any("displacement" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.fsi
+                # Check for F2S (only force)
                 elif any("force" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.f2s
-                # elif any("temperature" in name.lower() or "heat" in name.lower() for name in data_names):
+                # Check for CHT (temperature or heat)
                 elif any("temperature" in name.lower() for name in data_names):
                     coupling.coupling_type = UI_CouplingType.cht
                 else:

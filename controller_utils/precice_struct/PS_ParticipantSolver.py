@@ -160,3 +160,32 @@ class PS_ParticipantSolver(object):
         self.solver_domain = SolverDomain.Solid
         self.nature = SolverNature.TRANSIENT
         pass
+
+    def make_participant_custom(self, conf, boundary_code1: str, boundary_code2: str, other_solver_name: str):
+        """ 
+        Makes a custom participant based on the exact exchange configuration.
+        Only adds quantities that are explicitly defined in the exchanges.
+        """
+        # Initialize read and write data lists
+        read_data = []
+        write_data = []
+        
+        # Check all exchanges involving this participant and the other solver
+        for exchange in conf.exchanges:
+            if exchange['from'] == self.name and exchange['to'] == other_solver_name:
+                # This participant is the source, so it writes this data
+                if exchange['data'] not in write_data:
+                    write_data.append(exchange['data'])
+            elif exchange['to'] == self.name and exchange['from'] == other_solver_name:
+                # This participant is the target, so it reads this data
+                if exchange['data'] not in read_data:
+                    read_data.append(exchange['data'])
+        
+        # Add the quantities for coupling
+        self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
+                                      read_data, write_data)
+        
+        # Set the solver domain and nature
+        self.solver_domain = SolverDomain.Solid  # Default, can be overridden if needed
+        self.nature = SolverNature.TRANSIENT
+        pass

@@ -6,6 +6,7 @@ class UI_CouplingType(Enum):
     fsi = 0
     cht = 1
     f2s = 2
+    custom = 3
     error_coupling = -1
 
 class UI_Coupling(object):
@@ -40,6 +41,10 @@ class UI_Coupling(object):
         elif name_coupling == "cht":
             # conjugate heat transfer -> there we also have fluid and structure
             self.coupling_type = UI_CouplingType.cht
+            pass
+        elif name_coupling == "custom":
+            # custom coupling
+            self.coupling_type = UI_CouplingType.custom
             pass
         else:
             # Throw an error
