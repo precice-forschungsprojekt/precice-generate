@@ -1,18 +1,19 @@
-from controller_utils.ui_struct.UI_UserInput import UI_UserInput
+from pathlib import Path
+
+import json
+import jsonschema
+import yaml
+
 from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 from controller_utils.precice_struct import PS_PreCICEConfig
-
-from .structure_handler import StructureHandler
-from .logger import Logger
-from .adapter_config_generator import AdapterConfigGenerator
-from .format_precice_config import PrettyPrinter
-from .other_files_generator import OtherFilesGenerator
+from controller_utils.ui_struct.UI_UserInput import UI_UserInput
 from .config_generator import ConfigGenerator
+from .format_precice_config import PrettyPrinter
+from .logger import Logger
+from .other_files_generator import OtherFilesGenerator
 from .readme_generator import ReadmeGenerator
+from .structure_handler import StructureHandler
 
-from pathlib import Path
-import yaml
-import jsonschema, json
 
 class FileGenerator:
     def __init__(self, input_file: Path, output_path: Path) -> None:
@@ -36,7 +37,7 @@ class FileGenerator:
         self.config_generator.generate_precice_config(self)
         self.readme_generator.generate_readme(self)
     
-    def _extract_participants(self) -> list[str]:
+    def _extract_participants(self) -> list[str] | None:
         """Extracts the participants from the topology.yaml file."""
         try:
             with open(self.input_file, "r") as config_file:
@@ -44,10 +45,10 @@ class FileGenerator:
                 self.logger.info(f"Input YAML file: {self.input_file}")
         except FileNotFoundError:
             self.logger.error(f"Input YAML file {self.input_file} not found.")
-            return
+            return None
         except Exception as e:
             self.logger.error(f"Error reading input YAML file: {str(e)}")
-            return
+            return None
         
         # Extract participant names from the new list format
         return [participant['name'] for participant in config.get('participants', [])]
@@ -92,7 +93,8 @@ class FileGenerator:
                         self.logger.warning(warning)
         self.logger.print_all()
 
-    def validate_topology(self, args):
+    @staticmethod
+    def validate_topology(args):
         """Validate the topology.yaml file against the JSON schema."""
         if args.validate_topology:
             with open(Path(__file__).parent.parent / "schemas" / "topology-schema.json") as schema_file:
