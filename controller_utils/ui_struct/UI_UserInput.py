@@ -36,6 +36,7 @@ class UI_UserInput(object):
             self.sim_info.accuracy = simulation_info.get("accuracy")
             self.sim_info.display_standard_values = simulation_info.get('display_standard_values', 'false')
             self.sim_info.coupling = simulation_info.get("coupling", "parallel")
+            self.sim_info.coupling_provided = "coupling" in simulation_info
 
             # Initialize coupling type+ acceleration to None
             self.coupling_type = None
