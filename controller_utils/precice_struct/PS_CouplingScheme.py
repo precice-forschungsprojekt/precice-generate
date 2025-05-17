@@ -136,16 +136,16 @@ class PS_CouplingScheme(object):
 class PS_ExplicitCoupling(PS_CouplingScheme):
     """ Explicit coupling scheme """
     def __init__(self):
-        self.NrTimeStep = -1
-        self.Dt = 1E-4
+        self.max_time = -1
+        self.time_window_size = 1E-4
         pass
 
     def initFromUI(self, ui_config: UI_UserInput, conf):  # conf : PS_PreCICEConfig
         # call theinitialization from the UI data structures
         super(PS_ExplicitCoupling, self).init_from_UI(ui_config, conf)
-        simulation_conf = ui_config.sim_info
-        self.NrTimeStep = simulation_conf.NrTimeStep
-        self.Dt = simulation_conf.Dt
+        simulation_conf = ui_config
+        self.max_time = simulation_conf.max_time
+        self.time_window_size = simulation_conf.time_window_size
         self.display_standard_values = simulation_conf.display_standard_values
         self.coupling = simulation_conf.coupling
         pass
@@ -155,18 +155,18 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
         coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-explicit" )
         config.coupling_scheme = coupling_scheme
         if str(self.display_standard_values).lower() == 'true':
-            if self.NrTimeStep is None:
-                self.NrTimeStep = 1e-3
-            if self.Dt is None:
-                self.Dt = 1e-3
-            i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
-            attr = { "value": str(self.Dt)}
+            if self.max_time is None:
+                self.max_time = 1e-3
+            if self.time_window_size is None:
+                self.time_window_size = 1e-3
+            i = etree.SubElement(coupling_scheme, "max-time", value=str(self.max_time))
+            attr = { "value": str(self.time_window_size)}
             i = etree.SubElement(coupling_scheme, "time-window-size", attr)
         else:
-            if self.NrTimeStep is not None:
-                i = etree.SubElement(coupling_scheme, "max-time", value=str(self.NrTimeStep))
-            if self.Dt is not None:
-                attr = { "value": str(self.Dt)}
+            if self.max_time is not None:
+                i = etree.SubElement(coupling_scheme, "max-time", value=str(self.max_time))
+            if self.time_window_size is not None:
+                attr = { "value": str(self.time_window_size)}
                 i = etree.SubElement(coupling_scheme, "time-window-size", attr)
 
         # write out the exchange but not the convergence (if empty it will not be written)
@@ -179,8 +179,8 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
 
         # TODO: define here only implicit coupling specific measures
 
-        self.NrTimeStep = -1
-        self.Dt = 1E-4
+        self.max_time = -1
+        self.time_window_size = 1E-4
         self.maxIteration = 50
         self.relativeConverganceEps = 1E-4
         self.extrapolation_order = 2
@@ -196,10 +196,10 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         # later do delte some quantities from the list?
         self.acceleration.post_process_quantities = conf.coupling_quantities
 
-        simulation_conf = ui_config.sim_info
+        simulation_conf = ui_config
 
-        self.NrTimeStep = simulation_conf.NrTimeStep
-        self.Dt = simulation_conf.Dt
+        self.max_time = simulation_conf.max_time
+        self.time_window_size = simulation_conf.time_window_size
         self.maxIteration = simulation_conf.max_iterations
         self.display_standard_values = simulation_conf.display_standard_values
         self.coupling = simulation_conf.coupling
@@ -214,22 +214,22 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         config.coupling_scheme = coupling_scheme
 
         if str(self.display_standard_values).lower() == 'true':
-            if self.NrTimeStep is None:
-                self.NrTimeStep = 1e-3
-            if self.Dt is None:
-                self.Dt = 1e-3
+            if self.max_time is None:
+                self.max_time = 1e-3
+            if self.time_window_size is None:
+                self.time_window_size = 1e-3
             if self.maxIteration is None:
                 self.maxIteration = 50
-            i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
-            attr = { "value": str(self.Dt)}
+            i = etree.SubElement(coupling_scheme, "max-time", value = str(self.max_time))
+            attr = { "value": str(self.time_window_size)}
             i = etree.SubElement(coupling_scheme, "time-window-size", attr)
             i = etree.SubElement(coupling_scheme, "max-iterations", value=str(self.maxIteration))
             #i = etree.SubElement(coupling_scheme, "extrapolation-order", value=str(self.extrapolation_order))
         else:
-            if self.NrTimeStep is not None:
-                i = etree.SubElement(coupling_scheme, "max-time", value = str(self.NrTimeStep))
-            if self.Dt is not None:
-                attr = { "value": str(self.Dt)}
+            if self.max_time is not None:
+                i = etree.SubElement(coupling_scheme, "max-time", value = str(self.max_time))
+            if self.time_window_size is not None:
+                attr = { "value": str(self.time_window_size)}
                 i = etree.SubElement(coupling_scheme, "time-window-size", attr)
             if self.maxIteration is not None:
                 i = etree.SubElement(coupling_scheme, "max-iterations", value=str(self.maxIteration))
