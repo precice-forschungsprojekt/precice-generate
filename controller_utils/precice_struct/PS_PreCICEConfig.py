@@ -18,7 +18,7 @@ class PS_PreCICEConfig(object):
         # here we enlist all the solvers including their meshes
         self.solvers = {} # empty dictionary with the solvers
         self.meshes = {} # dictionary with the meshes of the coupling scenario
-        self.coupling_quantities = {} # ditionary with the coupling quantities
+        self.coupling_quantities = {} # dictionary with the coupling quantities
         self.exchanges = []    # list to store full exchange details
         self.mappings_read = []
         self.mappings_write = []
@@ -62,7 +62,7 @@ class PS_PreCICEConfig(object):
     def get_mesh_by_name(self, mesh_name: str):
         """ returns the mesh specified by name """
         # VERY IMPORTANT: the naming convention of the mesh !!!
-        # Therefore the mesh name should be constructed only by the methods from this class
+        # Therefore, the mesh name should be constructed only by the methods from this class
         if mesh_name in self.meshes:
             return self.meshes[mesh_name]
         # create a new mesh and add it to the dictionary
@@ -256,7 +256,7 @@ class PS_PreCICEConfig(object):
             self.solver_provide_meshes[solver_name] = []
             self.solver_receive_meshes[solver_name] = []
 
-            # there are more then one meshes per participant
+            # there are more than one meshes per participant
             for solvers_mesh_name in solver.meshes:
                 # print("Mesh=", solvers_mesh_name)
                 solver_mesh_tag = etree.SubElement(solver_tag,
@@ -377,7 +377,7 @@ class PS_PreCICEConfig(object):
                 pass
 
         # 4 coupling scheme
-        # TODO: later this migh be more complex !!!
+        # TODO: later this might be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
 
         # Validate mesh exchanges for convergence measures
