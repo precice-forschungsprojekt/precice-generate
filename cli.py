@@ -7,9 +7,8 @@ def parse_args():
     parser.add_argument(
         "-f", "--input-file", 
         type=Path, 
-        required=False, 
-        help="Input topology.yaml file",
-        default=Path("examples/1/topology.yaml")
+        required=True,
+        help="Input topology.yaml file"
     )
     parser.add_argument(
         "-o", "--output-path",
