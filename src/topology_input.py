@@ -1,5 +1,8 @@
 from pathlib import Path
 import yaml
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # Add parent directory to Python path
 from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 from participant import Participant
 
@@ -29,7 +32,7 @@ class TopologyInput:
         exchanges = etree["exchanges"]
 
         ##Coupling scheme
-        self.sim_info.coupling = coupling_scheme.get("coupling", "parallel") #independent of standard value
+        self.coupling = coupling_scheme.get("coupling", "parallel") #independent of standard value
         #standard value handling
         if coupling_scheme.get('display_standard_values', 'false').lower() == 'true':
             # mylog.rep_info("Display standard values is enabled.")            
@@ -92,7 +95,8 @@ class TopologyInput:
         if "acceleration" in etree:
             acceleration = etree["acceleration"]
             if acceleration.get("display_standard_values").lower() not in ['true', 'false']:
-                mylog.rep_error(f"Invalid display_standard_values value: {acceleration.get("display_standard_values").lower()}. Must be 'true' or 'false'.")
+                mylog.rep_error("Invalid display_standard_values value: " + acceleration.get("display_standard_values").lower() + ". Must be 'true' or 'false'.")
+                # print("Invalid display_standard_values value: " + acceleration.get("display_standard_values").lower() + ". Must be 'true' or 'false'.")
 
             if acceleration.get("display_standard_values", "false").lower() == "true":
                 self.acceleration = {key: value for key, value in {

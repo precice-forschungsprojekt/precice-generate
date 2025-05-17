@@ -4,6 +4,7 @@ from participant import Participant
 from mesh import Mesh
 from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 import yaml
+from pathlib import Path
 
 
 def generate_precice_config(topology_file: str, output_file: str):
@@ -46,7 +47,8 @@ def generate_precice_config(topology_file: str, output_file: str):
         return True
         
     except Exception as e:
-        log.rep_error(f"Error during configuration generation: {str(e)}")
+        # log.rep_error(f"Error during configuration generation: {str(e)}")
+        print(f"Error during configuration generation: {str(e)}")
         return False
 
 
@@ -54,8 +56,8 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description="Generate preCICE configuration from topology YAML")
-    parser.add_argument("-i", "--input", required=True, help="Path to topology YAML file", default=Path("examples/5/topology.yaml"))
-    parser.add_argument("-o", "--output", required=True, help="Path to output XML configuration file", default=Path(__file__).parent)
+    parser.add_argument("-i", "--input", required=False, help="Path to topology YAML file", default=Path("examples/5/topology.yaml"))
+    parser.add_argument("-o", "--output", required=False, help="Path to output XML configuration file", default=Path(__file__).parent)
     
     args = parser.parse_args()
     
