@@ -36,7 +36,7 @@ def generate_precice_config(topology_file: str, output_file: str):
 
         print("Participants:")
         for participant in config.topology.participants:
-            print(f"- {participant.name} (solver: {participant.solver}, dimensionality: {participant.dimensionality}, write_data: {participant.write_data}, read_data: {participant.read_data})")
+            print(f"- {participant.name} (solver: {participant.solver}, dimensionality: {participant.dimensionality}, write_data: {participant.write_data}, read_data: {participant.read_data}, provided_meshes: {participant.provided_meshes}, received_meshes: {participant.received_meshes})")
         
         # Write preCICE XML configuration
         config.write_precice_xml_config(output_file, log)
