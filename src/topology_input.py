@@ -91,7 +91,7 @@ class TopologyInput:
         ##Acceleration
         if "acceleration" in etree:
             acceleration = etree["acceleration"]
-            if acceleration.get("display_standard_values", "false").lower() not in ['true', 'false']:
+            if acceleration.get("display_standard_values").lower() not in ['true', 'false']:
                 mylog.rep_error(f"Invalid display_standard_values value: {acceleration.get("display_standard_values").lower()}. Must be 'true' or 'false'.")
 
             if acceleration.get("display_standard_values", "false").lower() == "true":

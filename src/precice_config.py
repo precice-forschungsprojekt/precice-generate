@@ -8,6 +8,7 @@ class PreciceConfig:
     def __init__(self):
         """ Ctor """
         self.topology = TopologyInput()
+        self.meshes = {}
         pass
 
     def init_participants(self):
