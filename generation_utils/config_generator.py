@@ -1,5 +1,5 @@
 import yaml
-from pathlib import Path
+
 
 class ConfigGenerator:
     @staticmethod
@@ -24,7 +24,7 @@ class ConfigGenerator:
         # Check if the topology YAML file is UTF-8 encoded
         topology_file_path = file_generator.input_file
         logger = file_generator.logger
-        
+
         if not self.is_utf8_encoded(topology_file_path):
             logger.error(f"Input YAML file {topology_file_path} is not UTF-8 encoded.")
             return None
@@ -54,13 +54,13 @@ class ConfigGenerator:
         # Set the target of the file and write out to it
         structure = file_generator.structure
         target = str(structure.precice_config)
-        
+
         try:
             logger.info(f"Writing preCICE config to {target}...")
             precice_config.write_precice_xml_config(
-                target, 
-                file_generator.mylog, 
-                sync_mode=user_ui.sim_info.sync_mode, 
+                target,
+                file_generator.mylog,
+                sync_mode=user_ui.sim_info.sync_mode,
                 mode=user_ui.sim_info.mode
             )
         except Exception as e:

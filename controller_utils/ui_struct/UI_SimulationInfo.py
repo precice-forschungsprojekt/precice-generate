@@ -3,7 +3,7 @@ from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 class UI_SimulationInfo(object):
     """
     This class contains information on the user input level regarding the
-    general simulation informations
+    general simulation information
     """
     def __init__(self):
         """The constructor."""

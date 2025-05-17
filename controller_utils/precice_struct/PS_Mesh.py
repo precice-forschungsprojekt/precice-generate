@@ -11,7 +11,7 @@ class PS_Mesh(object):
         pass
 
     def add_source_solver(self, source_solver):
-        """ Sets the cource solver that provides this mesh """
+        """ Sets the source solver that provides this mesh """
         self.source_solver = source_solver
         pass
 
@@ -22,12 +22,11 @@ class PS_Mesh(object):
 
     def add_quantity(self, quantity: QuantityCouple):
         """ adds a quantity for coupling """
-        #print(" add_quantity to Mesh ", self.name, " ", quantity.instance_name)
         self.quantities[quantity.instance_name] = quantity
         pass
 
     def get_solver(self, solver_name:str):
-        """  returns the solver """
+        """ returns the solver """
         if solver_name in self.list_of_solvers:
             return self.list_of_solvers[solver_name]
         else:

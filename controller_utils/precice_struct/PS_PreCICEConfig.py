@@ -18,7 +18,7 @@ class PS_PreCICEConfig(object):
         # here we enlist all the solvers including their meshes
         self.solvers = {} # empty dictionary with the solvers
         self.meshes = {} # dictionary with the meshes of the coupling scenario
-        self.coupling_quantities = {} # ditionary with the coupling quantities
+        self.coupling_quantities = {} # dictionary with the coupling quantities
         self.exchanges = []    # list to store full exchange details
         self.mappings_read = []
         self.mappings_write = []
@@ -27,7 +27,7 @@ class PS_PreCICEConfig(object):
         self.exchange_mesh_names = []
         pass
 
-    def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
+    def get_coupling_quantity(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
         """ returns the coupling quantity specified by name,
         the name is a combination of mesh_name + quantity name """
         # there could be more than one pressure or temperature therefore we
@@ -62,7 +62,7 @@ class PS_PreCICEConfig(object):
     def get_mesh_by_name(self, mesh_name: str):
         """ returns the mesh specified by name """
         # VERY IMPORTANT: the naming convention of the mesh !!!
-        # Therefore the mesh name should be constructed only by the methods from this class
+        # Therefore, the mesh name should be constructed only by the methods from this class
         if mesh_name in self.meshes:
             return self.meshes[mesh_name]
         # create a new mesh and add it to the dictionary
@@ -116,8 +116,8 @@ class PS_PreCICEConfig(object):
         max_coupling_value = 100
         for coupling in user_input.couplings:
             # for all couplings, configure the solvers properly
-            participant1_name = coupling.partitcipant1.name
-            participant2_name = coupling.partitcipant2.name
+            participant1_name = coupling.participant1.name
+            participant2_name = coupling.participant2.name
             participant1_solver = self.solvers[participant1_name]
             participant2_solver = self.solvers[participant2_name]
             max_coupling_value = min(max_coupling_value, coupling.coupling_type.value)
@@ -256,7 +256,7 @@ class PS_PreCICEConfig(object):
             self.solver_provide_meshes[solver_name] = []
             self.solver_receive_meshes[solver_name] = []
 
-            # there are more then one meshes per participant
+            # there are more than one meshes per participant
             for solvers_mesh_name in solver.meshes:
                 # print("Mesh=", solvers_mesh_name)
                 solver_mesh_tag = etree.SubElement(solver_tag,
@@ -377,7 +377,7 @@ class PS_PreCICEConfig(object):
                 pass
 
         # 4 coupling scheme
-        # TODO: later this migh be more complex !!!
+        # TODO: later this might be more complex !!!
         self.couplingScheme.write_precice_xml_config(precice_configuration_tag, self)
 
         # Validate mesh exchanges for convergence measures

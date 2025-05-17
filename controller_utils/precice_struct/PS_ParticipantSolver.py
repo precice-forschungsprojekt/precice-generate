@@ -29,11 +29,14 @@ class SolverNature(Enum):
     TRANSIENT = 1
 
 class PS_ParticipantSolver(object):
-    """Class to represent a participat in the preCICE data structure """
+    """Class to represent a participant in the preCICE data structure """
+
+    dim: SolverDimension
+    dimensionality: int
 
     # TODO: one solver might have more than one couplings!!!
 
-    def __init__(self, participant: UI_Participant, coupling: UI_Coupling, conf ): # conf:PS_PreCICEConfig
+    def __init__(self, participant: UI_Participant, coupling: UI_Coupling, conf): # conf:PS_PreCICEConfig
         """ Ctor """
         self.solver_domain = SolverDomain.NotDefined
         
@@ -44,22 +47,27 @@ class PS_ParticipantSolver(object):
         self.quantities_read = {}  # list of quantities that are read by this solver
         self.quantities_write = {} # list of quantities that are writen by this solver
 
-        self.meshes = {} # we have each mesh for each couling
+        self.meshes = {} # we have each mesh for each coupling
         self.coupling_participants = {} # for each coupling we also store the name of the participant
 
-        self.solver_name = participant.solverName
+        self.solver_name = participant.solver_name
         self.name = participant.name
 
         pass
 
     def set_dimensionality(self, dim: int):
         """ sets the dimensionality of the solver """
+        if dim == 1:
+            self.dim = SolverDimension.p1D
+            self.dimensionality = 1
         if dim == 2:
             self.dim = SolverDimension.p2D
             self.dimensionality = 2
-        else:
+        elif dim == 3:
             self.dim = SolverDimension.p3D
             self.dimensionality = 3
+        else:
+            raise Exception(f"dimensionality must be 1, 2 or 3")
 
     def create_mesh_for_coupling(self, conf, other_solver_name:str):
         """ generates the mesh for the coupling """
@@ -84,21 +92,21 @@ class PS_ParticipantSolver(object):
             if exchange['from'] == self.name:
                 # This participant is writing data
                 if exchange['data'] in w_list:
-                    w = conf.get_coupling_quantitiy(exchange['data'], source_mesh_name, boundary_code2, self, True)
+                    w = conf.get_coupling_quantity(exchange['data'], source_mesh_name, boundary_code2, self, True)
                     conf.add_quantity_to_mesh(other_mesh_name, w)
                     conf.add_quantity_to_mesh(source_mesh_name, w)
                     self.quantities_write[w.instance_name] = w
             elif exchange['to'] == self.name:
                 # This participant is reading data
                 if exchange['data'] in r_list:
-                    r = conf.get_coupling_quantitiy(exchange['data'], other_mesh_name, boundary_code1, self, False)
+                    r = conf.get_coupling_quantity(exchange['data'], other_mesh_name, boundary_code1, self, False)
                     conf.add_quantity_to_mesh(other_mesh_name, r)
                     conf.add_quantity_to_mesh(source_mesh_name, r)
                     self.quantities_read[r.instance_name] = r
         pass
 
     def make_participant_fsi_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
-        """ This method should setup the participant as a fluid solver for FSI """
+        """ This method should set up the participant as a fluid solver for FSI """
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["Displacement"], ["Force"])
         # set the type of the solver/participant
@@ -107,7 +115,7 @@ class PS_ParticipantSolver(object):
         pass
 
     def make_participant_fsi_structure(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
-        """ This method should setup the participant as a structure solver for FSI """
+        """ This method should set up the participant as a structure solver for FSI """
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["Force"], ["Displacement"])
         # set the type of the participant
@@ -116,7 +124,7 @@ class PS_ParticipantSolver(object):
         pass
 
     def make_participant_f2s_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
-        """ This method should setup the participant as a fluid solver for F2S """
+        """ This method should set up the participant as a fluid solver for F2S """
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     [], ["Force"])
         # set the type of the solver/participant
@@ -125,7 +133,7 @@ class PS_ParticipantSolver(object):
         pass
 
     def make_participant_f2s_structure(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
-        """ This method should setup the participant as a structure solver for F2S """
+        """ This method should set up the participant as a structure solver for F2S """
         self.add_quantities_for_coupling(conf, boundary_code1, boundary_code2, other_solver_name,
                                     ["Force"], [])
         # set the type of the participant
