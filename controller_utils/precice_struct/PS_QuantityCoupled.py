@@ -14,7 +14,7 @@ class QuantityCouple(object):
         self.source_mesh_name = "None" # the source mesh name
         self.mapping_string = "ERROR" # conservative or consistent
         self.dim = 3 # the dimension of the quantity
-        self.is_consistent = True # True if this quantity is consistent Falso if it is conservative
+        self.is_consistent = True # True if this quantity is consistent False if it is conservative
         pass
 
 
@@ -33,13 +33,13 @@ def get_quantity_object(name:str, bc:str, instance_name:str):
         ret = Temperature()
     if name.startswith("HeatTransfer"):
         ret = HeatTransfer()
-    if ret == None:
+    if ret is None:
         # TODO: report error
         return QuantityCouple()
     else:
         # set the boundary code at the source solver
         ret.BC = bc
-        # the instance name is like "InnerSolver-Pressure" (a combination of solver name and quaantity name)
+        # the instance name is like "InnerSolver-Pressure" (a combination of solver name and quantity name)
         # print(" Instance Name = ",instance_name)
         ret.instance_name = instance_name
         return ret
