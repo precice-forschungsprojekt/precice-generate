@@ -10,6 +10,19 @@ class PreciceConfig:
         self.topology = TopologyInput()
         pass
 
+    def init_participants(self):
+        """ Initialize participants """
+        for exchange in self.topology.exchanges:
+            for p in self.topology.participants:
+                if exchange['from'] == p.name:
+                    # This participant is writing data
+                    if exchange['data'] not in p.write_data:
+                        p.write_data.append(exchange['data'])
+                elif exchange['to'] == p.name:
+                    # This participant is reading data
+                    if exchange['data'] not in p.read_data:
+                        p.read_data.append(exchange['data'])
+
     def write_precice_xml_config(self, filename:str, log:UT_PCErrorLogging):
         """ This is the main entry point to write preCICE config into an XML file"""
         # create the root element
