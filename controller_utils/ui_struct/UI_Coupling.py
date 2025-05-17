@@ -52,42 +52,40 @@ class UI_Coupling(object):
             # TODO: we should all all of this to a singel list
             participants_loop = { "fluid" : etree["fluid"]}
             participants_loop.update({ "structure" : etree["structure"] } )
-            # print(" participants: ", participants_loop)
 
             # VERY IMPORTANT: we sort here the keys alphabetically!!!
             # this is an important assumption also in other parts of the code, that the participant1
             # and participant2 are in alphabetical order. example 1) fluid 2) structure at fsi
             for participant_name in sorted(participants_loop):
 
-                participant = participants_loop[participant_name]
-                # print("participant name=", participant_name)
-                # print("participant data=", participant)
-                participant_real_name = participant["name"]
-                participant_interface = participant["interface"]
-                partitcip = participants[participant_real_name]
-                partitcip.solver_domain = participant_name # this might be fuild or structure or something else
+                participant_el = participants_loop[participant_name]
+                participant_real_name = participant_el["name"]
+                participant_interface = participant_el["interface"]
+
+                participant = participants[participant_real_name]
+                participant.solver_domain = participant_name # this might be fuild or structure or something else
                 # add only to the first participant the coupling
-                partitcip.list_of_couplings.append(self)
+                participant.list_of_couplings.append(self)
                 # now link this to one of the participants
-                if self.participant1 == None:
-                    self.participant1 = partitcip
+                if self.participant1 is None:
+                    self.participant1 = participant
                     self.boundaryC1 = participant_interface
                 else:
-                    self.participant2 = partitcip
+                    self.participant2 = participant
                     self.boundaryC2 = participant_interface
 
         except:
             mylog.rep_error("Error in YAML initialization of the Coupling name=" + name_coupling + " data:")
         pass
 
-    def get_first_boundary_code(self, solverName: str):
+    def get_first_boundary_code(self, solver_name: str):
         """Returns the first boundary code with respect to the solver name """
-        if solverName == self.participant1.name:
+        if solver_name == self.participant1.name:
             return self.boundaryC1
         return self.boundaryC2
 
-    def get_second_boundary_code(self, solverName: str):
+    def get_second_boundary_code(self, solver_name: str):
         """Returns the second boundary code with respect to the solver name """
-        if solverName != self.participant1.name:
+        if solver_name != self.participant1.name:
             return self.boundaryC1
         return self.boundaryC2
