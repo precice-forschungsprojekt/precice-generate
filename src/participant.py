@@ -3,3 +3,8 @@ class Participant:
         self.name = name
         self.solver = solver
         self.dimensionality = dimensionality
+        self.provided_meshes = []
+        self.received_meshes = []
+        self.write_data = []
+        self.read_data = []
+        self.mappings = []
