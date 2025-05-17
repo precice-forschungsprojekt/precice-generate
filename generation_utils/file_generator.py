@@ -74,8 +74,8 @@ class FileGenerator:
         try:
             printer.prettify_file(precice_config_path)
             self.logger.success(f"Successfully prettified preCICE configuration XML")
-        except Exception as prettifyException:
-            self.logger.error("An error occurred during XML prettification: ", prettifyException)
+        except Exception as prettify_exception:
+            self.logger.error("An error occurred during XML prettification: " + str(prettify_exception))
             
     def handle_output(self, args):
         """
