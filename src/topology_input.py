@@ -46,17 +46,12 @@ class TopologyInput:
 
         ##Participants
         for participant in participants:
-            new_participant = Participant()
     
             if isinstance(participant, dict):                
-                if name is None:
+                if participant.get("name") is None:
                     mylog.rep_error(f"Participant missing 'name' key: {participant}")
                     break
-                
-                new_participant.name = participant.get("name")
-                new_participant.solver = participant.get("solver")
-                new_participant.dimensionality = participant.get("dimensionality", 3)
-            
+                new_participant = Participant(participant.get("name"), participant.get("solver"), participant.get("dimensionality", 3))
             else:
                 # Unsupported format
                 mylog.rep_error(f"Unsupported participant configuration: {participant}")
