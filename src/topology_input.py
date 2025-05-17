@@ -61,6 +61,8 @@ class TopologyInput:
 
         ##Exchanges
         self.exchanges = exchanges
+
+        
         #implicit explicit handling
         exchange_types = [exchange.get('type') for exchange in exchanges if 'type' in exchange]
         if exchange_types:
