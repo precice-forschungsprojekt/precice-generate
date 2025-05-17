@@ -1,5 +1,6 @@
 from topology_input import TopologyInput
 import xml.etree.ElementTree as etree
+from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
 
 class PreciceConfig:
     """Class to represent the preCICE configuration."""
