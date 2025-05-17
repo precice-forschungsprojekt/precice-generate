@@ -9,6 +9,7 @@ class TopologyInput:
     def __init__(self):
         self.participants = {}
         self.coupling_type = None
+        self.acceleration = None
 
     def create_etree(self, etree, mylog: UT_PCErrorLogging) -> dict:
         """Create a etreeuration dictionary from the topology YAML file."""
@@ -23,10 +24,6 @@ class TopologyInput:
         coupling_scheme = etree["coupling-scheme"]
         participants = etree["participants"]
         exchanges = etree["exchanges"]
-
-        if "acceleration" in etree:
-            acceleration = etree["acceleration"]
-
 
         ##Coupling scheme
         self.sim_info.coupling = coupling_scheme.get("coupling", "parallel") #independent of standard value
@@ -80,3 +77,73 @@ class TopologyInput:
             self.coupling_type = 'implicit'
         elif self.coupling_type == 'weak':
             self.coupling_type = 'explicit'
+        
+        ##Acceleration
+        if "acceleration" in etree:
+            acceleration = etree["acceleration"]
+            if acceleration.get("display_standard_values", "false").lower() not in ['true', 'false']:
+                mylog.rep_error(f"Invalid display_standard_values value: {acceleration.get("display_standard_values").lower()}. Must be 'true' or 'false'.")
+
+            if acceleration.get("display_standard_values", "false").lower() == "true":
+                self.acceleration = {
+                        'name': acceleration.get('name', 'IQN-ILS'),
+                        'initial-relaxation': {
+                            'value': acceleration.get('initial-relaxation', {}).get('value', 0.1),
+                            'enforce': acceleration.get('initial-relaxation', {}).get('enforce', 'false')
+                        },
+                        'preconditioner': {
+                            'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
+                            'type': acceleration.get('preconditioner', {}).get('type', None)
+                        },
+                        'filter': {
+                            'limit': acceleration.get('filter', {}).get('limit', 1e-16),
+                            'type': acceleration.get('filter', {}).get('type', None)
+                        },
+                        'max-used-iterations': acceleration.get('max-used-iterations', None),
+                        'time-windows-reused': acceleration.get('time-windows-reused', None),
+                        'imvj-restart-mode': {
+                            'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
+                            'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
+                            'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
+                            'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
+                        }if any(acceleration.get('imvj-restart-mode', {}).values()) else None,
+                        'display_standard_values': acceleration.get('display_standard_values', 'false')
+                    }
+            else:
+                self.acceleration = {
+                    'name': acceleration.get('name', 'IQN-ILS'),
+                    'initial-relaxation': acceleration.get('initial-relaxation', None),
+                    'preconditioner': {
+                        'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', None),
+                        'type': acceleration.get('preconditioner', {}).get('type', None)
+                    } if any(acceleration.get('preconditioner', {}).values()) else None,
+                    'initial-relaxation': {
+                        'value': acceleration.get('initial-relaxation', {}).get('value', None),
+                        'enforce': acceleration.get('initial-relaxation', {}).get('enforce', None)
+                    } if any(acceleration.get('initial-relaxation', {}).values()) else None,
+                    'filter': {
+                        'limit': acceleration.get('filter', {}).get('limit', None),
+                        'type': acceleration.get('filter', {}).get('type', None)
+                    } if any(acceleration.get('filter', {}).values()) else None,
+                    'max-used-iterations': acceleration.get('max-used-iterations', None),
+                    'time-windows-reused': acceleration.get('time-windows-reused', None),
+                    'imvj-restart-mode': {
+                        'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
+                        'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
+                        'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
+                        'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
+                    } if any(acceleration.get('imvj-restart-mode', {}).values()) else None,
+                    'display_standard_values': acceleration.get('display_standard_values', 'false')
+                }
+
+
+
+    # def create_coupling_scheme(self, mylog: UT_PCErrorLogging):
+    #     """Create a coupling scheme based on the coupling type."""
+    #     if self.coupling_type == 'implicit':
+    #         self.coupling_scheme = CouplingSchemeImplicit()
+    #     elif self.coupling_type == 'explicit':
+    #         self.coupling_scheme = CouplingSchemeExplicit()
+    #     else:
+    #         mylog.rep_error(f"Invalid coupling type: {self.coupling_type}. Must be 'implicit' or 'explicit'.")
+    #         self.coupling_scheme = None
