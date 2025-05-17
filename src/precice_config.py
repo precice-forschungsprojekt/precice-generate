@@ -31,3 +31,6 @@ class PreciceConfig:
     #     coupling_scheme = etree.SubElement(data, "coupling-scheme", type=self.coupling_scheme)
     #     with open(target, "w") as config_file:
     #         config_file.write(etree.tostring(root, encoding="unicode"))
+    def write_precice_xml_config(self, filename:str, log:UT_PCErrorLogging):
+        """ This is the main entry point to write preCICE config into an XML file"""
+        pass

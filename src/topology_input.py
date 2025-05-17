@@ -12,6 +12,7 @@ class TopologyInput:
         self.acceleration = None
         self.exchanges = []
         self.participants = []
+        self.data_from_exchanges = []
 
     def create_etree(self, etree, mylog: UT_PCErrorLogging) -> dict:
         """Create a etreeuration dictionary from the topology YAML file."""
@@ -58,11 +59,14 @@ class TopologyInput:
                 mylog.rep_error(f"Unsupported participant configuration: {participant}")
                 break
 
-            self.participants[new_participant.name] = new_participant
+            self.participants.append(new_participant)
 
         ##Exchanges
         self.exchanges = exchanges
-
+        for exchange in self.exchanges:
+            data_key = exchange.get("data")
+            data_type = exchange.get("data-type")
+            self.data_from_exchanges.append((data_key, data_type))
 
         #implicit explicit handling
         exchange_types = [exchange.get('type') for exchange in exchanges if 'type' in exchange]
