@@ -31,6 +31,9 @@ class SolverNature(Enum):
 class PS_ParticipantSolver(object):
     """Class to represent a participant in the preCICE data structure """
 
+    dim: SolverDimension
+    dimensionality: int
+
     # TODO: one solver might have more than one couplings!!!
 
     def __init__(self, participant: UI_Participant, coupling: UI_Coupling, conf ): # conf:PS_PreCICEConfig
@@ -54,12 +57,17 @@ class PS_ParticipantSolver(object):
 
     def set_dimensionality(self, dim: int):
         """ sets the dimensionality of the solver """
+        if dim == 1:
+            self.dim = SolverDimension.p1D
+            self.dimensionality = 1
         if dim == 2:
             self.dim = SolverDimension.p2D
             self.dimensionality = 2
-        else:
+        elif dim == 3:
             self.dim = SolverDimension.p3D
             self.dimensionality = 3
+        else:
+            raise Exception(f"dimensionality must be 1, 2 or 3")
 
     def create_mesh_for_coupling(self, conf, other_solver_name:str):
         """ generates the mesh for the coupling """
