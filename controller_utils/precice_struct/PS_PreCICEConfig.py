@@ -27,7 +27,7 @@ class PS_PreCICEConfig(object):
         self.exchange_mesh_names = []
         pass
 
-    def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
+    def get_coupling_quantity(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
         """ returns the coupling quantity specified by name,
         the name is a combination of mesh_name + quantity name """
         # there could be more than one pressure or temperature therefore we
