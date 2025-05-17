@@ -17,8 +17,8 @@ class UI_Coupling(object):
         """The constructor."""
         self.boundaryC1 = -1
         self.boundaryC2 = -1
-        self.partitcipant1 = None
-        self.partitcipant2 = None
+        self.participant1 = None
+        self.participant2 = None
         self.coupling_type = UI_CouplingType.error_coupling
         pass
 
@@ -69,11 +69,11 @@ class UI_Coupling(object):
                 # add only to the first participant the coupling
                 partitcip.list_of_couplings.append(self)
                 # now link this to one of the participants
-                if self.partitcipant1 == None:
-                    self.partitcipant1 = partitcip
+                if self.participant1 == None:
+                    self.participant1 = partitcip
                     self.boundaryC1 = participant_interface
                 else:
-                    self.partitcipant2 = partitcip
+                    self.participant2 = partitcip
                     self.boundaryC2 = participant_interface
 
         except:
@@ -82,12 +82,12 @@ class UI_Coupling(object):
 
     def get_first_boundary_code(self, solverName: str):
         """Returns the first boundary code with respect to the solver name """
-        if solverName == self.partitcipant1.name:
+        if solverName == self.participant1.name:
             return self.boundaryC1
         return self.boundaryC2
 
     def get_second_boundary_code(self, solverName: str):
         """Returns the second boundary code with respect to the solver name """
-        if solverName != self.partitcipant1.name:
+        if solverName != self.participant1.name:
             return self.boundaryC1
         return self.boundaryC2

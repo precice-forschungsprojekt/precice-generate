@@ -116,8 +116,8 @@ class PS_PreCICEConfig(object):
         max_coupling_value = 100
         for coupling in user_input.couplings:
             # for all couplings, configure the solvers properly
-            participant1_name = coupling.partitcipant1.name
-            participant2_name = coupling.partitcipant2.name
+            participant1_name = coupling.participant1.name
+            participant2_name = coupling.participant2.name
             participant1_solver = self.solvers[participant1_name]
             participant2_solver = self.solvers[participant2_name]
             max_coupling_value = min(max_coupling_value, coupling.coupling_type.value)

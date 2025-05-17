@@ -159,8 +159,8 @@ class UI_UserInput(object):
             for pair, ex_list in groups.items():
                 coupling = UI_Coupling()
                 p1_name, p2_name = pair
-                coupling.partitcipant1 = self.participants[p1_name]
-                coupling.partitcipant2 = self.participants[p2_name]
+                coupling.participant1 = self.participants[p1_name]
+                coupling.participant2 = self.participants[p2_name]
 
                 # Determine coupling type based on exchanged data
                 data_names = {ex["data"] for ex in ex_list}
@@ -180,8 +180,8 @@ class UI_UserInput(object):
                 coupling.boundaryC2 = first_ex.get("to-patch", "")
 
                 self.couplings.append(coupling)
-                coupling.partitcipant1.list_of_couplings.append(coupling)
-                coupling.partitcipant2.list_of_couplings.append(coupling)
+                coupling.participant1.list_of_couplings.append(coupling)
+                coupling.participant2.list_of_couplings.append(coupling)
 
         else:
             # --- Fallback to original parsing logic for old YAML structures ---
