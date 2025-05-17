@@ -102,18 +102,12 @@ class PS_CouplingScheme(object):
         from_s = "___"
         to_s = "__"
         exchange_mesh_name = quantity.source_mesh_name
-        data = quantity.instance_name  # Initialize data with quantity name
 
-        # Find the exchange that matches both data name and participants
         for exchange in config.exchanges:
-            if (quantity.instance_name.lower() == exchange.get('data', '').lower() and
-                ((exchange.get('from') == solver.name and exchange.get('to') == other_solver.name) or
-                (exchange.get('to') == solver.name and exchange.get('from') == other_solver.name))):
+            if quantity.instance_name.lower() == exchange.get('data').lower():
                 from_s = exchange.get('from')
                 to_s = exchange.get('to')
                 data = exchange.get('data')
-                break  # Found the correct exchange, no need to continue
-
         # Process mappings
         read_mappings = [m.copy() for m in config.mappings_read]
         write_mappings = [m.copy() for m in config.mappings_write]
@@ -137,7 +131,7 @@ class PS_CouplingScheme(object):
             if solver.name != simple_solver.name:
                 exchange_mesh_name = other_mesh_name
 
-        return exchange_mesh_name, data, from_s, to_s   
+        return exchange_mesh_name, data, from_s, to_s
 
     def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
         """Writes to the XML the exchange list"""
