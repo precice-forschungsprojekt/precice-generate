@@ -20,11 +20,10 @@ class PS_CouplingScheme(object):
         pass
 
     def write_participants_and_coupling_scheme(self, tag: etree, config, coupling_str:str, coupling_provided:bool ):
-    # def write_participants_and_coupling_scheme(self, tag: etree, config, coupling_str:str):
         """ write out the config XMl file """
 
         #only change to multi if the user has not specified what he wants
-        if len(config.solvers) <= 2 or coupling_provided:
+        if len(config.solvers) <= 2:
             # for only
             coupling_scheme = etree.SubElement(tag, "coupling-scheme:" + coupling_str)
             # print the participants, ASSUMPTION! we assume there is at least two
@@ -46,10 +45,12 @@ class PS_CouplingScheme(object):
                 i = etree.SubElement(coupling_scheme, "participants", first=mylist[1],
                                      second=mylist[0])
                 config.couplingScheme_participants = mylist[1], mylist[0]
-            
         else:
             # TODO: is "multi" good for all
-            coupling_scheme = etree.SubElement(tag, "coupling-scheme:multi")
+            if not coupling_provided:
+                coupling_scheme = etree.SubElement(tag, "coupling-scheme:multi")
+            else:
+                coupling_scheme = etree.SubElement(tag, "coupling-scheme:" + coupling_str)
             # first find the solver with the most meshes and this should be the one who controls the coupling
             nr_max_meshes = -1
             control_participant_name = "NONE"
