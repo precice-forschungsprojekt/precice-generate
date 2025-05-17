@@ -85,30 +85,35 @@ class TopologyInput:
                 mylog.rep_error(f"Invalid display_standard_values value: {acceleration.get("display_standard_values").lower()}. Must be 'true' or 'false'.")
 
             if acceleration.get("display_standard_values", "false").lower() == "true":
-                self.acceleration = {
-                        'name': acceleration.get('name', 'IQN-ILS'),
-                        'initial-relaxation': {
-                            'value': acceleration.get('initial-relaxation', {}).get('value', 0.1),
-                            'enforce': acceleration.get('initial-relaxation', {}).get('enforce', 'false')
-                        },
-                        'preconditioner': {
-                            'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
-                            'type': acceleration.get('preconditioner', {}).get('type', None)
-                        },
-                        'filter': {
-                            'limit': acceleration.get('filter', {}).get('limit', 1e-16),
-                            'type': acceleration.get('filter', {}).get('type', None)
-                        },
-                        'max-used-iterations': acceleration.get('max-used-iterations', None),
-                        'time-windows-reused': acceleration.get('time-windows-reused', None),
-                        'imvj-restart-mode': {
-                            'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
-                            'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
-                            'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
-                            'type': acceleration.get('imvj-restart-mode', {}).get('type', None)
-                        }if any(acceleration.get('imvj-restart-mode', {}).values()) else None,
-                        'display_standard_values': acceleration.get('display_standard_values', 'false')
-                    }
+                self.acceleration = {key: value for key, value in {
+                    'name': acceleration.get('name', 'IQN-ILS'),
+                    'initial-relaxation': (
+                        {'value': acceleration.get('initial-relaxation', {}).get('value', 0.1),
+                        'enforce': acceleration.get('initial-relaxation', {}).get('enforce', 'false')}
+                        if 'initial-relaxation' in acceleration else None
+                    ),
+                    'preconditioner': (
+                        {'freeze-after': acceleration.get('preconditioner', {}).get('freeze-after', -1),
+                        'type': acceleration.get('preconditioner', {}).get('type', None)}
+                        if 'preconditioner' in acceleration else None
+                    ),
+                    'filter': (
+                        {'limit': acceleration.get('filter', {}).get('limit', 1e-16),
+                        'type': acceleration.get('filter', {}).get('type', None)}
+                        if 'filter' in acceleration else None
+                    ),
+                    'max-used-iterations': acceleration.get('max-used-iterations', None) if 'max-used-iterations' in acceleration else None,
+                    'time-windows-reused': acceleration.get('time-windows-reused', None) if 'time-windows-reused' in acceleration else None,
+                    'imvj-restart-mode': (
+                        {'truncation-threshold': acceleration.get('imvj-restart-mode', {}).get('truncation-threshold', None),
+                        'chunk-size': acceleration.get('imvj-restart-mode', {}).get('chunk-size', None),
+                        'reused-time-windows-at-restart': acceleration.get('imvj-restart-mode', {}).get('reused-time-windows-at-restart', None),
+                        'type': acceleration.get('imvj-restart-mode', {}).get('type', None)}
+                        if any(acceleration.get('imvj-restart-mode', {}).values()) else None
+                    ),
+                    'display_standard_values': acceleration.get('display_standard_values', 'false')
+                }.items() if value is not None}
+
             else:
                 self.acceleration = {
                     'name': acceleration.get('name', 'IQN-ILS'),
