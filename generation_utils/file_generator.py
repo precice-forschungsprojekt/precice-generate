@@ -70,7 +70,7 @@ class FileGenerator:
         
         precice_config_path = self.structure.precice_config
         # Create an instance of PrettyPrinter.
-        printer = PrettyPrinter(indent='    ', maxwidth=120)
+        printer = PrettyPrinter(indent='    ', max_width=120)
         # Specify the path to the XML file you want to prettify.
         try:
             printer.prettify_file(precice_config_path)
