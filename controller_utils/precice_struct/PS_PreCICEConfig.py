@@ -292,9 +292,6 @@ class PS_PreCICEConfig(object):
                 used_meshes = {}
                 for q_name in solver.quantities_read:
                     q = solver.quantities_read[q_name]
-                    print("#################")
-                    print(solver.name, q_name, q.instance_name)
-                    print("#################")
                     read_tag = etree.SubElement(solver_tag,
                                                        "read-data", name=q.instance_name, mesh=solvers_mesh_name)
                     for other_solvers_name in q.list_of_solvers:
