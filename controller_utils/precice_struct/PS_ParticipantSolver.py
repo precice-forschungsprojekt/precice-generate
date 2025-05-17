@@ -36,7 +36,7 @@ class PS_ParticipantSolver(object):
 
     # TODO: one solver might have more than one couplings!!!
 
-    def __init__(self, participant: UI_Participant): # conf:PS_PreCICEConfig
+    def __init__(self, participant: UI_Participant, coupling: UI_Coupling, conf): # conf:PS_PreCICEConfig
         """ Ctor """
         self.solver_domain = SolverDomain.NotDefined
         
