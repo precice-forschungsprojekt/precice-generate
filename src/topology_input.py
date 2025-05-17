@@ -1,14 +1,13 @@
 from pathlib import Path
 import yaml
 from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
-from controller_utils.ui_struct.UI_Participant import UI_Participant
+from participant import Participant
 
 class TopologyInput:
     """Class to read a topology YAML file and extract the necessary information."""
 
-    def __init__(self, topology_path: Path):
-        """Initialize the topology input with the path to the topology YAML file."""
-        self.topology_path = topology_path
+    def __init__(self):
+        self.participants = {}
 
     def create_etree(self, etree, mylog: UT_PCErrorLogging) -> dict:
         """Create a etreeuration dictionary from the topology YAML file."""
@@ -43,25 +42,20 @@ class TopologyInput:
 
         ##Participants
         for participant in participants:
-            new_participant = UI_Participant()
+            new_participant = Participant()
     
-            # Handle new list of dictionaries format
-            if isinstance(participant, dict):
-                name = participant.get("name")
-                solver_info = participant
-                
+            if isinstance(participant, dict):                
                 if name is None:
                     mylog.rep_error(f"Participant missing 'name' key: {participant}")
-                    continue
+                    break
                 
-                new_participant.name = name
-                new_participant.solverName = solver_info.get("solver", name)
-                new_participant.dimensionality = solver_info.get("dimensionality", 3)
+                new_participant.name = participant.get("name")
+                new_participant.solver = participant.get("solver")
+                new_participant.dimensionality = participant.get("dimensionality", 3)
             
             else:
                 # Unsupported format
                 mylog.rep_error(f"Unsupported participant configuration: {participant}")
-                continue
-            
-            new_participant.list_of_couplings = []
-            self.participants[new_participant.name] = new_participant
+                break
+
+            # self.participants[new_participant.name] = new_participant
