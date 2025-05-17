@@ -77,24 +77,38 @@ class PS_ParticipantSolver(object):
         # add mesh
         source_mesh_name = conf.get_mesh_name_by_participants(self.name, other_solver_name)
         other_mesh_name = conf.get_mesh_name_by_participants(other_solver_name, self.name)
-        self.create_mesh_for_coupling(conf, other_solver_name )
+        self.create_mesh_for_coupling(conf, other_solver_name)
+        
+        # Track which quantities we've already processed to avoid duplicates
+        processed_write_quantities = set()
+        processed_read_quantities = set()
         
         # Determine reading and writing quantities based on exchanges
         for exchange in conf.exchanges:
-            if exchange['from'] == self.name:
-                # This participant is writing data
-                if exchange['data'] in w_list:
-                    w = conf.get_coupling_quantitiy(exchange['data'], source_mesh_name, boundary_code2, self, True)
+            # Only process exchanges that involve both this participant and the other_solver_name
+            if not ((exchange['from'] == self.name and exchange['to'] == other_solver_name) or 
+                   (exchange['from'] == other_solver_name and exchange['to'] == self.name)):
+                continue
+                
+            if exchange['from'] == self.name and exchange['to'] == other_solver_name:
+                # This participant is writing data to the other solver
+                data_name = exchange['data']
+                if data_name in w_list and data_name not in processed_write_quantities:
+                    w = conf.get_coupling_quantitiy(data_name, source_mesh_name, boundary_code2, self, True)
                     conf.add_quantity_to_mesh(other_mesh_name, w)
                     conf.add_quantity_to_mesh(source_mesh_name, w)
                     self.quantities_write[w.instance_name] = w
-            elif exchange['to'] == self.name:
-                # This participant is reading data
-                if exchange['data'] in r_list:
-                    r = conf.get_coupling_quantitiy(exchange['data'], other_mesh_name, boundary_code1, self, False)
+                    processed_write_quantities.add(data_name)
+                    
+            elif exchange['to'] == self.name and exchange['from'] == other_solver_name:
+                # This participant is reading data from the other solver
+                data_name = exchange['data']
+                if data_name in r_list and data_name not in processed_read_quantities:
+                    r = conf.get_coupling_quantitiy(data_name, other_mesh_name, boundary_code1, self, False)
                     conf.add_quantity_to_mesh(other_mesh_name, r)
                     conf.add_quantity_to_mesh(source_mesh_name, r)
                     self.quantities_read[r.instance_name] = r
+                    processed_read_quantities.add(data_name)
         pass
 
     def make_participant_fsi_fluid(self, conf, boundary_code1:str, boundary_code2:str, other_solver_name:str):
