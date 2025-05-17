@@ -13,6 +13,7 @@ class PreciceConfig:
 
     def init_participants(self):
         """ Initialize participants """
+        #TODO receive mesh
         for exchange in self.topology.exchanges:
             for p in self.topology.participants:
                 if exchange['from'] == p.name:

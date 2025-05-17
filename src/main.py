@@ -60,7 +60,7 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description="Generate preCICE configuration from topology YAML")
-    parser.add_argument("-i", "--input", required=False, help="Path to topology YAML file", default=Path("examples/5/topology.yaml"))
+    parser.add_argument("-i", "--input", required=False, help="Path to topology YAML file", default=Path("examples/2/topology.yaml"))
     parser.add_argument("-o", "--output", required=False, help="Path to output XML configuration file", default=Path(__file__).parent)
     
     args = parser.parse_args()
