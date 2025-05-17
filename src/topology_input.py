@@ -59,6 +59,8 @@ class TopologyInput:
             # self.participants[new_participant.name] = new_participant
 
         ##Exchanges
+
+        #implicit explicit handling
         exchange_types = [exchange.get('type') for exchange in exchanges if 'type' in exchange]
         if exchange_types:
             # If all types are the same, set that as the coupling type
