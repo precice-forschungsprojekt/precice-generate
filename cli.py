@@ -37,21 +37,21 @@ def parse_args():
 def main():
     args = parse_args()
 
-    fileGenerator = FileGenerator(args.input_file, args.output_path)
+    file_generator = FileGenerator(args.input_file, args.output_path)
 
     # Clear any previous log state
-    fileGenerator.logger.clear_log_state()
+    file_generator.logger.clear_log_state()
 
-    fileGenerator.generate_level_0()
-    fileGenerator.generate_level_1()
+    file_generator.generate_level_0()
+    file_generator.generate_level_1()
 
     # Format the generated preCICE configuration
-    fileGenerator.format_precice_config()
+    file_generator.format_precice_config()
     
 
-    fileGenerator.handle_output(args)
+    file_generator.handle_output(args)
 
-    fileGenerator.validate_topology(args)
+    file_generator.validate_topology(args)
     
 
 
