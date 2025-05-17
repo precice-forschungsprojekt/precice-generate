@@ -38,3 +38,8 @@ class PreciceConfig:
             data_tag = etree.SubElement(root, etree.QName("data:"+mystr),
                                         name=data)
             pass
+
+        # output_xml_file = open(filename, "w")
+        # output_xml_file.write(etree.tostring(root, encoding="UTF-8", method="xml"))
+        # output_xml_file.close()
+        print(etree.tostring(root, encoding="UTF-8", method="xml"))
