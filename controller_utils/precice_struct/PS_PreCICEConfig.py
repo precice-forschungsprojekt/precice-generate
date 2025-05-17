@@ -219,7 +219,9 @@ class PS_PreCICEConfig(object):
 
             data_from_exchanges.append((data_key, dim, data_type))
 
-        for data, dim, data_type in data_from_exchanges:
+        # Track created data entries to prevent duplicates
+        created_data = set()
+        for data, dim, data_type in data_from_exchanges:                
             mystr = "scalar"
             if data_type is not None:
                 mystr = data_type
@@ -227,9 +229,11 @@ class PS_PreCICEConfig(object):
                 if data_type == "scalar":
                     log.rep_info(f"Data {data} is a vector, but data-type is set to scalar.")
                 mystr = "vector"
-                pass
-            data_tag = etree.SubElement(precice_configuration_tag, etree.QName("data:"+mystr),
+            
+            if data not in created_data:
+                data_tag = etree.SubElement(precice_configuration_tag, etree.QName("data:"+mystr),
                                         name=data)
+                created_data.add(data)
             pass
 
         # 2 meshes
@@ -478,6 +482,3 @@ class PS_PreCICEConfig(object):
                 solver_mesh_tag = etree.SubElement(solver_tag,
                                     "receive-mesh", name=mesh,
                                     from___=providing_participants[0])
-
-
-
