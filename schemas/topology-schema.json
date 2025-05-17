@@ -203,6 +203,11 @@
               "type": "string", 
               "description": "Defines the coupling type: 'strong' for tight coupling, 'weak' for loose coupling",
               "enum": ["strong", "weak"]
+            },
+            "coupling-type": {
+              "type": "string", 
+              "description": "If your exchange does not fit into the hardcoded provided types: 'fsi', 'f2s', 'cht', you need to choose 'custom'. This will then only exactly do what you provided and not look for matches with often used relations. ",
+              "enum": ["custom"]
             }
           },
           "required": [
@@ -213,7 +218,7 @@
             "data",
             "type"
           ],
-          "optional": [ "data-type" ]
+          "optional": [ "data-type", "coupling-type" ]
         }
       }
     },

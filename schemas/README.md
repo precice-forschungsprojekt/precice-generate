@@ -61,6 +61,8 @@ Each exchange defines a one-way data transfer between participants:
 - `to-patch`: Target Interface Surface
   - The physical boundary or interface region on the target participant's mesh where data will be applied.
   - Must correspond to a defined boundary condition in the target solver.
+- `coupling-type`: Optional string to specify a custom coupling type, if not matching any of the predefined types (fsi, f2s, cht)
+  - `custom`: Custom coupling type. Only use this if you are sure what you are doing. This will then only exactly do what you provided and not look for matches with often used relations.
 > [!NOTE]
 > `from-patch` and `to-patch` are only relevant for generating `adapter-config.json` files.
 
