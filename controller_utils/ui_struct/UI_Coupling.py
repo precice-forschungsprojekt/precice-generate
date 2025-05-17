@@ -79,15 +79,3 @@ class UI_Coupling(object):
         except:
             mylog.rep_error("Error in YAML initialization of the Coupling name=" + name_coupling + " data:")
         pass
-
-    def get_first_boundary_code(self, solverName: str):
-        """Returns the first boundary code with respect to the solver name """
-        if solverName == self.partitcipant1.name:
-            return self.boundaryC1
-        return self.boundaryC2
-
-    def get_second_boundary_code(self, solverName: str):
-        """Returns the second boundary code with respect to the solver name """
-        if solverName != self.partitcipant1.name:
-            return self.boundaryC1
-        return self.boundaryC2
