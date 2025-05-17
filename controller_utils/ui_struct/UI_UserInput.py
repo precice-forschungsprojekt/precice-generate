@@ -12,7 +12,7 @@ class UI_UserInput(object):
 
     The main components are:
      - the list of participants
-     - general simulation informations
+     - general simulation information
     """
     def __init__(self):
         """The constructor, dummy initialization of the fields"""
@@ -91,7 +91,7 @@ class UI_UserInput(object):
                         }if any(acceleration.get('imvj-restart-mode', {}).values()) else None,
                         'display_standard_values': acceleration.get('display_standard_values', 'false')
                     }
-                # If display_standard_values is false, set default values to none so they wont get displayed
+                # If display_standard_values is false, set default values to none so they are not displayed
                 else:
                     self.acceleration = {
                         'name': acceleration.get('name', 'IQN-ILS'),
