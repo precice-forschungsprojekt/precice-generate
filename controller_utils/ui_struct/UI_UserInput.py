@@ -186,33 +186,3 @@ class UI_UserInput(object):
                 self.couplings.append(coupling)
                 coupling.partitcipant1.list_of_couplings.append(coupling)
                 coupling.partitcipant2.list_of_couplings.append(coupling)
-
-        else:
-            # --- Fallback to original parsing logic for old YAML structures ---
-            try:
-                simulation_info = etree["simulation"]
-                sync_mode = simulation_info.get("sync-mode", "on")
-                mode = simulation_info.get("mode", "fundamental")
-                self.sim_info.sync_mode = sync_mode
-                self.sim_info.mode = mode
-                self.sim_info.init_from_yaml(simulation_info, mylog)
-
-                # Parse participants from the old structure
-                participants_list = etree["participants"]
-                for participant_name in participants_list:
-                    participant_data = participants_list[participant_name]
-                    new_participant = UI_Participant()
-                    new_participant.init_from_yaml(participant_data, participant_name, mylog)
-                    self.participants[participant_name] = new_participant
-
-                # Parse couplings from the old structure
-                couplings_list = etree["couplings"]
-                self.couplings = []
-                for couplings in couplings_list:
-                    for coupling_name in couplings:
-                        coupling_data = couplings[coupling_name]
-                        new_coupling = UI_Coupling()
-                        new_coupling.init_from_yaml(coupling_name, coupling_data, self.participants, mylog)
-                        self.couplings.append(new_coupling)
-            except Exception as e:
-                mylog.rep_error("Error during YAML initialization: " + str(e))
