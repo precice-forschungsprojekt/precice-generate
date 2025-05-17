@@ -1,6 +1,7 @@
 from pathlib import Path
 import yaml
 from controller_utils.myutils.UT_PCErrorLogging import UT_PCErrorLogging
+from controller_utils.ui_struct.UI_Participant import UI_Participant
 
 class TopologyInput:
     """Class to read a topology YAML file and extract the necessary information."""
@@ -41,4 +42,26 @@ class TopologyInput:
             self.max_iterations = coupling_scheme.get("max-iterations", 50)
 
         ##Participants
-        
+        for participant in participants:
+            new_participant = UI_Participant()
+    
+            # Handle new list of dictionaries format
+            if isinstance(participant, dict):
+                name = participant.get("name")
+                solver_info = participant
+                
+                if name is None:
+                    mylog.rep_error(f"Participant missing 'name' key: {participant}")
+                    continue
+                
+                new_participant.name = name
+                new_participant.solverName = solver_info.get("solver", name)
+                new_participant.dimensionality = solver_info.get("dimensionality", 3)
+            
+            else:
+                # Unsupported format
+                mylog.rep_error(f"Unsupported participant configuration: {participant}")
+                continue
+            
+            new_participant.list_of_couplings = []
+            self.participants[new_participant.name] = new_participant
