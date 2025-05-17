@@ -120,6 +120,8 @@ class PS_CouplingScheme(object):
                 exchange_mesh_name = write_mapping['from']
             else:
                 exchange_mesh_name = from_s + '-Mesh'
+            if exchange_mesh_name not in config.exchange_mesh_names:
+                config.exchange_mesh_names.append(exchange_mesh_name)
             e = etree.SubElement(coupling_scheme, "exchange", 
                                 data=data, mesh=exchange_mesh_name,
                                 from___=from_s, to=to_s)
