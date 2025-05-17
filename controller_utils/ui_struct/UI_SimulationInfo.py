@@ -8,8 +8,8 @@ class UI_SimulationInfo(object):
     def __init__(self):
         """The constructor."""
         self.steady = False
-        self.max_time = -1
-        self.time_window_size = 1E-3
+        self.NrTimeStep = -1
+        self.Dt = 1E-3
         self.max_iterations = 50
         self.accuracy = "medium"
         self.mode = "on"
@@ -23,8 +23,8 @@ class UI_SimulationInfo(object):
         # catch exceptions if these items are not in the list
         try:
             self.steady = etree.get("steady-state")
-            self.max_time = etree.get("timesteps")
-            self.time_window_size = etree.get("time-window-size")
+            self.NrTimeStep = etree.get("timesteps")
+            self.Dt = etree.get("time-window-size")
             self.display_standard_values = etree.get('display_standard_values', 'false')
             self.max_iterations = etree.get("max-iterations")
             self.accuracy = etree.get("accuracy")
