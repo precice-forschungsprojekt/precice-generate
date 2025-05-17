@@ -84,25 +84,52 @@ class PS_CouplingScheme(object):
                 simple_solver = solver
         return simple_solver
 
-    def _find_other_solver_for_coupling(self, quantity, solver):
-        """Find the other solver involved in the coupling"""
-        other_solver_for_coupling = None
-        other_mesh_name = None
-        for oq in quantity.list_of_solvers:
-            other_solver = quantity.list_of_solvers[oq]
-            if other_solver.name != solver.name:
-                other_solver_for_coupling = other_solver
-                for allm in other_solver.meshes:
-                    if allm != quantity.source_mesh_name:
-                        other_mesh_name = allm
-        return other_solver_for_coupling, other_mesh_name
+    def _find_other_solvers_for_coupling(self, quantity, solver, config):
+        """Find all other solvers involved in exchanges for this quantity"""
+        print(f"\nFinding other solvers for coupling:")
+        print(f"  Quantity: {quantity.instance_name}")
+        print(f"  Current solver: {solver.name}")
+        
+        # Find all exchanges involving this quantity and current solver
+        exchanges = []
+        for exchange in config.exchanges:
+            if (exchange.get('data', '').lower() == quantity.instance_name.lower() and 
+                (exchange.get('from') == solver.name or exchange.get('to') == solver.name)):
+                exchanges.append(exchange)
+        
+        # For each exchange, find the other solver
+        other_solvers = []
+        for exchange in exchanges:
+            other_name = exchange['to'] if exchange['from'] == solver.name else exchange['from']
+            for oq in quantity.list_of_solvers:
+                other_solver = quantity.list_of_solvers[oq]
+                if other_solver.name == other_name:
+                    # Find the mesh
+                    other_mesh_name = None
+                    for allm in other_solver.meshes:
+                        if allm != quantity.source_mesh_name:
+                            other_mesh_name = allm
+                            break
+                    other_solvers.append({
+                        'solver': other_solver,
+                        'mesh': other_mesh_name,
+                        'from': exchange['from'],
+                        'to': exchange['to']
+                    })
+                    break
+        
+        print(f"  Found {len(other_solvers)} other solvers for quantity")
+        for i, s in enumerate(other_solvers):
+            print(f"    {i}: {s['from']} -> {s['to']} (mesh: {s['mesh']})")
+            
+        return other_solvers
 
     def _determine_exchange_mesh(self, config, quantity, solver, other_solver, simple_solver):
         """Determine the mesh to use for exchange based on mappings and constraints"""
         from_s = "___"
         to_s = "__"
         exchange_mesh_name = quantity.source_mesh_name
-        data = quantity.instance_name  # Initialize data with quantity name
+        data = quantity.instance_name
 
         # Find the exchange that matches both data name and participants
         for exchange in config.exchanges:
@@ -112,14 +139,15 @@ class PS_CouplingScheme(object):
                 from_s = exchange.get('from')
                 to_s = exchange.get('to')
                 data = exchange.get('data')
-                break  # Found the correct exchange, no need to continue
+                print(f"  Matched exchange: {from_s} -> {to_s} (data: {data})")
+                break
 
         # Process mappings
         read_mappings = [m.copy() for m in config.mappings_read]
         write_mappings = [m.copy() for m in config.mappings_write]
 
         read_mapping = next((m for m in read_mappings if 
-                            (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh') ), None)
+                           (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
         write_mapping = next((m for m in write_mappings if 
                             (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
 
@@ -137,7 +165,7 @@ class PS_CouplingScheme(object):
             if solver.name != simple_solver.name:
                 exchange_mesh_name = other_mesh_name
 
-        return exchange_mesh_name, data, from_s, to_s   
+        return exchange_mesh_name, data, from_s, to_s
 
     def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
         """Writes to the XML the exchange list"""
@@ -149,27 +177,31 @@ class PS_CouplingScheme(object):
             quantity = config.coupling_quantities[q_name]
             solver = quantity.source_solver
 
-            # Find the other solver for coupling
-            other_solver, other_mesh_name = self._find_other_solver_for_coupling(quantity, solver)
+            # Find all other solvers involved in exchanges for this quantity
+            other_solvers = self._find_other_solvers_for_coupling(quantity, solver, config)
+            
+            for other_info in other_solvers:
+                other_solver = other_info['solver']
+                other_mesh_name = other_info['mesh']
+                
+                # Determine the exchange mesh and configuration
+                exchange_mesh_name, data, from_s, to_s = self._determine_exchange_mesh(
+                    config, quantity, solver, other_solver, simple_solver)
 
-            # Determine the exchange mesh and configuration
-            exchange_mesh_name, data, from_s, to_s = self._determine_exchange_mesh(
-                config, quantity, solver, other_solver, simple_solver)
+                if exchange_mesh_name not in config.exchange_mesh_names:
+                    config.exchange_mesh_names.append(exchange_mesh_name)
 
-            if exchange_mesh_name not in config.exchange_mesh_names:
-                config.exchange_mesh_names.append(exchange_mesh_name)
+                # Create the exchange element
+                e = etree.SubElement(coupling_scheme, "exchange", 
+                                    data=data, mesh=exchange_mesh_name,
+                                    from___=from_s, to=to_s)
 
-            # Create the exchange element
-            e = etree.SubElement(coupling_scheme, "exchange", 
-                                data=data, mesh=exchange_mesh_name,
-                                from___=from_s, to=to_s)
-
-            # Use the same mesh for the relative convergence measure
-            if relative_conv_str != "":
-                c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
-                                 limit=relative_conv_str, mesh=exchange_mesh_name
-                                 ,data=data)
-            pass
+                # Use the same mesh for the relative convergence measure
+                if relative_conv_str != "":
+                    c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
+                                     limit=relative_conv_str, mesh=exchange_mesh_name,
+                                     data=data)
+                pass
 
 
 class PS_ExplicitCoupling(PS_CouplingScheme):
