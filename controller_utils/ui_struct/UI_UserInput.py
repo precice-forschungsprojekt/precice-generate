@@ -124,8 +124,6 @@ class UI_UserInput(object):
             self.participants = {}
             participants_data = etree["participants"]
             for participant in participants_data:
-                new_participant = UI_Participant()
-                
                 # Handle new list of dictionaries format
                 if isinstance(participant, dict):
                     name = participant.get("name")
@@ -134,18 +132,16 @@ class UI_UserInput(object):
                     if name is None:
                         mylog.rep_error(f"Participant missing 'name' key: {participant}")
                         continue
-                    
-                    new_participant.name = name
-                    new_participant.solverName = solver_info.get("solver", name)
-                    new_participant.dimensionality = solver_info.get("dimensionality", 3)
-                
+
+                    solver_name = solver_info.get("solver", name)
+                    dimensionality = solver_info.get("dimensionality", 3)
+
+                    new_participant = UI_Participant(name, solver_name, dimensionality=dimensionality)
+                    self.participants[new_participant.name] = new_participant
                 else:
                     # Unsupported format
                     mylog.rep_error(f"Unsupported participant configuration: {participant}")
                     continue
-                
-                new_participant.list_of_couplings = []
-                self.participants[new_participant.name] = new_participant
 
             # --- Parse couplings from exchanges ---
             exchanges_list = etree["exchanges"]
@@ -201,8 +197,7 @@ class UI_UserInput(object):
                 participants_list = etree["participants"]
                 for participant_name in participants_list:
                     participant_data = participants_list[participant_name]
-                    new_participant = UI_Participant()
-                    new_participant.init_from_yaml(participant_data, participant_name, mylog)
+                    new_participant = UI_Participant.from_yaml(participant_data, participant_name, mylog)
                     self.participants[participant_name] = new_participant
 
                 # Parse couplings from the old structure

@@ -56,7 +56,7 @@ class StructureHandler:
                 raise ValueError("user_ui must be provided to create level 1 structure")
 
             # Get the solver name from the participants
-            solver_name = user_ui.participants[participant].solverName.lower()
+            solver_name = user_ui.participants[participant].solver_name.lower()
             #folder name starts with lowercase
             participant = participant.lower()
             
