@@ -93,42 +93,6 @@ class PS_CouplingScheme(object):
                         other_mesh_name = allm
         return other_solver_for_coupling, other_mesh_name
 
-    def _determine_exchange_mesh(self, config, quantity, solver, other_solver, simple_solver):
-        """Determine the mesh to use for exchange based on mappings and constraints"""
-        from_s = "___"
-        to_s = "__"
-        exchange_mesh_name = quantity.source_mesh_name
-
-        for exchange in config.exchanges:
-            if quantity.instance_name.lower() == exchange.get('data').lower():
-                from_s = exchange.get('from')
-                to_s = exchange.get('to')
-                data = exchange.get('data')
-        # Process mappings
-        read_mappings = [m.copy() for m in config.mappings_read]
-        write_mappings = [m.copy() for m in config.mappings_write]
-
-        read_mapping = next((m for m in read_mappings if 
-                            (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh') ), None)
-        write_mapping = next((m for m in write_mappings if 
-                            (m['from'] == from_s + '-Mesh' and m['to'] == to_s + '-Mesh')), None)
-
-        # Choose mesh based on mapping constraint
-        if read_mapping and read_mapping['constraint'] == 'conservative':
-            exchange_mesh_name = read_mapping['to']
-        elif read_mapping and read_mapping['constraint'] == 'consistent':
-            exchange_mesh_name = read_mapping['from']
-        elif write_mapping and write_mapping['constraint'] == 'conservative':
-            exchange_mesh_name = write_mapping['to']
-        elif write_mapping and write_mapping['constraint'] == 'consistent':
-            exchange_mesh_name = write_mapping['from']
-        else:
-            exchange_mesh_name = quantity.source_mesh_name
-            if solver.name != simple_solver.name:
-                exchange_mesh_name = other_mesh_name
-
-        return exchange_mesh_name, data, from_s, to_s
-
     def write_exchange_and_convergance(self, config, coupling_scheme, relative_conv_str:str):
         """Writes to the XML the exchange list"""
         for exchange in config.exchanges:
