@@ -19,9 +19,12 @@ class PS_CouplingScheme(object):
         """ parent function to write out XML file """
         pass
 
-    def write_participants_and_coupling_scheme(self, tag: etree, config, coupling_str:str ):
+    def write_participants_and_coupling_scheme(self, tag: etree, config, coupling_str:str, coupling_provided:bool ):
+    # def write_participants_and_coupling_scheme(self, tag: etree, config, coupling_str:str):
         """ write out the config XMl file """
-        if len(config.solvers) <= 2:
+
+        #only change to multi if the user has not specified what he wants
+        if len(config.solvers) <= 2 or coupling_provided:
             # for only
             coupling_scheme = etree.SubElement(tag, "coupling-scheme:" + coupling_str)
             # print the participants, ASSUMPTION! we assume there is at least two
@@ -177,11 +180,12 @@ class PS_ExplicitCoupling(PS_CouplingScheme):
         self.Dt = simulation_conf.Dt
         self.display_standard_values = simulation_conf.display_standard_values
         self.coupling = simulation_conf.coupling
+        self.coupling_provided = simulation_conf.coupling_provided
         pass
 
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
-        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-explicit" )
+        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-explicit", coupling_provided=self.coupling_provided )
         config.coupling_scheme = coupling_scheme
         if str(self.display_standard_values).lower() == 'true':
             if self.NrTimeStep is None:
@@ -232,14 +236,14 @@ class PS_ImplicitCoupling(PS_CouplingScheme):
         self.maxIteration = simulation_conf.max_iterations
         self.display_standard_values = simulation_conf.display_standard_values
         self.coupling = simulation_conf.coupling
-
+        self.coupling_provided = simulation_conf.coupling_provided
         pass
 
     def write_precice_xml_config(self, tag:etree, config): # config: PS_PreCICEConfig
         """ write out the config XMl file """
         if self.coupling not in ['serial', 'parallel']:
             raise ValueError(f"coupling must be 'serial' or 'parallel', but got {self.coupling}")
-        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-implicit" )
+        coupling_scheme = self.write_participants_and_coupling_scheme( tag, config, f"{self.coupling}-implicit", coupling_provided=self.coupling_provided )
         config.coupling_scheme = coupling_scheme
 
         if str(self.display_standard_values).lower() == 'true':
