@@ -39,15 +39,15 @@ exchanges:
     to-patch: surface
     data: HeatTransfer-Bottom # Fluid reads heat flux
     type: strong
-  - from: Solid
-    from-patch: interface
-    to: Fluid-Top
-    to-patch: surface
-    data: HeatTransfer-Bottom # Fluid reads heat flux
-    type: strong
-  - from: Fluid-Bottom
-    from-patch: interface
-    to: Fluid-Top
-    to-patch: surface
-    data: Temperature-Bottom # Fluid reads heat flux
-    type: strong
+  # - from: Solid
+  #   from-patch: interface
+  #   to: Fluid-Top
+  #   to-patch: surface
+  #   data: HeatTransfer-Bottom # Fluid reads heat flux
+  #   type: strong
+  # - from: Fluid-Bottom
+  #   from-patch: interface
+  #   to: Fluid-Top
+  #   to-patch: surface
+  #   data: Temperature-Bottom # Fluid reads heat flux
+  #   type: strong
