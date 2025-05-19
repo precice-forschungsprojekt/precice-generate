@@ -125,12 +125,6 @@ class PS_CouplingScheme(object):
             e = etree.SubElement(coupling_scheme, "exchange", 
                                 data=data, mesh=exchange_mesh_name,
                                 from___=from_s, to=to_s)
-            config.written_exchanges.append({
-                "mesh": exchange_mesh_name,
-                "data": data,
-                "from": from_s,
-                "to": to_s
-            })
             # Use the same mesh for the relative convergence measure
             if relative_conv_str != "":
                 c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
