@@ -25,8 +25,6 @@ class PS_PreCICEConfig(object):
         self.couplingScheme_participants = None
         self.couplingScheme = None
         self.exchange_mesh_names = []
-        self.written_convergence = []
-        self.written_exchanges = []
         pass
 
     def get_coupling_quantitiy(self, quantity_name:str, source_mesh_name:str, bc: str, solver, read:bool):
@@ -462,7 +460,7 @@ class PS_PreCICEConfig(object):
             if not providing_participants:
                 raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
 
-            # # get data via topology
+            #get data via topology
             # for exchange in config.exchanges:                  
             #     if providing_participants[0].lower() == exchange.get('from').lower():
             #         data = exchange.get('data')
