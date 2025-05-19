@@ -126,8 +126,8 @@ class PS_CouplingScheme(object):
                                 data=data, mesh=exchange_mesh_name,
                                 from___=from_s, to=to_s)
             config.written_exchanges.append({
-                "data": data,
                 "mesh": exchange_mesh_name,
+                "data": data,
                 "from": from_s,
                 "to": to_s
             })
