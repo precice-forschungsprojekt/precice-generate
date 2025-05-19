@@ -462,21 +462,28 @@ class PS_PreCICEConfig(object):
             if not providing_participants:
                 raise ValueError(f"Mesh '{mesh}' used in configuration is not available to any participant")
 
-            # # get data via topology
-            # for exchange in config.exchanges:                  
-            #     if providing_participants[0].lower() == exchange.get('from').lower():
-            #         data = exchange.get('data')
-            #         if (data not in exchanged_data_on_control) and (exchange.get('from').lower() != control_participant.lower()):
-            #             exchanged_data_on_control.append(data)
-            #             e = etree.SubElement(self.coupling_scheme, "exchange", 
-            #                 data= data, mesh=mesh,
-            #                 from___=providing_participants[0], to=control_participant)
-            #             config.exchanges.append({
-            #                 'data': data,
-            #                 'mesh': mesh,
-            #                 'from': providing_participants[0],
-            #                 'to': control_participant
-            #             }) 
+
+            # get data via topology
+            for exchange in config.exchanges:                  
+                if providing_participants[0].lower() == exchange.get('from').lower():
+                    data = exchange.get('data')
+                    temp_exchange = ({
+                        'data': data,
+                        'mesh': mesh,
+                        'from': providing_participants[0],
+                        'to': control_participant
+                    })
+                    if (data not in exchanged_data_on_control) and (exchange.get('from').lower() != control_participant.lower())and (temp_exchange not in config.written_exchanges):
+                        exchanged_data_on_control.append(data)
+                        e = etree.SubElement(self.coupling_scheme, "exchange", 
+                            data= data, mesh=mesh,
+                            from___=providing_participants[0], to=control_participant)
+                        config.exchanges.append({
+                            'data': data,
+                            'mesh': mesh,
+                            'from': providing_participants[0],
+                            'to': control_participant
+                        }) 
                     
             if mesh not in control_participant_meshes:
                 # Add the mesh to the control participant as receive and add an exchange for it
