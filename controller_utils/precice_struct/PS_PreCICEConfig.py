@@ -109,7 +109,7 @@ class PS_PreCICEConfig(object):
         for participant_name in user_input.participants:
             participant_obj = user_input.participants[participant_name]
             list = participant_obj.list_of_couplings
-            self.solvers[participant_name] = PS_ParticipantSolver(participant_obj, list[0], self)
+            self.solvers[participant_name] = PS_ParticipantSolver(participant_obj)
 
         # should we do something for the couplings?
         # the couplings are added to the participants already
