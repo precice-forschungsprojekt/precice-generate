@@ -1,5 +1,5 @@
 {
-  "dataFormat": "json",
+  "dataFormat": "yaml",
   "toolbarTitle": "preCICE Topology Configurator",
   "hideSchemaEditor": true,
   "hideSettings": true,

@@ -39,4 +39,3 @@ exchanges:
     to-patch: surface
     data: HeatTransfer-Bottom # Fluid reads heat flux
     type: strong
-    
