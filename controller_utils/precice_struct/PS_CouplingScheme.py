@@ -130,11 +130,6 @@ class PS_CouplingScheme(object):
                 c = etree.SubElement(coupling_scheme, "relative-convergence-measure",
                                  limit=relative_conv_str, mesh=exchange_mesh_name
                                  ,data=data)
-                config.written_convergence.append({
-                    "mesh": exchange_mesh_name,
-                    "data": data,
-                    "limit": relative_conv_str
-                })
             pass
 
 
