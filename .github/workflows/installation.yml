@@ -7,8 +7,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    paths:
-      - 'pyproject.toml'
+
 jobs:
   test-installations:
     name: Test Installations (Python ${{ matrix.python-version }} - ${{ matrix.install-type }})
