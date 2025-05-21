@@ -46,7 +46,7 @@ class StructureHandler:
             except Exception as create_files_exception:
                 self.logger.error(f"Failed to create file {file}. Error: {create_files_exception}")
 
-    def create_level_1_structure(self, participant: str, user_ui=None) -> list[Path] | None:
+    def create_level_1_structure(self, participant: str, user_ui=None) -> list[Path]:
         """ Creates the necessary files of level 1 (everything in the generated sub-folders).
             :param participant: The participant for which the files should be created.
             :param user_ui: Optional UI_UserInput instance to retrieve participant information

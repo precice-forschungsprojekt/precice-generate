@@ -37,7 +37,7 @@ class FileGenerator:
         self.config_generator.generate_precice_config(self)
         self.readme_generator.generate_readme(self)
     
-    def _extract_participants(self) -> list[str] | None:
+    def _extract_participants(self) -> list[str]:
         """Extracts the participants from the topology.yaml file."""
         try:
             with open(self.input_file, "r") as config_file:
